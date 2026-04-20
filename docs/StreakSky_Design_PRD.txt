@@ -1,0 +1,653 @@
+================================================================
+DESIGN PRODUCT REQUIREMENTS DOCUMENT
+================================================================
+App Name     : StreakSky
+Document     : Design PRD — Visual & UI/UX Specification
+Platform     : Mobile (iOS & Android)
+Version      : 1.0
+Reference    : Pinterest UI Kit — Dark Theme Fitness App
+               (Profile & Analytics, 78+ Screens)
+Last Updated : April 2026
+================================================================
+
+
+----------------------------------------------------------------
+1. DESIGN PHILOSOPHY
+----------------------------------------------------------------
+
+StreakSky's visual design is built on four principles:
+
+  DARK & POWERFUL
+  The app lives in dark mode by default. Dark backgrounds make
+  neon accent colors pop with energy. It feels premium, focused,
+  and distraction-free — like a professional tool, not a toy.
+
+  NEON ENERGY
+  A single electric accent color (neon green) drives all
+  interactive elements, progress indicators, active states,
+  and celebration moments. One accent. Used with intention.
+
+  DATA AS ART
+  Charts, heatmaps, and graphs are not utility elements.
+  They are the hero visuals of every screen. They should
+  feel like looking at something beautiful, not a spreadsheet.
+
+  ZERO CLUTTER
+  Every screen has one primary action. Generous white space
+  (dark space). Typography does the heavy lifting. Icons
+  are minimal and consistent.
+
+
+----------------------------------------------------------------
+2. COLOR SYSTEM
+----------------------------------------------------------------
+
+PRIMARY BACKGROUND
+  Base Background     : #0D0D0D   (near black — main screens)
+  Surface / Cards     : #1A1A1A   (slightly lighter dark)
+  Elevated Surface    : #242424   (modals, bottom sheets)
+  Dividers            : #2E2E2E   (subtle separators)
+
+ACCENT — NEON GREEN (Primary Action Color)
+  Primary Accent      : #B3FF00   (electric lime green)
+  Accent Hover/Press  : #99DD00   (slightly deeper on tap)
+  Accent Glow         : #B3FF0033 (20% opacity — glow effect
+                                   behind active elements)
+  Accent Subtle       : #B3FF0015 (8% opacity — card tints,
+                                   selected states)
+
+TEXT
+  Primary Text        : #FFFFFF   (headings, main labels)
+  Secondary Text      : #A0A0A0   (subtitles, metadata)
+  Tertiary Text       : #5A5A5A   (placeholder, disabled)
+  Accent Text         : #B3FF00   (links, active labels)
+
+STATUS COLORS (Habit Weather System)
+  Sunny               : #B3FF00   (neon green — matches accent)
+  Partly Cloudy       : #FFD600   (yellow)
+  Cloudy              : #FF8C00   (amber)
+  Rainy               : #4A9EFF   (blue)
+  Storm               : #FF3B3B   (red)
+  Rainbow             : #B44FFF   (purple — comeback)
+  Tornado             : #FF6B00   (deep orange)
+
+HEATMAP COLORS (GitHub Style)
+  Level 0 (empty)     : #1E1E1E   (dark cell — no data)
+  Level 1             : #3A5A1A   (light green — 1 habit)
+  Level 2             : #5A8C28   (medium green — 2-3 habits)
+  Level 3             : #7DC033   (bright green — 4+ habits)
+  Level 4 (perfect)   : #B3FF00   (full neon — all habits done)
+  Comeback/Rainbow    : #9B59B6   (purple — comeback day)
+
+STREAK BADGE COLORS
+  Active Streak       : #B3FF00
+  Broken Streak       : #5A5A5A
+  Shield Active       : #4A9EFF
+  Comeback            : #9B59B6
+  Legendary (100+)    : #FFD600
+  Diamond (365)       : #00E5FF
+
+
+----------------------------------------------------------------
+3. TYPOGRAPHY
+----------------------------------------------------------------
+
+FONT FAMILY
+  Primary Font        : Inter (or SF Pro on iOS)
+  Display / Hero      : Inter Black (weight 900)
+  Headings            : Inter Bold (weight 700)
+  Body                : Inter Regular (weight 400)
+  Labels / Metadata   : Inter Medium (weight 500)
+
+TYPE SCALE
+  Hero Number         : 64px  Bold    (streak count, big stats)
+  Display             : 32px  Black   (screen titles, year)
+  H1                  : 24px  Bold    (section headers)
+  H2                  : 20px  Bold    (card titles)
+  H3                  : 17px  SemiBold(sub-section labels)
+  Body Large          : 16px  Regular (main body text)
+  Body                : 14px  Regular (descriptions)
+  Caption             : 12px  Medium  (metadata, timestamps)
+  Micro               : 10px  Medium  (heatmap labels, badges)
+
+SPECIAL TEXT RULES
+  - All numbers (streaks, stats, counts) use tabular figures
+    so digits don't shift width as numbers change
+  - Quote text uses 18px Regular with 1.6 line height
+    for readability and elegance
+  - Habit names on cards: 15px SemiBold, never truncated
+    below 2 lines
+  - Uppercase used ONLY for section labels and badge names
+  - Letter spacing: +0.5px on all uppercase labels
+
+
+----------------------------------------------------------------
+4. SPACING & LAYOUT SYSTEM
+----------------------------------------------------------------
+
+BASE UNIT : 4px
+
+  xs   :  4px
+  sm   :  8px
+  md   : 16px
+  lg   : 24px
+  xl   : 32px
+  2xl  : 48px
+  3xl  : 64px
+
+SCREEN MARGINS
+  Horizontal padding  : 20px (all screens)
+  Top safe area       : 56px (below status bar)
+  Bottom safe area    : 84px (above home indicator)
+
+CARD PADDING
+  Internal padding    : 16px all sides
+  Card border radius  : 16px
+  Card gap (between)  : 12px
+
+BOTTOM NAVIGATION
+  Height              : 64px
+  Icon size           : 24px
+  Active indicator    : neon green dot (6px) below icon
+  Background          : #1A1A1A with top border #2E2E2E
+
+
+----------------------------------------------------------------
+5. COMPONENT LIBRARY
+----------------------------------------------------------------
+
+5.1 CARDS
+----------
+  HABIT CARD
+  - Background: #1A1A1A
+  - Border radius: 16px
+  - Left border accent: 4px solid [habit color]
+  - Layout: emoji icon (40px) | habit name + category |
+    streak count | completion checkbox
+  - Checkbox: 28px circle, unchecked = #2E2E2E border,
+    checked = #B3FF00 fill with black checkmark
+  - Streak count: neon green number, flame emoji suffix
+  - On complete: card flashes neon glow, haptic pulse
+
+  GOAL CARD
+  - Background: #1A1A1A
+  - Border radius: 16px
+  - Progress bar: full width, 6px height, neon green fill,
+    dark grey track, rounded ends
+  - Goal title: H2 white, linked habit count below in grey
+  - Completion %: large number top right in neon green
+
+  STAT CARD (Analytics — matches reference image)
+  - 2-column grid layout
+  - Each card: dark background, large metric number,
+    mini bar chart or line chart below
+  - Chart color: neon green bars/lines
+  - Reference: Walk (8104 Steps), Sleep (6 Hours),
+    Water (3 Bottles), Calories (645 kcal) — same card
+    layout adapted for StreakSky habits
+
+  QUOTE CARD
+  - Background: #1A1A1A with subtle neon green left border
+  - Quote text: 18px Regular white, italic
+  - Author: 13px Medium neon green
+  - Weather icon (small, 20px) top right
+  - Save icon (bookmark outline) bottom right
+
+  WEATHER CARD (Home Screen Hero)
+  - Large card, full width
+  - Background: gradient from #1A1A1A to #0D0D0D
+  - Weather emoji: 72px centered
+  - Weather label: H1 white
+  - Subtext: today's completion count in grey
+
+5.2 BUTTONS
+------------
+  PRIMARY BUTTON
+  - Background: #B3FF00
+  - Text: #000000  Bold  16px
+  - Height: 56px
+  - Border radius: 14px
+  - Full width on most screens
+  - Press state: scale(0.97) + deeper green #99DD00
+
+  SECONDARY BUTTON
+  - Background: transparent
+  - Border: 1.5px solid #B3FF00
+  - Text: #B3FF00  Bold  16px
+  - Height: 56px
+  - Border radius: 14px
+
+  GHOST BUTTON
+  - Background: #1A1A1A
+  - Text: #FFFFFF  Medium  15px
+  - Height: 48px
+  - Border radius: 12px
+
+  DESTRUCTIVE BUTTON
+  - Text: #FF3B3B  Medium  15px  (no background)
+  - Used for: Delete account, Log out (matches reference)
+
+  ICON BUTTON
+  - Size: 44px × 44px
+  - Background: #1A1A1A
+  - Border radius: 12px
+  - Icon: 20px white or neon green
+
+5.3 NAVIGATION ROWS (matches reference image style)
+-----------------------------------------------------
+  - Full width, 56px height
+  - Label: 16px Regular white
+  - Right chevron: #5A5A5A
+  - Separator: 1px #2E2E2E, inset 16px left
+  - Tap state: background flashes #242424
+  - Used in: Profile menu (Messages, My workouts,
+    Notifications, Legal & Privacy — same pattern
+    adapted for StreakSky settings)
+
+5.4 PROFILE HEADER (matches reference image)
+---------------------------------------------
+  - Avatar: 64px circle, neon green ring border (3px)
+  - Edit button: small neon green pencil icon overlay
+  - Name: H2 white
+  - Subtitle: 13px grey (e.g. "14 day streak • 3 habits")
+  - Background: dark card with subtle gradient
+
+5.5 INPUT FIELDS (Profile edit — matches reference)
+-----------------------------------------------------
+  - Background: #1A1A1A
+  - Border: 1px #2E2E2E, focus: 1px #B3FF00
+  - Label: 12px grey above field
+  - Value: 15px white
+  - Right chevron for tappable fields (date picker, etc.)
+  - Height: 56px
+  - Border radius: 12px
+  - Fields shown: Name, Date of Birth, Height, Weight,
+    Target Weight, Fitness Level, Focus Areas
+    (adapted as: Name, Joined Date, Habits Count,
+    Streak Goal, Goal Level, Focus Categories)
+
+5.6 BOTTOM NAVIGATION BAR
+---------------------------
+  5 tabs with icons:
+  - 🏠 Home      (house outline / filled when active)
+  - 📅 Goals     (flag outline / filled when active)
+  - 🔥 Heatmap   (grid outline / filled when active)
+  - 📊 Graphs    (bar chart outline / filled when active)
+  - 👤 Profile   (person outline / filled when active)
+
+  Active tab: icon in neon green + neon dot below
+  Inactive tab: icon in #5A5A5A
+  Background: #1A1A1A, 1px top border #2E2E2E
+
+
+----------------------------------------------------------------
+6. SCREEN-BY-SCREEN DESIGN SPEC
+----------------------------------------------------------------
+
+6.1 SPLASH / ONBOARDING
+-------------------------
+  - Full black background
+  - StreakSky logo centered (wordmark + sky icon in neon)
+  - Tagline: "Your habits. Your weather. Your legacy."
+    in 16px grey below logo
+  - Lottie animation: subtle neon particles rising upward
+  - CTA: "Get Started" — primary neon button
+  - "Log In" — ghost button below
+
+6.2 ONBOARDING FLOW (3 SCREENS)
+---------------------------------
+  Screen 1 — Habits
+  - Illustration: neon heatmap grid glowing
+  - Title: "Build Habits That Stick"
+  - Body: short description
+
+  Screen 2 — Weather
+  - Illustration: weather icons animated
+  - Title: "See Your Sky Every Day"
+
+  Screen 3 — AI
+  - Illustration: chat bubbles with neon glow
+  - Title: "Your AI Coach, On Device"
+
+  Progress dots: neon green active, grey inactive
+  Skip button: top right, grey text
+
+6.3 LOGIN / REGISTER SCREEN (matches reference image)
+-------------------------------------------------------
+  - Dark background, centered layout
+  - Avatar placeholder circle (grey, 80px)
+  - "Log In" heading H1 white
+  - "Don't have an account? Register" — grey text,
+    "Register" in neon green
+  - Email input + Password input (same style as 5.5)
+  - Primary "Log In" button
+  - Language options row below (same as reference)
+  - Legal & Privacy row (same as reference)
+
+6.4 HOME SCREEN
+----------------
+  TOP SECTION
+  - Greeting: "Good morning, Andrzej" (14px grey)
+  - Date: "Tuesday, April 18" (H2 white)
+  - Notification bell icon (top right)
+
+  WEATHER HERO CARD (full width)
+  - Today's weather emoji (large, 64px)
+  - Weather label + completion status
+  - "3 of 5 habits done" in grey
+
+  QUOTE CARD
+  - Below weather card
+  - Quote text + author in neon green
+  - Bookmark icon
+
+  AI NUDGE BANNER
+  - Compact card, neon green left border
+  - AI message: short nudge text
+  - Dismiss X button
+
+  HABITS LIST
+  - Section label: "TODAY'S HABITS" (uppercase, grey, 12px)
+  - Habit cards stacked (see 5.1)
+  - "Add Habit" ghost button at bottom of list
+
+  STREAK SUMMARY ROW
+  - Horizontal scroll of habit streak pills
+  - Each pill: emoji + streak count in neon
+
+6.5 STATISTICS SCREEN (matches reference image exactly)
+---------------------------------------------------------
+  TOP
+  - Screen title: "Statistics" (H1 centered)
+  - "see all" link top right in neon green
+
+  ACTIVITY CALENDAR STRIP
+  - 7-day strip (S M T W T F S)
+  - Today highlighted: neon green circle with date
+  - Other days: grey text on dark circle
+  - Label: "ACTIVITY CALENDAR" uppercase grey 12px
+
+  TODAY REPORT SECTION
+  - Label: "TODAY REPORT" uppercase grey 12px
+  - "see all" link neon green
+
+  2x2 STAT CARD GRID (key metrics)
+  Each card — dark background, rounded 16px:
+    Card 1 — Habits Done (replacing Steps)
+             Large number in white, "habits" label in grey
+             Mini green bar chart showing week trend
+    Card 2 — Streak (replacing Sleep)
+             Large number + flame icon in neon
+             Mini waveform / bar chart
+    Card 3 — Water / Custom Habit
+             Same card pattern
+    Card 4 — Calories / Custom Metric
+             Same card pattern
+
+  All mini charts: neon green bars on dark background
+  Matches reference image bar chart and waveform style
+
+  LAST WORKOUTS SECTION (adapted as RECENT HABITS)
+  - Label: "MY LAST HABITS" uppercase grey 12px
+  - Horizontal scroll cards showing last 3 completed habits
+  - Each: habit emoji, name, date, completion duration
+
+6.6 HEATMAP SCREEN
+--------------------
+  - Screen title: "Activity Map" H1 white
+  - Year selector: pill switcher (2024 | 2025 | 2026)
+    active year: neon green pill
+  - 52-week grid, 7 rows (Mon-Sun)
+  - Cell size: ~14px with 2px gap
+  - Color levels as defined in Section 2
+  - Stats row below grid:
+      Longest Streak | Sunny Days | Comebacks
+      Each in separate pill with neon number
+  - Filter chips: "All" + one chip per habit
+    active chip: neon green background, black text
+  - Tap cell → bottom sheet:
+      Date, weather icon, habits done list,
+      commit message, streak status
+
+6.7 PROFILE SCREEN (matches reference image)
+----------------------------------------------
+  PROFILE HEADER (matches reference)
+  - Avatar with neon green ring + edit pencil button
+  - Name (H2 white)
+  - Subtitle: streak + habit count (grey, 13px)
+  - Background: dark card
+
+  MENU ROWS (matches reference image structure)
+  Adapted for StreakSky:
+  - My Habits            >
+  - My Goals             >
+  - Streak History       >
+  - Quote Collection     >
+  - Notifications        >
+  - Language Options     >
+  - Legal & Privacy      >
+  - Log Out              (red destructive text, no chevron)
+
+  Each row: same style as reference — label left,
+  chevron right, divider between rows
+
+6.8 PROFILE EDIT SCREEN (matches reference image)
+---------------------------------------------------
+  - Back arrow top left (neon green)
+  - Avatar centered top with edit overlay
+  - Form fields (matches reference exactly):
+      Name
+      Date of Birth (date picker)
+      Height
+      Weight (current)
+      Target Weight
+      Fitness Level (dropdown: Easy/Medium/Hard)
+      Focus Areas (multi-select chips)
+  - "Save" — primary neon button full width
+  - "Delete account" — red destructive text below
+
+6.9 GOALS SCREEN
+-----------------
+  - Tab switcher: Weekly | Monthly | Career
+    active tab underlined in neon green
+  - Goal cards (see 5.1)
+  - Add goal FAB button (neon green circle, + icon,
+    bottom right, 56px)
+  - Career goal screen: vertical phase timeline
+    with neon green dots and connecting line
+
+6.10 GRAPHS SCREEN
+-------------------
+  - Tab switcher: Weekly | Monthly | Career
+  - Line graphs: neon green line on dark grid
+  - Grid lines: #2E2E2E very subtle
+  - X-axis labels: grey 11px
+  - Y-axis labels: grey 11px
+  - Data point dots: neon green 6px circles
+  - Tooltip on tap: dark card with white number
+  - Rolling average: dashed white line overlay
+  - Career projection: dashed neon line extending
+    into future dates
+
+6.11 SKY AI SCREEN
+-------------------
+  - Chat bubbles:
+      User: neon green background, black text, right aligned
+      AI: #242424 background, white text, left aligned
+  - Today's commit message: pinned card at top
+    dark background, monospace font, neon green text
+  - Input bar: bottom, dark background, neon send button
+  - Suggested prompt chips: horizontal scroll,
+    ghost button style
+  - AI avatar: small neon green sky icon on left of
+    each AI message
+
+6.12 YEAR REVIEW SCREEN (AUTO DEC 31)
+---------------------------------------
+  - Dark background, animated reveal
+  - Large year number: 128px Black white
+  - Animated heatmap reveal (cells light up one by one)
+  - Stats cards slide up with stagger animation
+  - AI narrative text fades in
+  - Share button: neon green full width at bottom
+  - Share card preview: dark card with year, stats,
+    weather emoji strip, StreakSky logo watermark
+
+
+----------------------------------------------------------------
+7. ICONOGRAPHY
+----------------------------------------------------------------
+
+  Style       : Outline icons (2px stroke), filled on active
+  Library     : Phosphor Icons or custom
+  Size        : 24px standard, 20px compact, 16px micro
+  Color       : #FFFFFF inactive, #B3FF00 active
+  Avoid       : Filled icons in inactive nav states
+                Multi-color icons
+                Icons with drop shadows
+
+  Key custom icons needed:
+  - StreakSky logo mark (sky + streak wave)
+  - Habit weather icons (sun, cloud, rain, storm, rainbow)
+  - Streak flame (custom, matches neon style)
+  - Streak shield (custom)
+  - Commit message icon (code bracket style)
+  - Heartbeat/pulse icon
+
+
+----------------------------------------------------------------
+8. ANIMATIONS & MICRO-INTERACTIONS
+----------------------------------------------------------------
+
+  HABIT COMPLETION
+  - Checkbox tap: scale bounce (1.0 → 1.2 → 1.0, 200ms)
+  - Neon glow pulse radiates outward from card (300ms)
+  - Haptic: medium impact
+  - If all habits done: full screen neon flash + ☀️ animation
+
+  STREAK MILESTONE
+  - Badge slides up from bottom with spring animation
+  - Background dims to 60% black
+  - Badge glows and pulses 3 times
+  - Quote fades in below badge
+  - Haptic: success pattern
+
+  HEATMAP LOAD
+  - Cells fade in left to right, row by row (600ms total)
+  - Each cell: opacity 0 → 1 with slight scale
+
+  WEATHER CHANGE
+  - Weather icon on home screen: crossfade with scale
+  - Background gradient shifts to match weather color
+
+  GRAPH DRAW
+  - Line graphs draw from left to right (400ms)
+  - Bar charts grow from bottom up (300ms)
+  - Data points pop in with spring scale
+
+  YEAR REVIEW REVEAL
+  - Cinematic: dark screen → year number fades in
+  - Heatmap cells light up progressively
+  - Stats count up from 0 to final number
+  - AI narrative types out character by character
+
+  PAGE TRANSITIONS
+  - Standard: slide left/right (iOS native)
+  - Modal: slide up from bottom
+  - Year review: fade in (special moment)
+
+  LOADING STATES
+  - Skeleton screens (dark shimmer, no spinners)
+  - Shimmer color: #2E2E2E → #3A3A3A animated
+
+
+----------------------------------------------------------------
+9. DARK MODE & LIGHT MODE
+----------------------------------------------------------------
+
+  Default     : Dark mode (always on by default)
+  Light mode  : Optional toggle in settings
+
+  LIGHT MODE ADAPTATIONS
+  Base Background     : #F5F5F5
+  Surface / Cards     : #FFFFFF
+  Elevated Surface    : #F0F0F0
+  Primary Text        : #0D0D0D
+  Secondary Text      : #6B6B6B
+  Accent              : #7AB800   (darker green for contrast)
+  Dividers            : #E0E0E0
+
+  Note: Dark mode is the hero experience. All design decisions
+  are made dark-first. Light mode is an accessibility option.
+
+
+----------------------------------------------------------------
+10. ACCESSIBILITY
+----------------------------------------------------------------
+
+  - Minimum contrast ratio: 4.5:1 for all body text
+  - Neon green (#B3FF00) on black (#0D0D0D): 13.2:1 ratio
+    (AAA compliant — well above minimum)
+  - All interactive elements minimum 44×44px tap target
+  - Dynamic type support (iOS) — text scales with system
+  - Reduced motion: all animations respect
+    prefers-reduced-motion setting
+  - Screen reader labels on all icons and charts
+  - Color-blind mode: replace green/red with
+    shape differentiation on heatmap cells
+
+
+----------------------------------------------------------------
+11. ASSETS & DELIVERABLES CHECKLIST
+----------------------------------------------------------------
+
+  DESIGN FILES
+  [ ] Figma file with all components in design system
+  [ ] 78+ screens (matches reference kit scope)
+  [ ] Component library with variants
+  [ ] Auto-layout frames for all card types
+  [ ] Dark + Light mode frames
+
+  EXPORTED ASSETS
+  [ ] App icon: 1024×1024px (neon sky mark on black)
+  [ ] Splash screen: all device sizes
+  [ ] All icons in SVG (24px viewbox)
+  [ ] Weather icons in SVG (animated Lottie versions)
+  [ ] Streak badge illustrations (8 types)
+  [ ] Onboarding illustrations (3 screens)
+  [ ] Share card template (Year Review)
+
+  DEVELOPER HANDOFF
+  [ ] All spacing in 4px base unit grid
+  [ ] All colors as hex tokens
+  [ ] Typography scale as named styles
+  [ ] Component states documented (default, hover,
+      pressed, disabled, loading)
+  [ ] Animation specs (duration, easing, trigger)
+
+
+----------------------------------------------------------------
+12. DESIGN INSPIRATION REFERENCE SUMMARY
+----------------------------------------------------------------
+
+The Pinterest reference image shows a dark fitness app with:
+  - Pure near-black backgrounds (#0D0D0D family)
+  - Single electric green accent (#B3FF00 equivalent)
+  - Clean card-based layout with generous spacing
+  - Mini bar charts and waveform charts inside stat cards
+  - Profile page with avatar ring, menu rows, chevrons
+  - Edit profile with labeled form fields, save + delete
+  - Login screen with centered layout, subtle inputs
+  - Activity calendar strip (7-day horizontal)
+  - Statistics screen with 2×2 metric card grid
+  - 78+ total screens confirming comprehensive coverage
+
+StreakSky adopts ALL of these visual decisions and adapts
+the content from fitness/workout tracking to habit tracking,
+goal cascading, streak management, and AI-powered coaching.
+The design language is identical. The product is deeper.
+
+
+================================================================
+END OF DOCUMENT — StreakSky Design PRD v1.0
+================================================================

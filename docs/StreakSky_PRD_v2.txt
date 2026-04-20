@@ -1,0 +1,643 @@
+================================================================
+PRODUCT REQUIREMENTS DOCUMENT (PRD)
+================================================================
+App Name     : StreakSky
+Tagline      : Your habits. Your weather. Your legacy.
+Platform     : Mobile (iOS & Android)
+Version      : 2.0
+Author       : Product Team
+Last Updated : April 2026
+================================================================
+
+
+----------------------------------------------------------------
+1. OVERVIEW
+----------------------------------------------------------------
+
+StreakSky is a mobile habit tracking app that combines daily
+habit management, goal setting (weekly, monthly, career),
+streak tracking, GitHub-style heatmaps, rich graphs, a unique
+Habit Weather System, yearly automatic goal rollover, and
+daily motivational quotes from the world's greatest minds —
+all powered by an on-device AI agent using Ollama.
+
+The app makes habit building feel human, emotional, long-term,
+and deeply motivating. It doesn't reset your progress at the
+end of a year — it carries your momentum forward, builds on it,
+and shows you the full arc of your life as a series of streaks,
+weather patterns, and growth milestones.
+
+
+----------------------------------------------------------------
+2. APP NAME RATIONALE
+----------------------------------------------------------------
+
+Name       : StreakSky
+Why        : "Streak" ties directly to the core habit mechanic.
+             "Sky" connects to the weather system and conveys
+             openness, infinite growth, and long-term vision.
+             Together it feels fresh, mobile-first, and timeless.
+             The sky never resets — it just changes. That is
+             exactly how StreakSky treats your habits year
+             after year.
+
+
+----------------------------------------------------------------
+3. TARGET USERS
+----------------------------------------------------------------
+
+Primary    : 18-40 year olds building long-term habits and
+             personal growth routines
+Secondary  : Professionals with multi-year career development
+             goals who need consistency and accountability
+Mindset    : Users who want to look back 5 years from now and
+             see their full growth journey — not just this week
+
+
+----------------------------------------------------------------
+4. YEARLY AUTOMATIC SYSTEM
+----------------------------------------------------------------
+
+This is one of StreakSky's most powerful and rare features.
+Most apps reset everything on January 1st. StreakSky does not.
+Instead it runs a fully automatic year-end and year-start
+engine that preserves momentum, reviews growth, and sets up
+the next year intelligently.
+
+4.1 YEAR-END REVIEW (AUTO-GENERATED — DECEMBER 31)
+----------------------------------------------------
+On December 31st at 11:00 PM, StreakSky automatically
+generates a full Year in Review for the user. No manual
+effort required. It includes:
+
+  HABIT REPORT CARD
+  - Every habit tracked that year with:
+      Total days completed
+      Completion rate %
+      Longest streak
+      Best month
+      Worst month
+      Trend (improving / declining / steady)
+
+  WEATHER YEAR SUMMARY
+  - Total sunny days (all habits done)
+  - Total stormy days (0 habits done)
+  - Most common weather type of the year
+  - Best weather month of the year
+  - "Your sky was sunny 187 days this year. That is 51%
+    of the year. Your best year yet."
+
+  GOAL COMPLETION SUMMARY
+  - Weekly goals: X of Y completed
+  - Monthly goals: X of Y completed
+  - Career goal phases: milestones hit vs missed
+  - Overall goal completion score (0-100)
+
+  STREAK HALL OF FAME
+  - Top 3 longest streaks of the year with habit name
+  - Number of streak shields used
+  - Comeback count (how many times rebuilt a streak)
+  - Total consecutive perfect weeks
+
+  AI YEAR NARRATIVE
+  - Ollama AI writes a short personal narrative paragraph
+    summarizing the year based on data:
+    "2025 was your most consistent year yet. You built
+    a 47-day reading streak in March, weathered a storm
+    in July, and made a stunning comeback in September.
+    Your sky was mostly cloudy early on but turned sunny
+    by Q4. Carry that momentum into 2026."
+
+  SHAREABLE YEAR CARD
+  - Beautiful visual card generated automatically
+  - Shows: year, sunny day count, longest streak, top habit,
+    weather emoji summary strip (12 monthly icons)
+  - Exportable as image — shareable on Instagram / WhatsApp
+
+4.2 YEAR-START SETUP (AUTO — JANUARY 1)
+-----------------------------------------
+On January 1st, StreakSky does NOT wipe data. Instead:
+
+  HABIT ROLLOVER
+  - All active habits automatically carry forward
+  - Streaks that survived Dec 31 continue unbroken
+  - User gets a prompt: "Keep all habits? Archive any?"
+  - Option to adjust frequency for the new year
+
+  GOAL ROLLOVER
+  - Incomplete career goal phases roll forward automatically
+  - New monthly and weekly goals are suggested by AI based
+    on last year's completion patterns:
+    "You completed reading goals 10/12 months last year.
+    Want to raise the target this year?"
+  - User approves, adjusts, or replaces AI suggestions
+
+  NEW YEAR INTENTION PROMPT
+  - AI asks 3 simple questions on Jan 1:
+    1. "What is the one habit you want to master this year?"
+    2. "What career milestone do you want to hit by Dec?"
+    3. "What do you want your year to feel like?"
+  - Answers are stored and referenced throughout the year
+    in AI nudges and mid-year check-ins
+
+  FRESH HEATMAP LAYER
+  - New year opens a fresh heatmap grid (365 cells)
+  - Previous years are archived and viewable
+  - Year selector lets users compare 2024 vs 2025 vs 2026
+    side by side
+
+4.3 MID-YEAR AUTO CHECK-IN (JULY 1)
+--------------------------------------
+Halfway through the year, StreakSky auto-generates a
+Mid-Year Report:
+
+  - Pace check: "At current rate, you will complete 68%
+    of your monthly goals by December."
+  - Habit health score: improving / plateauing / declining
+  - AI adjustment suggestions: "Consider dropping 'Cold
+    shower' — 14% completion. Replace with something
+    lighter to rebuild momentum."
+  - Career goal projection update
+
+4.4 MULTI-YEAR LEGACY VIEW
+-----------------------------
+After 2+ years of use, a Legacy View unlocks:
+
+  - Multi-year heatmap: see 2024, 2025, 2026 stacked
+  - Year-over-year comparison graph: completion rate per year
+  - "Your best year was 2025 — 203 sunny days"
+  - Longest streak across all years highlighted
+  - Personal records board:
+      Most habits in a single day: 6 (March 14, 2025)
+      Longest streak ever: 73 days — Reading (2025)
+      Most sunny days in a year: 203 (2025)
+      Most comebacks in a year: 4 (2024)
+  - AI Legacy Narrative: written summary of growth across
+    all years combined
+
+
+----------------------------------------------------------------
+5. STREAKS
+----------------------------------------------------------------
+
+5.1 STREAK TYPES
+-----------------
+Every habit has its own streak. Plus an overall daily streak.
+
+  🔥 Active Streak     — Consecutive days habit completed
+  ❄️  Broken Streak     — Streak ended, shown in grey
+  🛡️  Shield Active     — Missed day forgiven by shield
+  🌈  Comeback Streak   — Rebuilt after a break
+  👑  Legendary Streak  — Streak over 100 days
+  ⚡ Lightning Streak  — 7-day perfect streak (all habits)
+  💎 Diamond Streak    — 365-day streak (one full year)
+
+5.2 STREAK MECHANICS
+---------------------
+  - Current streak per habit shown on habit card
+  - Longest streak ever shown below current streak
+  - Overall streak: all habits done in a day = full day
+  - Partial streak: 60%+ of habits = soft day (no break,
+    shown in different shade on heatmap)
+  - Streak freeze at midnight: 1 hour grace period until
+    1:00 AM for night owls
+
+5.3 STREAK SHIELD
+------------------
+  - Earn 1 shield per completed 7-day streak
+  - Max 3 shields stored at once
+  - Use a shield to protect streak on a missed day
+  - Shield shown as icon on habit card when active
+  - AI reminds: "You have 2 streak shields. Rough day?
+    Use one and protect your 21-day run."
+
+5.4 COMEBACK SCORE
+-------------------
+  - If a 30-day streak is broken and rebuilt to 30+,
+    earn a Comeback Badge
+  - Comeback count tracked per year and all-time
+  - Comeback streaks shown in gold on heatmap
+  - AI celebrates comebacks: "Rainbow incoming. You
+    rebuilt your reading streak. That took grit."
+
+5.5 STREAK MILESTONES
+----------------------
+  Milestone badges unlocked automatically:
+  - 7 days    → 🌱 Seedling
+  - 14 days   → 🌿 Sprout
+  - 21 days   → 🌳 Tree
+  - 30 days   → 🔥 On Fire
+  - 60 days   → ⚡ Charged
+  - 90 days   → 💪 Unstoppable
+  - 180 days  → 🌟 Star
+  - 365 days  → 💎 Diamond
+  - 500 days  → 👑 Legend
+  Each milestone triggers a celebratory animation and
+  a special quote from a great thinker (see Section 7).
+
+5.6 STREAK LEADERBOARD (PERSONAL)
+-----------------------------------
+  - Personal best board — no social comparison pressure
+  - Shows your own all-time top 5 streaks by habit
+  - Updated automatically when a record is broken
+  - AI acknowledges broken records:
+    "New personal record. 48 days of meditation.
+    Your previous best was 31. You just rewrote yourself."
+
+
+----------------------------------------------------------------
+6. DAILY QUOTES FROM GREAT PEOPLE
+----------------------------------------------------------------
+
+StreakSky delivers one carefully selected motivational quote
+every day — curated from the world's greatest thinkers,
+athletes, scientists, and leaders. Not random. Contextual.
+
+6.1 HOW QUOTES WORK
+---------------------
+  - One quote shown every morning on the home screen
+  - Quote rotates at midnight
+  - Quote is contextually matched to the user's current
+    habit situation by the AI agent:
+      On a streak      → Quotes about consistency & discipline
+      After a miss     → Quotes about resilience & comeback
+      New year         → Quotes about vision & beginnings
+      Career goal hit  → Quotes about ambition & success
+      Storm warning    → Quotes about persistence & hardship
+      Rainbow day      → Quotes about triumph & renewal
+      Milestone day    → Quotes about greatness & legacy
+
+6.2 QUOTE CATEGORIES & SOURCES
+--------------------------------
+
+  DISCIPLINE & CONSISTENCY
+  - "We are what we repeatedly do. Excellence, then,
+    is not an act, but a habit." — Aristotle
+  - "Success is the sum of small efforts repeated
+    day in and day out." — Robert Collier
+  - "The secret of your future is hidden in your
+    daily routine." — Mike Murdock
+  - "Motivation gets you going, discipline keeps
+    you growing." — John C. Maxwell
+  - "Small disciplines repeated with consistency
+    every day lead to great achievements." — John C. Maxwell
+
+  RESILIENCE & COMEBACK
+  - "Fall seven times, stand up eight." — Japanese Proverb
+  - "It's not how far you fall, but how high you
+    bounce that counts." — Zig Ziglar
+  - "The comeback is always stronger than the
+    setback." — Unknown
+  - "Rock bottom became the solid foundation on
+    which I rebuilt my life." — J.K. Rowling
+  - "Our greatest glory is not in never falling,
+    but in rising every time we fall." — Confucius
+
+  VISION & AMBITION
+  - "The future belongs to those who believe in
+    the beauty of their dreams." — Eleanor Roosevelt
+  - "All our dreams can come true, if we have the
+    courage to pursue them." — Walt Disney
+  - "You don't have to be great to start, but you
+    have to start to be great." — Zig Ziglar
+  - "The only limit to our realization of tomorrow
+    is our doubts of today." — Franklin D. Roosevelt
+
+  FOCUS & CLARITY
+  - "The successful warrior is the average man with
+    laser-like focus." — Bruce Lee
+  - "It is not enough to be busy. The question is:
+    what are we busy about?" — Henry David Thoreau
+  - "Concentrate all your thoughts upon the work
+    at hand." — Alexander Graham Bell
+  - "Where focus goes, energy flows." — Tony Robbins
+
+  HEALTH & BODY
+  - "Take care of your body. It's the only place
+    you have to live." — Jim Rohn
+  - "Physical fitness is the first requisite of
+    happiness." — Joseph Pilates
+  - "To enjoy the glow of good health, you must
+    exercise." — Gene Tunney
+  - "A healthy outside starts from the inside."
+    — Robert Urich
+
+  GROWTH & LEARNING
+  - "An investment in knowledge pays the best
+    interest." — Benjamin Franklin
+  - "Live as if you were to die tomorrow. Learn
+    as if you were to live forever." — Mahatma Gandhi
+  - "The more that you read, the more things you
+    will know." — Dr. Seuss
+  - "Education is not the filling of a pail but
+    the lighting of a fire." — W.B. Yeats
+
+  MINDFULNESS & PEACE
+  - "The present moment is the only moment
+    available to us." — Thich Nhat Hanh
+  - "Peace comes from within. Do not seek it
+    without." — Buddha
+  - "You have power over your mind, not outside
+    events. Realize this and you will find
+    strength." — Marcus Aurelius
+  - "Wherever you are, be all there." — Jim Elliot
+
+  LEGACY & GREATNESS
+  - "The purpose of life is to contribute in some
+    way to making things better." — Robert F. Kennedy
+  - "Don't count the days. Make the days count."
+    — Muhammad Ali
+  - "In the end, it's not the years in your life
+    that count. It's the life in your years."
+    — Abraham Lincoln
+  - "What you do today can improve all your
+    tomorrows." — Ralph Marston
+
+  NEW BEGINNINGS (JANUARY 1 / YEAR START)
+  - "Every moment is a fresh beginning." — T.S. Eliot
+  - "New year — a new chapter, new verse, or just
+    the same old story. Ultimately, we write it.
+    The choice is ours." — Alex Morritt
+  - "Tomorrow is the first blank page of a 365-page
+    book. Write a good one." — Brad Paisley
+  - "Cheers to a new year and another chance for us
+    to get it right." — Oprah Winfrey
+
+  MILESTONE QUOTES (SPECIAL — ON STREAK BADGE UNLOCK)
+  7 days:
+  - "A journey of a thousand miles begins with a
+    single step." — Lao Tzu
+  30 days:
+  - "Motivation is what gets you started. Habit is
+    what keeps you going." — Jim Ryun
+  90 days:
+  - "We first make our habits, then our habits
+    make us." — John Dryden
+  365 days:
+  - "You have brains in your head. You have feet
+    in your shoes. You can steer yourself any
+    direction you choose." — Dr. Seuss
+
+6.3 QUOTE FEATURES
+-------------------
+  - Tap quote to see full attribution (name, year, context)
+  - Save quote to personal Quote Collection
+  - Share quote as stylized image (with today's weather
+    icon and streak count as subtle overlay)
+  - Quote history: scroll back through past 30 days of
+    quotes received
+  - "Shuffle" button: tap to get a different quote if
+    today's doesn't resonate
+  - AI personalizes quote tone over time based on which
+    quotes user saves vs ignores
+
+6.4 QUOTE DELIVERY TIMING
+---------------------------
+  - Morning quote: 7:00 AM (customizable)
+  - Streak milestone quotes: delivered instantly on unlock
+  - Year-end quote: special quote delivered with Year Review
+  - Comeback quote: delivered the first sunny day after
+    a storm period
+  - All quotes available in notification or in-app card
+
+
+----------------------------------------------------------------
+7. CORE FEATURES (FULL)
+----------------------------------------------------------------
+
+7.1 HABITS
+----------
+  - Create habits with name, emoji icon, color, frequency
+  - Daily / specific weekdays / X times per week
+  - Tap to complete, long press to add note
+  - Archive or delete habits
+  - Habit categories: Health, Learning, Work, Mind, Custom
+  - Drag to reorder
+  - Set habit start date
+
+7.2 GOALS (THREE TIERS)
+------------------------
+  WEEKLY GOALS  — resets every Monday
+  MONTHLY GOALS — resets every 1st of month
+  CAREER GOALS  — long-term with phases and milestones
+
+  Goal Cascade:
+  Career → Monthly → Weekly → Daily Habit
+  Completing habits auto-pushes progress upward.
+
+7.3 GITHUB-STYLE HEATMAP
+-------------------------
+  - 365-day grid per year
+  - Color by habits completed (grey → gold)
+  - Tap cell for day detail + commit message
+  - Filter by individual habit
+  - Year selector for multi-year comparison
+  - Export as image
+
+7.4 GRAPHS
+----------
+  - Weekly bar chart
+  - Monthly completion % line graph
+  - Rolling 7-day average
+  - Career goal projection curve
+  - Habit correlation (keystone habit detection)
+  - Year-over-year comparison (multi-year)
+
+7.5 HABIT WEATHER SYSTEM
+-------------------------
+  ☀️  Sunny         — All habits done
+  ⛅  Partly Cloudy — 60-99% done
+  🌥️  Cloudy         — 40-59% done
+  🌧️  Rainy          — Under 40% done
+  ⛈️  Storm          — 0% for 3+ days
+  🌈  Rainbow        — First good day after storm
+  🌪️  Tornado        — Longest streak broken today
+
+  - Weekly weather forecast based on history
+  - Home screen widget
+  - Monthly weather summary
+  - AI speaks in weather language
+
+7.6 AI AGENT (OLLAMA — ON DEVICE)
+-----------------------------------
+  - Daily nudges in natural language
+  - Conversational check-in via text or voice
+  - Habit commit messages (auto-generated daily)
+  - Pattern recognition after 30 and 60 days
+  - Goal restructuring suggestions
+  - Year-end narrative and year-start goal suggestions
+  - Mid-year pace check
+  - Contextual quote matching
+  - Fully on-device — zero data leaves phone
+  - Toggle AI off completely if preferred
+
+7.7 HABIT COMMIT MESSAGES
+---------------------------
+  GitHub-inspired daily one-liner auto-generated by AI:
+  "feat: 14-day reading streak hit. Sunny day."
+  "fix: missed gym, used streak shield. Still alive."
+  "chore: rest day. Storm warning cleared."
+  Shown on heatmap cell tap and in daily log.
+  User can edit or override.
+
+7.8 HABIT HEARTBEAT
+--------------------
+  - Phone vibrates on app open
+  - Slow pulse = on track
+  - Fast pulse = behind today
+  - Double pulse = milestone reached
+
+7.9 VOICE CHECK-IN
+-------------------
+  - Tap mic and say "Done with my run"
+  - AI parses and logs habit instantly
+  - Works offline
+
+7.10 LOCK SCREEN WIDGET
+------------------------
+  - Today's weather icon
+  - Habit checkboxes (tap to complete)
+  - Current streak count
+  - Today's quote preview (first 6 words)
+
+
+----------------------------------------------------------------
+8. SCREENS & NAVIGATION
+----------------------------------------------------------------
+
+Bottom Navigation (5 tabs):
+  🏠 Home       — Weather, habits, streak, daily quote
+  📅 Goals      — Weekly / Monthly / Career
+  🔥 Heatmap    — 365-day grid + multi-year archive
+  📊 Graphs     — All analytics
+  🤖 Sky AI     — Chat with Ollama AI agent
+
+HOME SCREEN
+  - Weather icon (large, centered, animated)
+  - Today's motivational quote card (tap to expand)
+  - Current streak count + milestone progress
+  - Today's habits list (tap to complete)
+  - Quick add button
+  - AI daily nudge card
+
+GOALS SCREEN
+  - Tab: Weekly / Monthly / Career
+  - Goal cards with progress bars
+  - Linked habits shown under each goal
+  - Career goal phase timeline
+
+HEATMAP SCREEN
+  - Current year grid (default)
+  - Year selector (swipe or dropdown)
+  - Multi-year comparison toggle
+  - Filter by habit
+  - Stats bar: best streak, sunny days, comebacks
+
+GRAPHS SCREEN
+  - Weekly / Monthly / Career tabs
+  - Smooth animated charts
+  - Year-over-year toggle
+  - Keystone habit correlation card
+
+SKY AI SCREEN
+  - Chat interface
+  - Today's commit message at top
+  - Suggested prompts
+  - Quote history tab
+  - Saved quotes collection
+
+YEAR REVIEW SCREEN (AUTO-OPENS DEC 31)
+  - Animated reveal of Year in Review
+  - Habit report cards
+  - Weather year summary
+  - Streak hall of fame
+  - AI year narrative
+  - Share card generator
+
+
+----------------------------------------------------------------
+9. TECH STACK
+----------------------------------------------------------------
+
+Frontend    : React Native (Expo) — iOS + Android
+Storage     : WatermelonDB (local SQLite) — fast queries
+              AsyncStorage for settings and preferences
+AI          : Ollama (on-device) — Llama 3.2 3B / Phi-3 Mini
+Charts      : Victory Native
+Haptics     : Expo Haptics
+Voice       : Expo Speech + React Native Voice
+Widgets     : react-native-widget-extension (iOS)
+              Headless JS (Android)
+Animations  : React Native Reanimated 3 + Lottie
+State Mgmt  : Zustand
+Notifications: Expo Notifications
+Image Export: react-native-view-shot (heatmap + share cards)
+
+
+----------------------------------------------------------------
+10. MONETIZATION
+----------------------------------------------------------------
+
+FREE TIER
+  - Up to 5 habits
+  - Weekly and monthly goals
+  - 90-day heatmap (current year only)
+  - Basic graphs
+  - Daily quote (standard, not contextual)
+  - Streak tracking (basic)
+  - Habit Heartbeat
+
+STREAKSKY PRO (₹299/month or ₹1,999/year)
+  - Unlimited habits
+  - All three goal tiers (including career goals)
+  - Full 365-day heatmap + multi-year archive
+  - Year-end auto review + shareable year card
+  - Year-start auto goal setup
+  - Mid-year check-in report
+  - Multi-year legacy view
+  - All graph types + year-over-year comparison
+  - AI agent (Ollama) — full chat, nudges, patterns
+  - Contextual quote matching (AI-powered)
+  - Saved quote collection
+  - Habit commit messages
+  - Voice check-in
+  - Lock screen widget with quote preview
+  - Streak shields (unlimited)
+  - Full Weather System with forecast
+  - Export heatmap and year card as image
+
+
+----------------------------------------------------------------
+11. SUCCESS METRICS
+----------------------------------------------------------------
+
+  Day 7 retention              > 40%
+  Day 30 retention             > 22%
+  Day 365 retention            > 8%
+  Avg habits logged/day/user   > 2.5
+  Year Review opened           > 70% of active users
+  Quote saved at least once    > 55% of users
+  AI check-in used             > 60% of Pro users
+  Heatmap visits per week      > 3x per user
+  App Store rating target      > 4.6
+
+
+----------------------------------------------------------------
+12. FUTURE ROADMAP (v3+)
+----------------------------------------------------------------
+
+  - Apple Watch / Wear OS companion
+  - Shared habits with accountability partner
+  - Habit template marketplace
+  - Apple Health / Google Fit integration
+  - Mood tracking correlated with habit data
+  - Multi-language quote library (Hindi, Spanish, French)
+  - AR calendar overlay — point camera, see habit heatmap
+  - Community 30-day challenges
+  - Lifetime stats export (PDF life report)
+  - Custom quote upload (add your own favorite quotes)
+
+
+================================================================
+END OF DOCUMENT — StreakSky PRD v2.0
+================================================================

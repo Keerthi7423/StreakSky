@@ -1,0 +1,1264 @@
+================================================================
+TECH STACK & STORE STRATEGY PRD
+================================================================
+App Name     : StreakSky
+Document     : Engineering + Infrastructure + Go-To-Market PRD
+Platform     : iOS & Android (Flutter / Dart)
+Version      : 1.0
+Stack        : Dart • Flutter • Firebase • Supabase •
+               GitHub Actions • Docker • Azure • Play Store •
+               App Store
+Last Updated : April 2026
+================================================================
+
+
+----------------------------------------------------------------
+TABLE OF CONTENTS
+----------------------------------------------------------------
+
+  1.  Tech Stack Overview
+  2.  Flutter / Dart Architecture
+  3.  Firebase — What It Handles
+  4.  Supabase — What It Handles
+  5.  Firebase vs Supabase — Split Responsibility
+  6.  GitHub — Source Control & CI/CD
+  7.  Docker — Containerization Strategy
+  8.  Azure — Cloud Deployment & Infrastructure
+  9.  Play Store Strategy (Android)
+  10. App Store Strategy (iOS)
+  11. ASO Strategy — Top of Category
+  12. Launch Strategy — Phase by Phase
+  13. Post-Launch Growth Strategy
+  14. Monitoring & Observability
+  15. Security & Compliance
+  16. Cost Estimate
+
+
+================================================================
+1. TECH STACK OVERVIEW
+================================================================
+
+LAYER               TECHNOLOGY          PURPOSE
+------------------------------------------------------------
+Mobile App          Flutter (Dart)      iOS + Android from
+                                        one codebase
+Auth                Firebase Auth       Login, OAuth, OTP
+Real-time Sync      Firebase Firestore  Live habit sync
+                                        across devices
+Push Notifications  Firebase FCM        Daily nudges, streaks
+Analytics           Firebase Analytics  User behavior tracking
+Crash Reporting     Firebase Crashlytics Bug detection
+Remote Config       Firebase Remote     Feature flags, A/B
+                    Config              testing
+Structured Data     Supabase PostgreSQL Habits, goals, streaks,
+                                        quotes data store
+REST API            Supabase API        Auto-generated REST
+                                        and GraphQL endpoints
+Edge Functions      Supabase Edge Fn    Year-end review logic,
+                                        quote matching, report
+                                        generation
+File Storage        Supabase Storage    User avatars, share
+                                        cards, heatmap exports
+On-Device AI        Ollama (local)      AI agent, nudges,
+                                        commit messages
+CI/CD               GitHub Actions      Build, test, deploy
+                                        pipeline
+Containerization    Docker              Backend services,
+                                        edge functions local
+                                        dev environment
+Cloud Host          Azure               API gateway, container
+                                        registry, CDN, staging
+App Distribution    Play Store +        Android + iOS release
+                    App Store
+
+
+================================================================
+2. FLUTTER / DART ARCHITECTURE
+================================================================
+
+2.1 PROJECT STRUCTURE
+----------------------
+
+  streaksky/
+  ├── lib/
+  │   ├── main.dart                  App entry point
+  │   ├── app.dart                   Root widget + router
+  │   ├── core/
+  │   │   ├── constants/             Colors, typography,
+  │   │   │                          spacing tokens
+  │   │   ├── theme/                 Dark + light theme
+  │   │   ├── router/                GoRouter navigation
+  │   │   ├── di/                    Dependency injection
+  │   │   │                          (get_it + injectable)
+  │   │   └── utils/                 Date helpers, formatters
+  │   ├── features/
+  │   │   ├── auth/                  Login, register, onboard
+  │   │   ├── habits/                Habit CRUD + completion
+  │   │   ├── goals/                 Weekly/monthly/career
+  │   │   ├── streaks/               Streak engine + shields
+  │   │   ├── heatmap/               GitHub-style grid
+  │   │   ├── graphs/                Charts + analytics
+  │   │   ├── weather/               Habit weather system
+  │   │   ├── quotes/                Daily quote delivery
+  │   │   ├── ai_agent/              Ollama integration
+  │   │   ├── year_review/           Auto year-end report
+  │   │   └── profile/               User profile + settings
+  │   ├── shared/
+  │   │   ├── widgets/               Reusable UI components
+  │   │   ├── models/                Data models
+  │   │   └── services/              Firebase, Supabase,
+  │   │                              notification services
+  │   └── l10n/                      Localization (English,
+  │                                  Hindi — future)
+  ├── test/
+  │   ├── unit/                      Business logic tests
+  │   ├── widget/                    Widget tests
+  │   └── integration/               End-to-end tests
+  ├── android/                       Android native config
+  ├── ios/                           iOS native config
+  ├── docker/                        Docker configs
+  ├── .github/
+  │   └── workflows/                 GitHub Actions pipelines
+  └── pubspec.yaml                   Dependencies
+
+2.2 STATE MANAGEMENT
+---------------------
+  Library     : Riverpod 2.0 (flutter_riverpod)
+  Why         : Best for Flutter — reactive, testable,
+                no boilerplate, works well with async/stream
+
+  Pattern     :
+    UI Widget
+      → watches Provider
+        → Provider calls Repository
+          → Repository calls Firebase/Supabase
+            → Returns to Provider
+              → UI rebuilds
+
+  Key providers:
+    habitsProvider         — list of today's habits
+    streakProvider         — streak state per habit
+    weatherProvider        — today's weather calculation
+    goalsProvider          — weekly/monthly/career goals
+    quoteProvider          — today's quote
+    aiAgentProvider        — Ollama chat state
+    heatmapProvider        — yearly grid data
+    yearReviewProvider     — auto year-end report state
+    authProvider           — current user session
+
+2.3 KEY FLUTTER PACKAGES
+--------------------------
+
+  NAVIGATION
+  go_router               : Declarative routing
+
+  STATE
+  flutter_riverpod        : State management
+  riverpod_annotation     : Code generation for providers
+
+  FIREBASE
+  firebase_core           : Firebase initialization
+  firebase_auth           : Authentication
+  cloud_firestore         : Real-time database
+  firebase_messaging      : Push notifications
+  firebase_analytics      : Usage analytics
+  firebase_crashlytics    : Crash reporting
+  firebase_remote_config  : Feature flags + A/B tests
+
+  SUPABASE
+  supabase_flutter        : Supabase SDK for Flutter
+
+  LOCAL STORAGE
+  hive_flutter            : Fast local key-value store
+                            (offline habit logging)
+  sqflite                 : Local SQLite for complex
+                            offline queries
+
+  CHARTS & GRAPHS
+  fl_chart                : Line, bar, pie charts
+                            (smooth, animated, customizable)
+
+  ANIMATIONS
+  lottie                  : JSON-based animations
+  flutter_animate         : Simple declarative animations
+  rive                    : Complex interactive animations
+                            (weather icons, streak badges)
+
+  UI COMPONENTS
+  flutter_screenutil      : Responsive sizing (sp, dp)
+  cached_network_image    : Avatar + image caching
+  shimmer                 : Skeleton loading screens
+  flutter_slidable        : Swipe actions on habit cards
+
+  NOTIFICATIONS
+  flutter_local_notifications : Local scheduled reminders
+  awesome_notifications   : Rich notification with actions
+
+  WIDGETS (Home/Lock Screen)
+  home_widget             : iOS/Android home screen widget
+                            (today's weather + habits)
+
+  HAPTICS
+  haptic_feedback         : System haptics
+  vibration               : Custom vibration patterns
+                            (Habit Heartbeat feature)
+
+  VOICE
+  speech_to_text          : Voice check-in (on-device)
+
+  AI / OLLAMA
+  http                    : HTTP calls to local Ollama
+  langchain_dart          : LangChain Dart port for
+                            agent orchestration
+
+  SHARING
+  screenshot              : Capture widgets as images
+  share_plus              : Share to WhatsApp/Instagram
+  path_provider           : File path management
+
+  DEPENDENCY INJECTION
+  get_it                  : Service locator
+  injectable              : Code generation for DI
+
+  UTILITIES
+  intl                    : Date/number formatting
+  uuid                    : ID generation
+  freezed                 : Immutable data models
+  json_serializable       : JSON parsing code gen
+  connectivity_plus       : Network status detection
+
+2.4 OFFLINE-FIRST STRATEGY
+-----------------------------
+  StreakSky works fully offline. Data syncs when online.
+
+  Offline storage  : Hive (habits, streaks, completions)
+  Sync strategy    : Optimistic UI — update locally first,
+                     sync to Supabase/Firebase in background
+  Conflict resolution: Last-write-wins with timestamp
+  Sync indicator   : Subtle grey dot → green dot in header
+  Max offline      : Unlimited (no expiry on local data)
+
+
+================================================================
+3. FIREBASE — WHAT IT HANDLES
+================================================================
+
+3.1 FIREBASE AUTH
+------------------
+  Handles all authentication flows:
+  - Email + password login
+  - Google Sign-In (OAuth)
+  - Apple Sign-In (required for iOS App Store)
+  - Anonymous auth (guest mode — try before sign up)
+  - Phone OTP (optional, for India market)
+
+  Flow:
+  User signs in via Firebase Auth
+    → Gets UID
+      → UID used as primary key in Supabase tables
+        → Supabase Row Level Security enforces access
+
+3.2 FIREBASE FIRESTORE
+-----------------------
+  Used for: Real-time, low-latency, cross-device sync
+
+  Collections:
+    users/{uid}/
+      device_tokens       FCM tokens per device
+      preferences         Theme, notification settings,
+                          language, AI toggle
+
+    sync/{uid}/
+      habit_completions   Today's completions (real-time)
+      active_streaks      Current streak counts (real-time)
+      weather_state       Today's weather status
+
+  Why Firestore for this (not Supabase):
+  - Real-time listeners — heatmap updates instantly
+    when user completes a habit on another device
+  - Flutter SDK is best-in-class for Firestore
+  - Offline persistence built-in
+
+3.3 FIREBASE CLOUD MESSAGING (FCM)
+------------------------------------
+  Notification types:
+  - Morning quote delivery (7:00 AM daily)
+  - Habit reminder (user-set time per habit)
+  - Streak danger alert ("Your 21-day streak is at risk")
+  - Milestone celebration ("You hit 30 days! 🔥")
+  - Year-end review ready ("Your 2025 is here. Tap to see.")
+  - Mid-year check-in (July 1)
+  - AI nudge (contextual, sent via Supabase Edge Function
+    trigger → FCM)
+
+  Notification delivery strategy:
+  - All scheduled notifications: flutter_local_notifications
+    (no server needed — fully on device)
+  - Event-based notifications (streak break, milestone):
+    Supabase Edge Function → Firebase Admin SDK → FCM
+
+3.4 FIREBASE ANALYTICS
+-----------------------
+  Key events tracked:
+  - habit_completed         {habit_id, streak_count}
+  - habit_skipped           {habit_id, reason}
+  - streak_broken           {habit_id, streak_length}
+  - streak_milestone        {habit_id, milestone_days}
+  - goal_completed          {goal_type, goal_id}
+  - quote_saved             {quote_id, category}
+  - year_review_opened      {year, sunny_days}
+  - ai_chat_message_sent    {message_length}
+  - weather_type_seen       {weather_type, date}
+  - heatmap_cell_tapped     {date, habits_count}
+  - pro_upgrade_tapped      {}
+  - share_card_created      {type}
+
+3.5 FIREBASE CRASHLYTICS
+-------------------------
+  - Automatic crash reporting on all Flutter exceptions
+  - Custom keys logged: user_id, current_screen,
+    streak_count, active_habits_count
+  - Non-fatal errors logged for: Supabase sync failures,
+    Ollama connection issues, widget render errors
+  - Alerts configured: email on >0.1% crash rate spike
+
+3.6 FIREBASE REMOTE CONFIG
+----------------------------
+  Feature flags managed without app update:
+  - ai_agent_enabled          true/false
+  - year_review_enabled       true/false
+  - weather_system_enabled    true/false
+  - quote_categories          JSON array
+  - pro_price_inr             integer
+  - pro_price_usd             integer
+  - max_free_habits           integer (default: 5)
+  - onboarding_version        string (A/B test)
+  - streak_shield_max         integer (default: 3)
+
+  A/B Tests via Remote Config:
+  - Test A: 3 free habits vs 5 free habits
+  - Test B: Onboarding flow v1 vs v2
+  - Test C: Quote shown on home vs separate card
+
+
+================================================================
+4. SUPABASE — WHAT IT HANDLES
+================================================================
+
+4.1 SUPABASE POSTGRESQL — DATABASE SCHEMA
+-------------------------------------------
+
+  TABLE: users
+  ─────────────────────────────────────────
+  id              UUID  PK (= Firebase UID)
+  email           TEXT
+  display_name    TEXT
+  avatar_url      TEXT
+  created_at      TIMESTAMPTZ
+  subscription    TEXT  (free / pro)
+  sub_expires_at  TIMESTAMPTZ
+  timezone        TEXT
+  language        TEXT  (en / hi)
+
+  TABLE: habits
+  ─────────────────────────────────────────
+  id              UUID  PK
+  user_id         UUID  FK → users
+  name            TEXT
+  emoji           TEXT
+  color_hex       TEXT
+  frequency       JSONB  {type: daily/weekly,
+                          days: [1,2,3,4,5]}
+  category        TEXT
+  start_date      DATE
+  is_archived     BOOLEAN
+  sort_order      INTEGER
+  created_at      TIMESTAMPTZ
+
+  TABLE: habit_completions
+  ─────────────────────────────────────────
+  id              UUID  PK
+  habit_id        UUID  FK → habits
+  user_id         UUID  FK → users
+  completed_date  DATE
+  completed_at    TIMESTAMPTZ
+  note            TEXT  (optional)
+  energy_level    INTEGER  (1-3, optional)
+
+  TABLE: streaks
+  ─────────────────────────────────────────
+  id              UUID  PK
+  habit_id        UUID  FK → habits
+  user_id         UUID  FK → users
+  current_streak  INTEGER
+  longest_streak  INTEGER
+  last_active     DATE
+  shields_held    INTEGER  (0-3)
+  comeback_count  INTEGER
+  updated_at      TIMESTAMPTZ
+
+  TABLE: goals
+  ─────────────────────────────────────────
+  id              UUID  PK
+  user_id         UUID  FK → users
+  type            TEXT  (weekly/monthly/career)
+  title           TEXT
+  description     TEXT
+  target_value    INTEGER
+  current_value   INTEGER
+  start_date      DATE
+  end_date        DATE  (null for career goals)
+  linked_habits   UUID[]  (array of habit IDs)
+  phase           INTEGER  (career goals: phase number)
+  is_completed    BOOLEAN
+  rolled_over     BOOLEAN  (auto-rolled from prev year)
+  created_at      TIMESTAMPTZ
+
+  TABLE: quotes
+  ─────────────────────────────────────────
+  id              UUID  PK
+  text            TEXT
+  author          TEXT
+  author_year     TEXT
+  category        TEXT  (discipline/resilience/vision/etc)
+  weather_match   TEXT[]  (array of weather types)
+  milestone_match INTEGER  (streak day, 0 = any)
+  is_active       BOOLEAN
+
+  TABLE: user_quotes
+  ─────────────────────────────────────────
+  id              UUID  PK
+  user_id         UUID  FK → users
+  quote_id        UUID  FK → quotes
+  saved_at        TIMESTAMPTZ
+  shown_at        TIMESTAMPTZ
+  was_shuffled    BOOLEAN
+
+  TABLE: commit_messages
+  ─────────────────────────────────────────
+  id              UUID  PK
+  user_id         UUID  FK → users
+  date            DATE
+  message         TEXT
+  weather_type    TEXT
+  habits_done     INTEGER
+  habits_total    INTEGER
+  ai_generated    BOOLEAN
+  created_at      TIMESTAMPTZ
+
+  TABLE: year_reviews
+  ─────────────────────────────────────────
+  id              UUID  PK
+  user_id         UUID  FK → users
+  year            INTEGER
+  sunny_days      INTEGER
+  stormy_days     INTEGER
+  longest_streak  INTEGER
+  top_habit_id    UUID
+  goal_score      INTEGER  (0-100)
+  ai_narrative    TEXT
+  share_card_url  TEXT
+  generated_at    TIMESTAMPTZ
+
+  ROW LEVEL SECURITY (RLS)
+  All tables have RLS enabled. Policy:
+    "Users can only read and write their own rows"
+    auth.uid() = user_id
+
+4.2 SUPABASE EDGE FUNCTIONS
+-----------------------------
+  Serverless functions (TypeScript / Deno) for:
+
+  generate-year-review
+    Triggered: December 31, 23:00 (cron job)
+    Does:
+      - Queries all habit_completions for the year
+      - Calculates sunny/stormy/streak stats
+      - Calls Ollama API (or OpenAI fallback) for narrative
+      - Saves to year_reviews table
+      - Triggers FCM notification via Firebase Admin
+
+  generate-mid-year-report
+    Triggered: July 1, 08:00 (cron job)
+    Does:
+      - Calculates pace vs goal targets
+      - Suggests habit adjustments
+      - Sends push notification
+
+  match-daily-quote
+    Triggered: Daily at 06:45 (cron job)
+    Does:
+      - Fetches user's current weather state
+      - Fetches active streak lengths
+      - Queries quotes table for best match
+      - Stores in user_quotes with shown_at timestamp
+      - Triggers FCM morning quote notification
+
+  streak-danger-check
+    Triggered: Daily at 21:00 (cron job)
+    Does:
+      - Finds users who have not completed habits today
+      - Checks if they have an active streak > 7 days
+      - Sends FCM "Your streak is at risk" notification
+
+  rollover-year-goals
+    Triggered: January 1, 00:05 (cron job)
+    Does:
+      - Finds all incomplete career goal phases
+      - Creates new goal records with rolled_over = true
+      - Generates new weekly/monthly goal suggestions
+      - Stores in goals table for user to approve in app
+
+  process-pro-subscription
+    Triggered: Webhook from payment provider
+    Does:
+      - Updates users.subscription and sub_expires_at
+      - Enables Pro features via Remote Config override
+
+4.3 SUPABASE STORAGE
+---------------------
+  Buckets:
+    avatars/          User profile pictures
+                      Path: avatars/{user_id}.jpg
+                      Max: 5MB, JPEG/PNG only
+
+    share-cards/      Year Review shareable images
+                      Path: share-cards/{user_id}/{year}.png
+                      Generated by Edge Function
+
+    heatmap-exports/  Exported heatmap images
+                      Path: exports/{user_id}/{date}.png
+                      Generated on user request
+
+  All buckets: private by default
+  Signed URLs generated by Edge Functions for access
+
+
+================================================================
+5. FIREBASE vs SUPABASE — SPLIT RESPONSIBILITY
+================================================================
+
+  FIREBASE OWNS                  SUPABASE OWNS
+  ─────────────────────────────────────────────────────
+  Authentication (all methods)   All structured app data
+  Real-time habit sync           PostgreSQL database
+  Push notifications (FCM)       Complex queries + joins
+  Crash reporting                Edge functions (cron jobs)
+  Analytics + A/B testing        File/image storage
+  Remote config + feature flags  REST + GraphQL API
+  Device token management        Row Level Security
+
+  WHY THIS SPLIT:
+  - Firebase Auth is the gold standard — easiest OAuth,
+    Apple Sign-In, and OTP. No point replacing it.
+  - Firestore real-time listeners are best-in-class for
+    live UI updates across devices.
+  - Supabase PostgreSQL handles complex queries (yearly
+    stats, streak calculations, goal aggregations) far
+    better than Firestore's NoSQL model.
+  - Supabase Edge Functions handle all scheduled server
+    logic (year-end, quotes, streaks) without needing
+    a separate backend server.
+  - This split means ZERO custom backend needed.
+    No Node.js server. No Express. No Spring Boot.
+    100% managed services.
+
+
+================================================================
+6. GITHUB — SOURCE CONTROL & CI/CD
+================================================================
+
+6.1 BRANCH STRATEGY
+---------------------
+  main              Production-ready code only
+  develop           Integration branch (all features merge here)
+  feature/*         Individual feature branches
+  fix/*             Bug fix branches
+  release/*         Release candidate branches
+  hotfix/*          Emergency production fixes
+
+  Branch protection rules on main:
+  - Require pull request with 1 approval
+  - Require all status checks to pass
+  - No direct pushes
+  - Linear history enforced
+
+6.2 GITHUB ACTIONS PIPELINES
+------------------------------
+
+  PIPELINE 1: CI — Pull Request Check
+  File: .github/workflows/pr_check.yml
+  Triggers: Every pull request to develop or main
+  Steps:
+    1. Checkout code
+    2. Setup Flutter (stable channel)
+    3. flutter pub get
+    4. flutter analyze (lint check — zero warnings policy)
+    5. flutter test (unit + widget tests)
+    6. flutter build apk --debug (build smoke test)
+    7. Upload test coverage to Codecov
+    8. Comment coverage % on PR
+
+  PIPELINE 2: Build Android
+  File: .github/workflows/build_android.yml
+  Triggers: Push to main OR manual trigger
+  Steps:
+    1. Checkout code
+    2. Setup Flutter
+    3. Setup Java 17
+    4. Decode keystore from GitHub Secret
+    5. flutter pub get
+    6. flutter build appbundle --release
+               --dart-define=ENV=production
+    7. Sign AAB with keystore
+    8. Upload AAB to GitHub Artifacts
+    9. Upload to Firebase App Distribution (beta testers)
+    10. Upload to Play Store Internal Track
+        (via Fastlane supply or Google Play API)
+
+  PIPELINE 3: Build iOS
+  File: .github/workflows/build_ios.yml
+  Triggers: Push to main OR manual trigger
+  Runs on: macos-latest runner
+  Steps:
+    1. Checkout code
+    2. Setup Flutter
+    3. Setup Xcode (latest stable)
+    4. Install CocoaPods
+    5. Decode certificates + provisioning profiles
+       from GitHub Secrets
+    6. flutter pub get
+    7. flutter build ipa --release
+               --dart-define=ENV=production
+    8. Upload IPA to GitHub Artifacts
+    9. Upload to TestFlight (via Fastlane pilot)
+    10. Submit to App Store Review (manual gate)
+
+  PIPELINE 4: Docker Build & Push
+  File: .github/workflows/docker_build.yml
+  Triggers: Push to main (backend changes only)
+  Steps:
+    1. Checkout code
+    2. Login to Azure Container Registry
+    3. Build Docker image (edge function local dev image)
+    4. Tag with git SHA + latest
+    5. Push to Azure Container Registry
+    6. Trigger Azure Container Apps deployment
+
+  PIPELINE 5: Supabase Migrations
+  File: .github/workflows/db_migrate.yml
+  Triggers: Push to main (supabase/migrations/* changes)
+  Steps:
+    1. Install Supabase CLI
+    2. Run supabase db push (apply migrations)
+    3. Run migration smoke tests
+    4. Notify Slack on success/failure
+
+6.3 GITHUB SECRETS MANAGED
+-----------------------------
+  ANDROID_KEYSTORE_BASE64       Signing keystore
+  ANDROID_KEY_ALIAS             Keystore alias
+  ANDROID_KEY_PASSWORD          Keystore password
+  GOOGLE_PLAY_JSON_KEY          Play Store service account
+  APPLE_CERT_BASE64             iOS distribution cert
+  APPLE_PROV_PROFILE_BASE64     Provisioning profile
+  APPLE_P8_KEY                  App Store Connect API key
+  FIREBASE_SERVICE_ACCOUNT      Firebase admin credentials
+  SUPABASE_URL                  Supabase project URL
+  SUPABASE_SERVICE_ROLE_KEY     Supabase admin key
+  AZURE_REGISTRY_PASSWORD       ACR login credentials
+  AZURE_CREDENTIALS             Azure service principal
+
+
+================================================================
+7. DOCKER — CONTAINERIZATION STRATEGY
+================================================================
+
+7.1 WHAT GETS DOCKERIZED
+--------------------------
+  Flutter mobile app itself does NOT run in Docker
+  (it compiles to native APK/IPA).
+
+  Docker is used for:
+    1. Local development environment
+    2. Supabase self-hosted (local dev)
+    3. Backend utility services
+    4. Ollama model server (for cloud fallback)
+    5. CI/CD build environments
+
+7.2 DOCKER FILES
+-----------------
+
+  docker/supabase/docker-compose.yml
+  ────────────────────────────────────
+  Local Supabase stack for development:
+    services:
+      db:           PostgreSQL 15
+      auth:         GoTrue auth service
+      rest:         PostgREST API
+      realtime:     Supabase Realtime
+      storage:      Supabase Storage
+      studio:       Supabase Studio UI
+  Usage: docker-compose up → full Supabase locally
+
+  docker/ollama/Dockerfile
+  ────────────────────────────────────
+  FROM ollama/ollama:latest
+  RUN ollama pull llama3.2:3b
+  RUN ollama pull phi3:mini
+  EXPOSE 11434
+  CMD ["ollama", "serve"]
+  Usage: Cloud fallback AI when on-device Ollama
+         is not available (tablets, web future)
+
+  docker/edge-functions/Dockerfile
+  ────────────────────────────────────
+  FROM denoland/deno:latest
+  WORKDIR /app
+  COPY supabase/functions ./functions
+  RUN deno cache functions/*/index.ts
+  CMD ["deno", "run", "--allow-net",
+       "functions/dev-server/index.ts"]
+  Usage: Test Edge Functions locally before deploy
+
+7.3 DOCKER COMPOSE — FULL LOCAL STACK
+---------------------------------------
+  docker-compose.yml (root)
+    services:
+      supabase:     Local Supabase (all services)
+      ollama:       Local Ollama with models
+      edge-fn-dev:  Edge function dev server
+    networks:
+      streaksky-local
+
+  Developer runs: docker-compose up
+  Then runs Flutter app pointing to localhost
+  Full production-identical environment locally
+
+
+================================================================
+8. AZURE — CLOUD DEPLOYMENT & INFRASTRUCTURE
+================================================================
+
+8.1 AZURE SERVICES USED
+------------------------
+
+  Azure Container Registry (ACR)
+    Stores all Docker images
+    Private registry, integrated with GitHub Actions
+    Image scanning enabled (vulnerability detection)
+
+  Azure Container Apps
+    Runs Ollama cloud fallback server
+    Runs edge function dev/staging environment
+    Auto-scales to zero when no traffic
+    Environment: streaksky-prod, streaksky-staging
+
+  Azure CDN
+    Serves Supabase Storage assets via CDN
+    (share cards, heatmap exports, avatars)
+    Origin: Supabase Storage bucket URLs
+    Custom domain: cdn.streaksky.app
+    Cache: 30 days for share cards, 7 days for avatars
+
+  Azure API Management (APIM)
+    Gateway for any custom API endpoints
+    Rate limiting (100 req/min per user)
+    API key management
+    Request logging + analytics
+
+  Azure Key Vault
+    Stores production secrets
+    Referenced by Container Apps at runtime
+    Secrets: Firebase service account, Supabase keys,
+             Ollama API keys, APNs certificates
+
+  Azure Monitor + Application Insights
+    Full observability stack
+    Container performance metrics
+    Custom dashboards for:
+      - Daily active users (via Firebase → Azure)
+      - Habit completion rates
+      - AI agent response times
+      - Supabase Edge Function durations
+      - Error rates per service
+
+  Azure Blob Storage
+    Backup destination for Supabase PostgreSQL
+    Daily automated backups via pg_dump
+    Retention: 90 days
+    Geo-redundant storage (GRS) enabled
+
+8.2 ENVIRONMENTS
+-----------------
+
+  LOCAL         Developer machine
+                Docker Compose stack
+                Flutter pointing to localhost
+
+  STAGING       Azure Container Apps (staging slot)
+                Supabase staging project
+                Firebase staging project
+                Used for QA + TestFlight beta
+
+  PRODUCTION    Azure Container Apps (prod)
+                Supabase production project
+                Firebase production project
+                Play Store + App Store live
+
+8.3 AZURE DEPLOYMENT PIPELINE
+--------------------------------
+  GitHub Actions → Build Docker image
+    → Push to Azure Container Registry
+      → Azure Container Apps pulls latest image
+        → Zero-downtime rolling deployment
+          → Azure Monitor confirms health
+            → Slack notification: deploy success/fail
+
+8.4 DOMAIN & NETWORKING
+------------------------
+  App API       : api.streaksky.app  (Azure APIM)
+  CDN Assets    : cdn.streaksky.app  (Azure CDN)
+  Ollama Cloud  : ai.streaksky.app   (Azure Container Apps)
+  Marketing     : streaksky.app      (Static — Azure Static
+                                      Web Apps)
+  SSL           : Azure-managed TLS certificates (auto-renew)
+
+
+================================================================
+9. PLAY STORE STRATEGY (ANDROID)
+================================================================
+
+9.1 STORE LISTING SETUP
+------------------------
+  App Name        : StreakSky — Habit Tracker
+  Short Desc      : Build habits. Track streaks. See your sky.
+  Category        : Health & Fitness  (primary)
+                    Productivity       (secondary)
+  Content Rating  : Everyone
+  Target SDK      : Android 14 (API 34)
+  Min SDK         : Android 8.0 (API 26) — covers 95%+ devices
+  Package Name    : app.streaksky.android
+
+9.2 PLAY STORE RELEASE TRACKS
+-------------------------------
+  Internal Testing   : Team only (5 testers)
+                       Used after every main branch merge
+  Closed Testing     : 50-200 beta testers (beta.streaksky.app)
+                       1 month before launch
+  Open Testing       : Public beta, anyone can join
+                       2 weeks before launch
+  Production         : Staged rollout
+                       Day 1:  5%  of users
+                       Day 3: 20%  (if crash-free rate > 99%)
+                       Day 7: 50%  (if ANR rate < 0.47%)
+                       Day 14: 100%
+
+9.3 ANDROID-SPECIFIC FEATURES
+-------------------------------
+  - Android 12+ widgets (Glance API)
+  - Material You dynamic color theming support
+  - Predictive back gesture support
+  - App Shortcuts: "Mark habit done", "See my streak"
+  - Google Fit integration (step count → habit auto-log)
+  - Adaptive icons (all shape masks supported)
+
+9.4 PLAY STORE OPTIMIZATION
+-----------------------------
+  Screenshots     : 8 screenshots per device type
+                    Phone + 7-inch tablet + 10-inch tablet
+                    Dark theme showcase
+                    Heatmap, streaks, weather, AI chat
+
+  Feature Graphic : 1024×500px
+                    Dark background + neon green elements
+                    "Build habits that last a lifetime"
+
+  Promo Video     : 30-second trailer
+                    Shows: onboarding → habit completion →
+                    streak milestone → year review reveal
+                    No voiceover. Music + on-screen text only.
+                    Upload to YouTube, link in Play Store.
+
+  In-App Reviews  : Prompt after:
+                    - First 7-day streak completed
+                    - Year review generated
+                    Never prompt on first launch or after error
+
+
+================================================================
+10. APP STORE STRATEGY (iOS)
+================================================================
+
+10.1 STORE LISTING SETUP
+--------------------------
+  App Name        : StreakSky — Habit Tracker
+  Subtitle        : Streaks, Weather & AI Coach
+  Category        : Health & Fitness (primary)
+                    Productivity (secondary)
+  Bundle ID       : app.streaksky.ios
+  Min iOS         : iOS 16.0 (covers 95%+ active devices)
+  Target          : iOS 17+ for latest widget APIs
+
+10.2 APP STORE REVIEW STRATEGY
+--------------------------------
+  Apple Review requirements:
+  - Privacy Nutrition Label: fully declared
+      Data linked to identity: Email, User ID
+      Data not linked: Crash data (anonymous)
+      Data not collected: Location, contacts
+  - Apple Sign-In: required (implemented via Firebase Auth)
+  - In-App Purchase: use Apple IAP for Pro subscription
+    (do NOT use external payment on iOS — violates rules)
+  - Ollama disclaimer: "AI runs fully on-device.
+    No data leaves your phone." — shown in onboarding
+  - Review notes submitted with every build:
+    Test account credentials + feature walkthrough
+
+10.3 TESTFLIGHT STRATEGY
+--------------------------
+  Internal Group  : 25 testers (team + investors)
+                    Auto-distribute from GitHub Actions
+  External Group  : 200 testers
+                    Requires Apple review (1-3 days)
+                    Recruit from: Reddit r/habittracking,
+                    Twitter/X, ProductHunt waitlist
+
+10.4 iOS-SPECIFIC FEATURES
+----------------------------
+  - iOS 17 Interactive Widgets (WidgetKit)
+  - Live Activities (Dynamic Island) — active streak counter
+  - Siri Shortcuts: "Log my run", "Show my streak"
+  - iCloud sync option (future v2)
+  - Haptic Engine patterns (Core Haptics)
+  - Focus Filters: hide habit reminders in Focus modes
+  - Apple Health read: steps, sleep → auto-log habits
+
+10.5 APP STORE SCREENSHOTS
+----------------------------
+  6.7" iPhone 15 Pro Max (required)
+  6.1" iPhone 15 (required)
+  iPad Pro 12.9" (optional but boosts search ranking)
+
+  Screenshot frames:
+  1. Home screen — weather hero + habits
+  2. GitHub heatmap — full year view
+  3. Streak milestone celebration
+  4. Daily quote card
+  5. AI chat — natural language check-in
+  6. Year Review — animated reveal
+  7. Goals cascade view
+  8. Profile + stats
+
+
+================================================================
+11. ASO STRATEGY — TOP OF CATEGORY
+================================================================
+
+11.1 TARGET CATEGORIES & RANKING GOAL
+---------------------------------------
+  Primary   : Health & Fitness
+  Secondary : Productivity
+  Goal      : Top 10 in Health & Fitness — India (3 months)
+              Top 50 in Health & Fitness — Global (6 months)
+              Featured by Apple/Google (12 months)
+
+11.2 KEYWORD STRATEGY
+-----------------------
+  TIER 1 — HIGH VOLUME (compete with big apps)
+    habit tracker
+    daily habits
+    streak tracker
+    goal tracker
+    productivity app
+
+  TIER 2 — MID VOLUME (easier to rank)
+    habit weather
+    github heatmap habits
+    AI habit coach
+    yearly habit review
+    habit streak app
+    daily quotes habits
+    habit calendar app
+    career goal tracker
+
+  TIER 3 — LOW VOLUME HIGH INTENT (quick wins)
+    streaksky
+    habit commit
+    habit weather forecast
+    ollama habit app
+    on device AI habits
+
+  iOS Keyword Field (100 chars):
+  "habit,streak,goal,tracker,daily,quote,heatmap,
+  weather,AI,coach,career,review,calendar,routine"
+
+  Play Store keywords embedded naturally in:
+    Long description (repeat target keywords 3-5x naturally)
+    Changelogs (mention features by keyword)
+    App name and subtitle
+
+11.3 RATING & REVIEW STRATEGY
+--------------------------------
+  Target rating  : 4.7+ stars (needed for featured spots)
+
+  In-app review prompt triggers:
+    - After first 7-day streak (peak happiness moment)
+    - After year review is generated (emotional high)
+    - After first quote saved
+    - NEVER after a crash or error
+    - NEVER more than once per 30 days
+
+  Review response strategy:
+    - Reply to every 1-star and 2-star review within 24h
+    - Template: acknowledge issue → state fix timeline →
+      offer direct support email
+    - Reply to 5-star reviews weekly (builds community feel)
+    - Negative reviews addressed = often updated to 4-5 stars
+
+  Localized reviews (future):
+    - Hindi app store listing (India market)
+    - Respond to Hindi reviews in Hindi
+
+11.4 VISUAL ASO OPTIMIZATION
+------------------------------
+  Icon A/B testing:
+    Version A: Black bg + neon green streak wave
+    Version B: Black bg + weather sun/cloud icon
+    Version C: Deep navy bg + neon lightning bolt
+    Test via Google Play Store listing experiments
+
+  Screenshot A/B testing:
+    Frame 1A: Heatmap hero first screenshot
+    Frame 1B: Streak milestone first screenshot
+    Measure: conversion rate from store page to install
+
+  Feature Graphic seasonal updates:
+    - January: "New Year. New Habits. New Sky."
+    - April: "Spring into consistency."
+    - October: "Q4. Your best streak starts now."
+
+11.5 LAUNCH DAY STRATEGY
+--------------------------
+  T-30 days:
+    - Open beta via TestFlight + Play Open Testing
+    - ProductHunt upcoming page (collect followers)
+    - Reddit posts: r/habittracking, r/selfimprovement,
+      r/productivity, r/india (for local launch)
+    - Twitter/X daily build log thread (dev journey)
+    - Build email waitlist (Beehiiv or ConvertKit)
+    - Reach out to micro-influencers (50K-500K):
+      productivity YouTubers, habit coaches, notion creators
+
+  T-7 days:
+    - Press kit ready (screenshots, icon, founder story)
+    - Reach out to tech journalists: YourStory, Inc42,
+      TechCrunch India, The Ken
+    - Schedule ProductHunt launch post (Tuesday = best day)
+    - Brief 5 friendly users to leave first reviews on
+      launch day
+
+  T-0 (Launch Day):
+    - ProductHunt live (aim for Product of the Day)
+    - Twitter/X announcement thread with video demo
+    - Post on all subreddits simultaneously
+    - Email waitlist with launch link
+    - Instagram reel: 30-second app walkthrough
+    - LinkedIn post: founder story + product vision
+    - Reply to EVERY comment for first 24 hours
+
+  T+7 days:
+    - Gather first reviews — prompt via in-app trigger
+    - Monitor crash rate, fix P0 bugs same day
+    - Post on IndieHackers with revenue/download update
+    - Begin outreach to productivity newsletters:
+      Ness Labs, James Clear's 3-2-1, Ali Abdaal newsletter
+
+11.6 FEATURED APP STRATEGY
+----------------------------
+  Apple and Google feature apps organically based on:
+    Quality   : Smooth 60fps, no crashes, great design
+    Timing    : New Year (Jan), back-to-school (Aug/Sep),
+                Mental Health Awareness Month (May)
+    Story     : "On-device AI for privacy" is a strong
+                editorial angle for Apple (aligns with
+                their privacy messaging)
+
+  Active steps to get featured:
+    - Submit to Apple via App Store Connect
+      "Request to be featured" form
+    - Integrate all Apple-recommended APIs:
+      WidgetKit, App Intents, Live Activities, Swift Charts
+      (even though we use Flutter — use platform channels)
+    - Write to Android editorial:
+      android-editors@google.com with app story
+    - Target "New Apps We Love" section (Apple)
+    - Target "Editor's Choice" (Google Play)
+
+
+================================================================
+12. LAUNCH STRATEGY — PHASE BY PHASE
+================================================================
+
+PHASE 1 — BUILD (Month 1-3)
+  - Set up full stack: Firebase, Supabase, GitHub, Azure
+  - Build core: habits, streaks, heatmap, weather
+  - Internal testing with 10 users
+  - Docker local dev environment running
+  - CI/CD pipeline fully operational
+
+PHASE 2 — BETA (Month 4)
+  - TestFlight + Play Open Testing launch
+  - 200 beta testers recruited
+  - Collect feedback: 3 surveys over 4 weeks
+  - Fix top 10 issues before public launch
+  - ASO research finalized
+  - Store listings written + screenshots ready
+
+PHASE 3 — LAUNCH (Month 5)
+  - ProductHunt launch (Tuesday)
+  - App Store + Play Store simultaneously
+  - PR outreach to 20 journalists
+  - Influencer posts go live same day
+  - Goal: 1,000 downloads day 1
+          5,000 downloads week 1
+
+PHASE 4 — GROWTH (Month 6-12)
+  - Weekly feature releases (keeps store ranking fresh)
+  - Monthly changelog posts on social
+  - Pro conversion optimization (A/B test paywall)
+  - Referral system: "Invite friend → both get 7 days Pro"
+  - Partnership with habit/productivity influencers
+  - Localize for Hindi (unlock India market deeper)
+  - Submit for Apple feature + Google Editor's Choice
+
+
+================================================================
+13. POST-LAUNCH GROWTH STRATEGY
+================================================================
+
+13.1 RETENTION LOOPS
+----------------------
+  Day 1    : Onboarding + first habit logged
+  Day 3    : First streak notification + quote resonance
+  Day 7    : First streak badge (Seedling 🌱)
+             In-app review prompt
+  Day 14   : Habit correlation insight revealed
+  Day 30   : Monthly review auto-generated
+             On Fire badge (🔥)
+             Pro upgrade prompt (at emotional high)
+  Day 365  : Diamond badge (💎) + Year Review
+             Most loyal users — ask for App Store review
+
+13.2 VIRALITY MECHANICS
+-------------------------
+  Share card     : Year Review card shareable on Instagram
+                   Includes: "Made with StreakSky" watermark
+                   (Pro users can remove watermark)
+  Streak sharing : "I just hit 30 days of [habit] on
+                   StreakSky 🔥" — pre-filled share text
+  Referral       : "Get 7 days Pro free when a friend
+                   installs using your link"
+  Commit message : Daily commit message shareable
+                   (developer audience — viral in tech
+                   communities, Product Hunt, Twitter/X)
+
+13.3 CONTENT MARKETING
+------------------------
+  Blog (streaksky.app/blog):
+    - "Why 90% of habit apps fail (and what we do different)"
+    - "The science behind the 21-day habit myth"
+    - "How GitHub's contribution graph inspired StreakSky"
+    - "Why your AI should never leave your phone"
+    SEO targeting: "best habit tracker app 2026",
+                   "habit tracker with streaks",
+                   "habit tracking app India"
+
+  YouTube:
+    - "I tracked every habit for 365 days" (creator collab)
+    - App walkthrough + tutorial (5 min)
+    - Year Review feature demo (2 min)
+
+
+================================================================
+14. MONITORING & OBSERVABILITY
+================================================================
+
+  LAYER           TOOL                  WHAT IT MONITORS
+  ──────────────────────────────────────────────────────────
+  App Crashes     Firebase Crashlytics  Dart exceptions,
+                                        native crashes
+  App Performance Firebase Performance  Screen load times,
+                                        network calls
+  User Behavior   Firebase Analytics    Events, funnels,
+                                        retention cohorts
+  Backend APIs    Azure App Insights    Response times,
+                                        error rates, traffic
+  Database        Supabase Dashboard    Query performance,
+                                        slow queries, RLS
+  CI/CD           GitHub Actions        Build times,
+                                        failure rates
+  Uptime          Azure Monitor         Container health,
+                                        alerting
+
+  ALERT THRESHOLDS
+  Crash-free rate    drops below 99.5% → PagerDuty alert
+  API error rate     above 1%          → Slack alert
+  Build failure      any               → Slack + email
+  Supabase slow query above 500ms      → logged + reviewed
+  FCM delivery rate  below 90%         → investigated
+
+
+================================================================
+15. SECURITY & COMPLIANCE
+================================================================
+
+  Authentication      Firebase Auth (industry standard)
+  Database Access     Supabase RLS — users see only their data
+  API Security        Azure APIM rate limiting + API keys
+  Secrets             Azure Key Vault (never in code)
+  Data Encryption     TLS 1.3 in transit, AES-256 at rest
+  On-Device AI        Ollama — zero data leaves device
+  GDPR Compliance     Data export + delete endpoints built
+                      (Supabase Edge Function)
+  DPDP Act (India)    Privacy policy + consent screen
+                      on first launch
+  App Store Privacy   Nutrition label fully declared
+  Play Store Safety   Data safety form fully completed
+  Penetration Test    Run before v1.0 launch
+                      (OWASP Mobile Top 10 checklist)
+
+
+================================================================
+16. COST ESTIMATE (MONTHLY AT SCALE)
+================================================================
+
+  SERVICE                  FREE TIER        PAID (EST.)
+  ──────────────────────────────────────────────────────
+  Firebase Auth            10K users free   $0-25/month
+  Firebase Firestore       1GB free         $10-50/month
+  Firebase FCM             Unlimited free   $0
+  Firebase Analytics       Unlimited free   $0
+  Firebase Crashlytics     Unlimited free   $0
+  Supabase (Pro)           500MB free       $25/month
+  Supabase Edge Functions  500K free calls  $0-10/month
+  Supabase Storage         1GB free         $0-20/month
+  Azure Container Apps     180K vCPU free   $10-30/month
+  Azure Container Registry Basic tier       $5/month
+  Azure CDN                15GB free        $5-15/month
+  Azure Key Vault          10K ops free     $0-5/month
+  GitHub Actions           2K min free      $0-16/month
+  ──────────────────────────────────────────────────────
+  TOTAL ESTIMATE           (first 6 months) $0-$55/month
+                           (at 10K users)   ~$80/month
+                           (at 100K users)  ~$300/month
+
+  Revenue break-even:
+    1% of 10,000 users convert to Pro at ₹1,999/year
+    = 100 users × ₹1,999 = ₹1,99,900/year (~₹16,600/month)
+    Covers all infrastructure costs at 10K user scale.
+
+
+================================================================
+END OF DOCUMENT — StreakSky Tech Stack & Strategy PRD v1.0
+================================================================

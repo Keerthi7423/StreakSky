@@ -1,0 +1,257 @@
+================================================================
+PROJECT DEVELOPMENT PLAN: StreakSky (Habit Tracker)
+================================================================
+Role         : Full Stack Developer (Mobile + Backend)
+Total Days   : 45 Days (Sequential, Atomic Tasks)
+Tech Stack   : Flutter, Firebase Auth/FCM/Realtime, Supabase (Postgres), 
+               Ollama (On-device AI), Riverpod 2.0, Azure (Cloud/Backups)
+================================================================
+
+PHASE 1: PROJECT SETUP & FOUNDATIONS (DAYS 1-3)
+---------------------------------------------------------
+[Day 01]
+- Task 01: Initialize Flutter project with flavor support (dev, staging, prod).
+- Task 02: Configure basic folder structure (core, features, shared) as per Tech PRD.
+- Task 03: Setup Design System tokens (Colors, Typography, Spacing) in theme/ folder.
+
+[Day 02]
+- Task 04: Initialize Firebase projects and link for Android & iOS.
+- Task 05: Initialize Supabase project and define initial SQL schema (users, habits).
+- Task 06: Setup Docker Compose for local development (Supabase + Ollama local stack).
+
+[Day 03]
+- Task 07: Configure Riverpod 2.0 and boilerplate for Dependency Injection (get_it + injectable).
+- Task 08: Setup GoRouter for declarative navigation with bottom tab shell.
+- Task 09: Implement Splash Screen with logo animation (neon particles).
+
+PHASE 2: AUTHENTICATION & USER PROFILE (DAYS 4-6)
+---------------------------------------------------------
+[Day 04]
+- Task 10: Implement Firebase Auth Service (Email/Password + Google Sign-In).
+- Task 11: Implement Apple Sign-In (required for iOS App Store).
+- Task 12: Create "Log In" / "Register" screens with #0D0D0D background and neon accents.
+
+[Day 05]
+- Task 13: Build User Profile model and Supabase RLS policies for 'users' table.
+- Task 14: Implement Profile Screen UI (Avatar with neon ring, menu rows based on Design PRD).
+- Task 15: Setup Profile Edit Screen with form validation and Supabase update logic.
+
+[Day 06]
+- Task 16: Implement Onboarding Flow (3 screens with Lottie illustrations and progression dots).
+- Task 17: Build anonymous guest mode logic (Auth persistence).
+- Task 18: Implement Logout and Destructive Account Delete functionality.
+
+PHASE 3: CORE HABIT ENGINE (DAYS 7-11)
+---------------------------------------------------------
+[Day 07]
+- Task 19: Design Habit Model (JSONB frequency support) and Supabase table migrations.
+- Task 20: Create "Add Habit" Bottom Sheet with category selection, icon/color picker.
+- Task 21: Implement Habit Provider (Riverpod) for CRUD operations.
+
+[Day 08]
+- Task 22: Build Home Screen Habits List UI (Cards with neon glow and left-border accent).
+- Task 23: Implement Habit completion logic with scale bounce animation (200ms).
+- Task 24: Configure Epoxy-style haptic feedback on habit checkbox tap.
+
+[Day 09]
+- Task 25: Implement Hive-based offline storage for habit completions (offline-first).
+- Task 26: Build Background Sync logic (Hive -> Supabase/Firebase) with status indicators.
+- Task 27: Implement Drag-and-Drop habit reordering on Home Screen.
+
+[Day 10]
+- Task 28: Build Habit Detail Screen (History, notes, edit options).
+- Task 29: Implement Habit Archiving and Soft Deletion logic.
+- Task 30: Integrate Habits with Realtime Firestore listeners for multi-device sync.
+
+[Day 11]
+- Task 31: Finalize Daily Habit Logic (Frequency logic: daily, weekdays, X times per week).
+- Task 32: Implement "Habit Heartbeat" (pulse vibration patterns on app open).
+- Task 33: Smoke test habit lifecycle (Create -> Complete -> Sync -> Edit -> Archive).
+
+PHASE 4: STREAK & WEATHER SYSTEM (DAYS 12-16)
+---------------------------------------------------------
+[Day 12]
+- Task 34: Design Streak Engine logic (Current Streak, Longest Streak, Streak Shields).
+- Task 35: Build Streak table in Supabase with RLS.
+- Task 36: Implement Streak Calculation logic (Server-side Edge Function + Local fallback).
+
+[Day 13]
+- Task 37: Implement "Streak Shield" mechanism (Earn 1 shield per 7-day run, Max 3).
+- Task 38: Build Streak Shield UI indicators on habit cards.
+- Task 39: Implement Streak Milestone badges (🌱 Seedling to 👑 Legend).
+
+[Day 14]
+- Task 40: Implement Habit Weather System logic (Sunny, cloudy, rainy based on completion %).
+- Task 41: Build Weather Hero Card UI for Home Screen (Animated emoji + gradient shift).
+- Task 42: Configure Weather forecast logic based on 7-day rolling history.
+
+[Day 15]
+- Task 43: Implement "Rainbow" (Comeback) logic (First flawless day after 0% storm).
+- Task 44: Build "Tornado" logic (Trigger on longest streak breakage).
+- Task 45: Implement Streak Leaderboard (Personal Best board based on Design PRD).
+
+[Day 16]
+- Task 46: Build Streak Milestone celebration animations (Spring badges + Dim background).
+- Task 47: Implement "Streak Freeze" (1-hour midnight grace period logic).
+- Task 48: Stress test streak engine with mock date shifts.
+
+PHASE 5: GOALS SYSTEM (DAYS 17-21)
+---------------------------------------------------------
+[Day 17]
+- Task 49: Design 3-Tier Goal Model (Weekly, Monthly, Career) and migrations.
+- Task 50: Build Goals Screen Shell with Tab Switcher (Underlined neon indicator).
+- Task 51: Implement Goal CRUD (Title, target value, linked habits).
+
+[Day 18]
+- Task 52: Build Goal Cards with neon green progress bars and dark grey tracks.
+- Task 53: Implement Goal Cascade logic (Habit completion auto-advances goals).
+- Task 54: Build Goal Completion badge and celebration state.
+
+[Day 19]
+- Task 55: Build Career Goals UI (Vertical Phase Timeline with neon dots/connecting lines).
+- Task 56: Implement Career Goal Phase management (Milestones vs Missions).
+- Task 57: Build "Goal Rollover" indicator for career paths.
+
+[Day 20]
+- Task 58: Implement Weekly Goal auto-reset logic (Monday 00:00).
+- Task 59: Implement Monthly Goal auto-reset logic (1st of Month).
+- Task 60: Build Goal Projection curve data generator.
+
+[Day 21]
+- Task 61: Integrate Goal metrics into Analytics provider.
+- Task 62: Add "Add Goal" FAB (Floating Action Button) with spring animation.
+- Task 63: Validate goal progress calculations across different timezones.
+
+PHASE 6: DATA VISUALIZATION (DAYS 22-26)
+---------------------------------------------------------
+[Day 22]
+- Task 64: Build GitHub-style Heatmap Grid (365 cells, 4 green levels + purple comeback).
+- Task 65: Implement Heatmap Cell tap interaction (Bottom sheet with day details).
+- Task 66: Add Heatmap Year Selector (2024 | 2025 | 2026 pills).
+
+[Day 23]
+- Task 67: Implement Heatmap Filtering by Individual Habit (Pill-based chips).
+- Task 68: Implement Heatmap Multi-year comparison toggle.
+- Task 69: Add Heatmap Export as stylized image (react-native-view-shot equivalent for Flutter).
+
+[Day 24]
+- Task 70: Integrate FL_Chart for Statistics Screen (Bar charts for weekly trend).
+- Task 71: Build 2x2 Stat Card Grid (Habits Done, Streak, Custom Metrics).
+- Task 72: Implement Mini Waveform charts inside stat cards (Neon lines on dark).
+
+[Day 25]
+- Task 73: Build Graphs Screen with Weekly/Monthly/Career line graphs.
+- Task 74: Implement "Keystone Habit" correlation card logic.
+- Task 75: Add interactive tooltips and spring scale animations for data points.
+
+[Day 26]
+- Task 76: Implement "Activity Calendar Strip" (7-day horizontal scroll on Stats screen).
+- Task 77: Add "Recent Habits" horizontal scroll cards (3 latest logs).
+- Task 78: Optimize chart rendering for long historical data sets.
+
+PHASE 7: AI AGENT & DAILY QUOTES (DAYS 27-31)
+---------------------------------------------------------
+[Day 27]
+- Task 79: Setup Ollama (Llama 3.2 3B) integration on-device (Local API calls).
+- Task 80: Build Sky AI Chat Interface (Neon neon bubbles, pinned commit card).
+- Task 81: Implement AI Daily Nudges (Natural language nudges based on yesterday's data).
+
+[Day 28]
+- Task 82: Design Contextual Quote Engine (Match current weather/streak to quote category).
+- Task 83: Build Supabase Quotes table with 100+ curated quotes from great minds.
+- Task 84: Implement Morning Quote Card (Tap to expand, bookmark support).
+
+[Day 29]
+- Task 85: Implement Habit Commit Messages (GitHub-inspired automated one-liners).
+- Task 86: Build AI Pattern Recognition (Triggered after 30/60 days of data).
+- Task 87: Implement Voice Check-in (Speech-to-text -> AI parsing -> Habit log).
+
+[Day 30]
+- Task 88: Setup Azure Cloud Fallback for AI (Container Apps for non-Ollama devices).
+- Task 89: Implement Quote History and Saved Quote Collection.
+- Task 90: Build stylized Image Share generator for Quotes (Weather + Streak overlay).
+
+[Day 31]
+- Task 91: Implement AI Mid-Year Pace Check logic (July 1st).
+- Task 92: Build Suggested Prompt Chips (Horizontal scroll ghost buttons).
+- Task 93: Finalize AI agent persona (Sky — supportive, weather-themed coach).
+
+PHASE 8: ADVANCED AUTOMATION (DAYS 32-35)
+---------------------------------------------------------
+[Day 32]
+- Task 94: Implement Year-End Review Engine (Runs Dec 31, 23:00 via Edge Function).
+- Task 95: Build "Year in Review" Animated Reveal (Cinematic fade-ins, counting stats).
+- Task 96: Implement "Shareable Year Card" generator (12-month weather strip).
+
+[Day 33]
+- Task 97: Implement Year-Start Goal Rollover (Jan 1, 00:05).
+- Task 98: Build "New Year Intention" Prompt and AI-suggested goal targets.
+- Task 99: Implement Multi-Year "Legacy View" (Unlocked after 2+ years).
+
+[Day 34]
+- Task 100: Build Subscription Service logic (Supabase table updates).
+- Task 101: Integrate Remote Config for Price Toggles and Feature Gating (Free vs Pro).
+- Task 102: Setup Pro Feature locks on UI (Heatmap history, Career goals, AI).
+
+[Day 35]
+- Task 103: Implement Lock Screen Widget (Weather icon + Habit checkboxes + Quote preview).
+- Task 104: Setup Firebase Cloud Messaging for server-triggered "Streak Danger" alerts.
+- Task 105: Configure Azure API Management (APIM) for rate limiting and gateway security.
+
+PHASE 9: POLISH, PERFORMANCE & QUALITY (DAYS 36-39)
+---------------------------------------------------------
+[Day 36]
+- Task 106: Audit UI for "Dark & Powerful" aesthetic (Verify hex codes #0D0D0D, #B3FF00).
+- Task 107: Implement Skeleton loading screens for all data-heavy features (no spinners).
+- Task 108: Optimize image fetching with cached_network_image and shimmers.
+
+[Day 37]
+- Task 109: Perform Accessibility Audit (Contrast ratios, tap targets 44px+, Screen readers).
+- Task 110: Implement "Reduced Motion" support for all core animations.
+- Task 111: Setup Light Mode fallback theme (#F5F5F5 based).
+
+[Day 38]
+- Task 112: Comprehensive Performance Profiling (Memory leaks, frame drops on graphs).
+- Task 113: Implement Firebase Crashlytics for production bug tracking.
+- Task 114: Setup Firebase Analytics event logging for all success metrics (PRD Sec 11).
+
+[Day 39]
+- Task 115: Refine haptics (Medium impact on checkbox, success pattern on milestone).
+- Task 116: Polish typography hierarchy (Tabular figures for all numbers).
+- Task 117: Final UI bug bash (Alignment, padding, margin consistency).
+
+PHASE 10: CI/CD, TESTING & STORE OPS (DAYS 40-45)
+---------------------------------------------------------
+[Day 40]
+- Task 118: Write Unit Tests for Business Logic (Streak engine, Goal progression).
+- Task 119: Write Widget Tests for core components (Habit Card, Weather Hero).
+- Task 120: Setup GitHub Actions CI Pipeline (Lint, Analyze, Test).
+
+[Day 41]
+- Task 121: Configure GitHub Actions CD for Android (AAB Build + Play Store Internal).
+- Task 122: Configure GitHub Actions CD for iOS (IPA Build + TestFlight).
+- Task 123: Setup Azure-based automated daily DB backups (PostgreSQL -> Blob Storage).
+
+[Day 42]
+- Task 124: Beta Testing Round (Internal + 10 external testers).
+- Task 125: Fix high-priority bugs from beta feedback.
+- Task 126: Finalize Store Metadata (Title, Description, ASO Keywords).
+
+[Day 43]
+- Task 127: Prepare Store Screens (iPhone + Android mockups with neon aesthetic).
+- Task 128: Setup App Store Privacy labels and Data Usage disclosure.
+- Task 129: Submit for Review (iOS App Store + Android Play Store).
+
+[Day 44]
+- Task 130: Setup Azure Monitor + Application Insights dashboards for launch day.
+- Task 131: Configure Remote Config for Day 1 emergency toggles.
+- Task 132: Final launch readiness checklist (Secrets, API keys, Billing).
+
+[Day 45]
+- Task 133: Official Launch Day — Monitor traffic, error rates, and retention.
+- Task 134: Post-launch "Welcome" notification to all early adopters.
+- Task 135: Initialize v3.0 Feature Backlog in ROADMAP.md.
+
+================================================================
+END OF PROJECT PLAN — StreakSky v2.0
+================================================================
