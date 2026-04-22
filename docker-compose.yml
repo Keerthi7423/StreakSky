@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  # --- SUPABASE LOCAL STACK (CORE) ---
+  db:
+    image: supabase/postgres:15.1.0.117
+    container_name: streaksky-db
+    ports:
+      - "54322:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres_password
+      POSTGRES_DB: postgres
+    volumes:
+      - ./supabase/data:/var/lib/postgresql/data
+      - ./supabase/migrations:/docker-entrypoint-initdb.d
+    networks:
+      - streaksky-network
+
+  # --- OLLAMA (AI ENGINE) ---
+  ollama:
+    image: ollama/ollama:latest
+    container_name: streaksky-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ./ollama/models:/root/.ollama
+    networks:
+      - streaksky-network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  # --- EDGE FUNCTION DEV SERVER (SIMULATED) ---
+  edge-functions:
+    image: denoland/deno:latest
+    container_name: streaksky-edge-fns
+    volumes:
+      - ./supabase/functions:/app
+    working_dir: /app
+    command: run --allow-net --allow-env main.ts
+    environment:
+      SUPABASE_URL: http://db:5432
+      SUPABASE_SERVICE_ROLE_KEY: service_role_key
+    depends_on:
+      - db
+    networks:
+      - streaksky-network
+
+networks:
+  streaksky-network:
+    driver: bridge
