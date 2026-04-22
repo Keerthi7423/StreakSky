@@ -1,0 +1,62 @@
+================================================================
+DAY 2: SERVICE INITIALIZATION & INFRASTRUCTURE SETUP
+================================================================
+
+In Day 2, we moved beyond the UI and design system into the "Engine Room" of the application. We initialized the backend services and established a professional local development workflow. This is where the app starts to become "real" and data-driven.
+
+----------------------------------------------------------------
+1. THE DUAL-BACKEND STRATEGY (FIREBASE + SUPABASE)
+----------------------------------------------------------------
+Task: Initialize Firebase projects and Supabase project.
+
+WHY USE BOTH?
+As a developer, you might ask "Why not just use one?" In StreakSky, we use a "Split Responsibility" architecture:
+- FIREBASE: Excels at Authentication (Google/Apple Sign-In), Real-time Sync (Firestore), and Push Notifications (FCM). It handles the "interactive" part of the app flawlessly.
+- SUPABASE (Postgres): Excels at structured data, complex relational queries (SQL), and multi-table joins. Calculating a "Year-End Review" or "Multi-Year Legacy View" across millions of habit logs is much easier and cheaper in SQL than in NoSQL (Firestore).
+
+INTERVIEW TIP: 
+If an interviewer asks about your backend choice, explain that you "choose the right tool for the job." Use Firebase for user session management and real-time triggers, and Supabase for the long-term, structured data warehouse. This ensures scalability and keeps costs low (Postgres is efficient for mass data).
+
+----------------------------------------------------------------
+2. DATABASE SCHEMA DESIGN (SQL)
+----------------------------------------------------------------
+Task: Define initial SQL schema (users, habits).
+
+KEY DESIGN DECISIONS:
+1. JSONB FOR FREQUENCY: 
+   In the `habits` table, we used a `JSONB` column for `frequency`. This allows for flexible scheduling logic (e.g., {"days": [1,3,5]} for Mon-Wed-Fri) without creating complex join tables. It's fast to read and easy to expand.
+2. ROW LEVEL SECURITY (RLS): 
+   We enabled RLS on every table. This is non-negotiable for security. In Supabase, RLS ensures that `User A` can never accidently (or maliciously) read `User B's` habits, even if they have the API key. The DB itself checks `auth.uid() = user_id` for every request.
+3. COMPOSITE UNIQUE KEYS: 
+   For `habit_completions`, we used a unique constraint on `(habit_id, completed_date)`. This prevents a user from double-logging the same habit on the same day, ensuring data integrity at the database level.
+
+----------------------------------------------------------------
+3. DOCKER & LOCAL INFRASTRUCTURE
+----------------------------------------------------------------
+Task: Setup Docker Compose for local development (Supabase + Ollama).
+
+WHY DOCKER?
+"It works on my machine" is a failure state. By using `docker-compose.yml`, we guarantee that every developer on the project is running the exact same version of PostgreSQL, Supabase services, and the Ollama AI engine.
+
+OLLAMA INTEGRATION:
+We included Ollama in our local stack. This allows us to develop AI features (like contextual nudges and commit messages) entirely offline. We don't have to pay for OpenAI/Azure during the 45-day build process; we use our local power until we're ready for the cloud.
+
+----------------------------------------------------------------
+DEPENDENCY HIGHLIGHTS:
+----------------------------------------------------------------
+We added critical packages to `pubspec.yaml`:
+- supabase_flutter: Our bridge to the Postgres data.
+- firebase_core/auth: For secure user sessions.
+- riverpod: To manage state across the entire app.
+- freezed/json_serializable: To ensure type-safety and boilerplate-free data models.
+
+----------------------------------------------------------------
+INTERVIEW SUMMARY (The "Why"):
+----------------------------------------------------------------
+Interviewer: "How do you handle backend scalability and local development?"
+Answer: 
+"I implement a multi-service backend. I use Firebase for real-time features and authentication because of its mature SDKs. For complex habit analytics and long-term storage, I use Supabase (PostgreSQL) to leverage powerful SQL queries. I secure the data using Row Level Security (RLS) at the database layer. Finally, I use Docker to containerize the local stack, ensuring the development environment is consistent across the team and identical to production, which eliminates 'environment-specific' bugs."
+
+================================================================
+END OF DAY 2 DOCUMENTATION
+================================================================
