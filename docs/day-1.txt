@@ -1,0 +1,69 @@
+================================================================
+DAY 1: PROJECT INITIALIZATION & DESIGN SYSTEM SETUP
+================================================================
+
+In Day 1, we established the foundational architecture and visual language of the StreakSky application. This step is critical as it sets the standard for how code will be organized and how the UI will be styled across the entire 45-day development cycle.
+
+----------------------------------------------------------------
+1. FLUTTER INITIALIZATION & FLAVOR SUPPORT
+----------------------------------------------------------------
+Task: Initialize Flutter project with flavor support (dev, staging, prod).
+
+WHY FLAVORS?
+In a professional production environment, you never want your development testing to interfere with real user data.
+- DEV: Used for daily development. Points to local/dev databases (like local Supabase/Ollama).
+- STAGING: Points to a cloud environment identical to production. Used for QA and final testing before release.
+- PROD: The live environment used by real users. High security, billing enabled, and stable.
+
+IMPLEMENTATION:
+We created `main_dev.dart`, `main_staging.dart`, and `main_prod.dart`. Each file initializes an `AppConfig` singleton with specific API keys and URLs before starting the app. This allows us to run the app with specific configurations using:
+`flutter run -t lib/main_dev.dart`
+
+----------------------------------------------------------------
+2. PROJECT FOLDER STRUCTURE (CORE/FEATURES/SHARED)
+----------------------------------------------------------------
+Task: Configure basic folder structure as per Tech PRD.
+
+WHY THIS STRUCTURE?
+We follow a combination of Feature-Driven Design and Clean Architecture principles.
+- CORE/: Contains universal logic that doesn't belong to a specific feature (Theme, Constants, Navigation, DI).
+- FEATURES/: Contains separate modules for each major app function (Auth, Habits, Streaks, AI). Each feature is self-contained with its own UI, providers, and models.
+- SHARED/: Houses reusable components used across multiple features (Common widgets, global models, generic services).
+- L10N/: Used for localization/internationalization files.
+
+INTERVIEW TIP: 
+Explain that this structure ensures "Separation of Concerns" and "High Cohesion, Low Coupling." It makes the codebase easier to maintain as it grows and allows multiple developers to work on different features without merge conflicts.
+
+----------------------------------------------------------------
+3. DESIGN SYSTEM TOKENS (THEMING)
+----------------------------------------------------------------
+Task: Setup Design System tokens (Colors, Typography, Spacing) in theme/ folder.
+
+COMPONENTS OF OUR SYSTEM:
+1. AppColors: We defined specific hex codes for our "Dark & Powerful" aesthetic.
+   - Primary Background (#0D0D0D): Near-black for a premium feel.
+   - Neon Green (#B3FF00): Our single high-energy accent color for all interactions.
+   - Status Colors: Specific colors for the "Habit Weather System" (Sunny, Stormy, etc.).
+
+2. AppTypography: Using the 'Inter' font family.
+   - Hero Stats: 64px Bold.
+   - Tabular Figures: Critical for data apps. We enabled `FontFeature.tabularFigures()` so that numbers like '11' and '88' take up the same width, preventing "jitter" when stats update.
+
+3. AppSpacing: Based on a 4px base unit.
+   - Consistently using multiples of 4 (4, 8, 16, 24, 32) ensures visual rhythm and alignment.
+   - We predefined `horizontalPadding` (20.0) and `cardRadius` (16.0) to maintain consistency across all screens.
+
+4. AppTheme (Theming):
+   - We created a custom `ThemeData` to centralize styling. Instead of setting colors on every button, we style `elevatedButtonTheme` and `cardTheme` globally.
+   - Key Decision: Default to `Brightness.dark` but provide a light-mode fallback for accessibility.
+
+----------------------------------------------------------------
+INTERVIEW SUMMARY (The "Why"):
+----------------------------------------------------------------
+When an interviewer asks "How do you start a new project?", don't just say "I run flutter create."
+Instead, say: 
+"I start by establishing a robust architecture. I set up environment-specific flavors to separate development from production. I then define a rigid folder structure to ensure scalability. Finally, I implement a Design System using hard tokens for colors, spacing, and typography. This ensures that every developer on the team follows the same visual guidelines, making the app look professional and reducing styling bugs."
+
+================================================================
+END OF DAY 1 DOCUMENTATION
+================================================================
