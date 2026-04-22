@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Base configuration for the entire app -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+
+    <!-- Facilitates debugging with tools like Charles or Fiddler -->
+    <debug-overrides>
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </debug-overrides>
+
+    <!-- SSL Pinning Template for Supabase -->
+    <!-- Replace the pins with the actual SHA-256 hashes of the certificate -->
+    <domain-config>
+        <domain includeSubdomains="true">supabase.co</domain>
+        <pin-set>
+            <!-- Example: Replace with actual hashes -->
+            <!-- <pin digest="SHA-256">Base64EncodedHashHere=</pin> -->
+        </pin-set>
+    </domain-config>
+
+    <!-- SSL Pinning Template for Firebase -->
+    <domain-config>
+        <domain includeSubdomains="true">firebaseio.com</domain>
+        <pin-set>
+            <!-- Example: Replace with actual hashes -->
+            <!-- <pin digest="SHA-256">Base64EncodedHashHere=</pin> -->
+        </pin-set>
+    </domain-config>
+</network-security-config>
