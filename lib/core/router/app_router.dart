@@ -1,22 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../features/habits/presentation/screens/home_screen.dart';
 import '../../features/graphs/presentation/screens/stats_screen.dart';
 import '../../features/goals/presentation/screens/goals_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/splash/presentation/screens/splash_screen.dart';
+import '../../features/auth/presentation/screens/login_screen.dart';
+import '../../features/auth/presentation/screens/register_screen.dart';
+import '../../features/auth/presentation/controllers/auth_controller.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> _shellNavigatorKey = GlobalKey<NavigatorState>();
 
-class AppRouter {
-  static final router = GoRouter(
+final routerProvider = Provider<GoRouter>((ref) {
+  final authState = ref.watch(authStateProvider);
+  final demoLoggedIn = ref.watch(demoLoggedInProvider);
+
+  return GoRouter(
     initialLocation: '/splash',
     navigatorKey: _rootNavigatorKey,
+    redirect: (context, state) {
+      final bool loggedIn = authState.asData?.value != null || demoLoggedIn;
+
+      final bool loggingIn = state.matchedLocation == '/login' || state.matchedLocation == '/register';
+
+      final bool splashing = state.matchedLocation == '/splash';
+
+      if (splashing) return null; // Let splash handle its own navigation after animation
+
+      if (!loggedIn && !loggingIn) return '/login';
+      if (loggedIn && loggingIn) return '/home';
+
+      return null;
+    },
     routes: [
       GoRoute(
         path: '/splash',
         builder: (context, state) => const SplashScreen(),
+      ),
+      GoRoute(
+        path: '/login',
+        builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: '/register',
+        builder: (context, state) => const RegisterScreen(),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
@@ -59,7 +88,7 @@ class AppRouter {
       ),
     ],
   );
-}
+});
 
 class MainShell extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
@@ -114,3 +143,4 @@ class MainShell extends StatelessWidget {
     );
   }
 }
+

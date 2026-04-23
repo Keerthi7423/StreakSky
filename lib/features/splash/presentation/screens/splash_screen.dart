@@ -1,25 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:streaksky/features/auth/presentation/controllers/auth_controller.dart';
 
-class SplashScreen extends StatefulWidget {
+
+class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _navigateToHome();
+    _startApp();
   }
 
-  Future<void> _navigateToHome() async {
+  Future<void> _startApp() async {
     await Future.delayed(const Duration(seconds: 3));
     if (mounted) {
-      context.go('/home');
+      final user = ref.read(authStateProvider).asData?.value;
+      if (user != null) {
+
+        context.go('/home');
+      } else {
+        context.go('/login');
+      }
     }
   }
 

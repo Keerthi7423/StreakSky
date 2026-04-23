@@ -4,7 +4,10 @@ import '../constants/app_typography.dart';
 import '../constants/app_spacing.dart';
 
 class AppTheme {
+  static Color get neonAccent => AppColors.primaryAccent;
+
   static ThemeData get darkTheme {
+
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,

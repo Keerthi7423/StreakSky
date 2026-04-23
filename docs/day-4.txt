@@ -1,0 +1,47 @@
+# StreakSky Day 4: Authentication Implementation
+
+In Day 4, we implemented a robust, reactive authentication system using Firebase, Riverpod, and GoRouter. This setup is designed for scalability and follows Clean Architecture principles.
+
+## 1. Architecture Overview
+
+### Domain Layer (lib/features/auth/domain)
+- **AuthRepository**: An abstract interface defining the contract for authentication actions (`signIn`, `signUp`, `signOut`, `signInWithGoogle`, etc.).
+- Why? This decouples the application logic from the specific backend (Firebase), making it easier to swap or mock for testing.
+
+### Data Layer (lib/features/auth/data)
+- **FirebaseAuthService**: The concrete implementation of `AuthRepository` using the `firebase_auth` package.
+- It handles the low-level communication with Firebase, Google Sign-In, and Apple Sign-In.
+- We used `@LazySingleton` with `injectable` to automatically register it in our Dependency Injection (DI) container.
+
+### Presentation Layer (lib/features/auth/presentation)
+- **AuthController**: A `StateNotifier` (managed via Riverpod) that holds the state of auth operations (`AsyncValue<void>`).
+- **Screens**: Premium UI for `LoginScreen` and `RegisterScreen` featuring neon accents, glassmorphism-style inputs, and smooth transitions.
+
+## 2. Key Features
+
+### Reactive Navigation (AppRouter)
+- We integrated Riverpod into `GoRouter` using a `StreamProvider` that listens to `authStateChanges`.
+- **Automatic Redirects**: If a user logs in, they are automatically moved to the Home screen. If they log out, they are sent back to Login. This eliminates "ghost sessions" and manual navigation logic.
+
+### Multi-Platform Social Auth
+- **Google Sign-In**: Integrated via the `google_sign_in` package, converting Google accounts into Firebase Credentials.
+- **Apple Sign-In**: Ready for iOS deployment using `sign_in_with_apple`.
+
+### Professional UI/UX
+- **Neon Aesthetic**: Used `#B3FF00` (Neon Green) as the primary accent against a deep black (`#0D0D0D`) background.
+- **Micro-animations**: Used `flutter_animate` on the Splash screen to create a premium feel.
+- **Form Validation**: Implemented robust validation for emails and passwords.
+
+## 3. Technical Challenges Fixed
+
+- **Google Sign-In Web Fix**: Added the `clientId` parameter to `GoogleSignIn` and a meta tag in `index.html` to resolve the initialization crash on Web platforms.
+
+- **Dependency Conflicts**: Synchronized Riverpod and Freezed versions to a stable suite to avoid compilation errors.
+
+## 4. Interview Questions to Prepare
+1. **How do you handle authentication state reactively in Flutter?**
+   - Answer: Use a StreamProvider to listen to auth changes from Firebase and bind it to GoRouter's redirect logic.
+2. **What is the benefit of an AuthRepository interface?**
+   - Answer: It follows the Dependency Inversion Principle, allowing us to swap Firebase for Supabase or a Mock service without changing the UI code.
+3. **How do you manage loading and error states during login?**
+   - Answer: By using `AsyncValue` in a StateNotifier. This provides `when` or `whenOrNull` methods to easily handle UI updates for loading spinners and error snackbars.
