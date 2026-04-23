@@ -23,7 +23,7 @@ class AppTheme {
         centerTitle: true,
         titleTextStyle: AppTypography.h1,
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: AppColors.surface,
         elevation: 0,
         shape: RoundedRectangleBorder(

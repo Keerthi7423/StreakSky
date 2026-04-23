@@ -1,0 +1,90 @@
+================================================================
+STREAKSKY DEVELOPMENT LOG: DAY 03
+================================================================
+Focus        : Dependency Injection, Routing, and Visual Identity
+Date         : April 23, 2026
+Tech Stack   : Riverpod 2.0, GoRouter, Injectable, GetIt, Flutter Animate
+================================================================
+
+----------------------------------------------------------------
+1. TASK OVERVIEW
+----------------------------------------------------------------
+Today's focus was on establishing the app's structural backbone and visual first impression. We moved from purely configuration (Day 2) to functional architecture.
+
+- [Task 07]: Configure Riverpod 2.0 and Dependency Injection (DI) boilerplate.
+- [Task 08]: Setup GoRouter with a bottom Navigation Bar (Shell Route).
+- [Task 09]: Implement the Splash Screen with a "Neon Particle" aesthetic.
+
+----------------------------------------------------------------
+2. TECHNICAL EXPLANATIONS (INTERVIEW PREP)
+----------------------------------------------------------------
+
+Q1: Why use both GetIt/Injectable and Riverpod?
+A1: While Riverpod is fantastic for state management and functional DI, GetIt (with Injectable) is often preferred for "pure" service-level dependency injection (like singleton services for API clients, database wrappers, etc.). It allows for a cleaner separation where services are injected into Providers, and Providers manage the UI state. Using @injectable allows us to automate the registration of services, reducing boilerplate and human error.
+
+Q2: How does GoRouter's StatefulShellRoute work?
+A2: StatefulShellRoute is used when we want to maintain the state of different branches in a bottom navigation bar. Unlike a standard ShellRoute which might rebuild the entire page when switching tabs, StatefulShellRoute (often using IndexedStack) preserves the navigation stack and scroll position of each tab (Home, Stats, Goals, Profile) independently. This is crucial for a premium UX where the user expects to find their place when switching back to a tab.
+
+Q3: How was the "Neon" aesthetic achieved in the Splash Screen?
+A3: The neon look was implemented using:
+- A deep dark background (#0D0D0D).
+- Custom BoxShadow with high blur and low opacity of the accent color (#B3FF00) to create a "glow."
+- Flutter Animate for high-performance declarative animations (Scale, Shimmer, Fade).
+- "Neon Particles": Created using a Row of circles with staggered animations (delayed based on index) to simulate movement and life.
+
+----------------------------------------------------------------
+3. STEP-BY-STEP IMPLEMENTATION DETAIL
+----------------------------------------------------------------
+
+Step 1: Dependency Injection Setup
+- Created `lib/core/di/injection.dart`.
+- Used `GetIt` for the service locator and `@InjectableInit` to trigger code generation.
+- Ran `build_runner` to generate `injection.config.dart`, which automates service registration.
+- Updated `main.dart` to await `configureDependencies()` before runApp.
+
+Step 2: Declarative Navigation with GoRouter
+- Created `lib/core/router/app_router.dart`.
+- Implemented `StatefulShellRoute.indexedStack` to manage the 4 core feature tabs.
+- Defined a `MainShell` widget that wraps the sub-routes in a `Scaffold` with a custom-styled `NavigationBar` (using neon accent colors).
+- Set the `initialLocation` to `/splash`.
+
+Step 3: Splash Screen Implementation
+- Created `lib/features/splash/presentation/screens/splash_screen.dart`.
+- Built a UI featuring the "Cloud Queue" logo with a pulsing neon shadow.
+- Integrated a secondary title "STREAKSKY" with a glow shadow.
+- Used `context.go('/home')` after a 3-second delay to transition into the main app shell.
+
+Step 4: Root Integration
+- Wrapped the entire application in a `ProviderScope` (required for Riverpod).
+- Replaced the standard `MaterialApp` with `MaterialApp.router` to bridge the app with GoRouter.
+- Initialized Supabase using credentials from `AppConfig`.
+
+----------------------------------------------------------------
+4. KEY CODE SNIPPETS (CRITICAL FOR REVIEW)
+----------------------------------------------------------------
+
+[DI Initialization]
+final getIt = GetIt.instance;
+@InjectableInit()
+Future<void> configureDependencies() async => getIt.init();
+
+[GoRouter Shell]
+StatefulShellRoute.indexedStack(
+  builder: (context, state, navigationShell) => MainShell(navigationShell: navigationShell),
+  branches: [ ... ]
+)
+
+[Neon Glow Styling]
+Shadow(
+  color: Color(0xFFB3FF00),
+  blurRadius: 20,
+)
+
+----------------------------------------------------------------
+5. NEXT STEPS
+----------------------------------------------------------------
+Day 4 will focus on Authentication (Firebase Auth), implementing Log-in/Register screens, and establishing the secure connection between Auth users and their Supabase data profiles.
+
+================================================================
+END OF DAY-03 LOG
+================================================================
