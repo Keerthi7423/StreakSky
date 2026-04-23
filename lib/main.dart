@@ -7,6 +7,7 @@ import 'app_config.dart';
 import 'core/di/injection.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
+import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,13 +34,15 @@ Future<void> main() async {
     anonKey: AppConfig.instance.supabaseAnonKey,
   );
 
-  // 4. Initialize Firebase (Note: Requires firebase_options.dart in a real setup)
-  // For now, we wrap in try-catch to avoid crash if options are missing during dev setup
+  // 4. Initialize Firebase
   try {
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
   } catch (e) {
-    debugPrint('Firebase initialization failed (likely missing options): $e');
+    debugPrint('Firebase initialization failed: $e');
   }
+
 
   runApp(
     const ProviderScope(
@@ -48,18 +51,21 @@ Future<void> main() async {
   );
 }
 
-class StreakSkyApp extends StatelessWidget {
+class StreakSkyApp extends ConsumerWidget {
   const StreakSkyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(routerProvider);
+
     return MaterialApp.router(
       title: AppConfig.instance.appTitle,
       debugShowCheckedModeBanner: AppConfig.instance.flavor == AppFlavor.dev,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.dark, // Default to dark as per PRD
-      routerConfig: AppRouter.router,
+      routerConfig: router,
     );
   }
 }
+
