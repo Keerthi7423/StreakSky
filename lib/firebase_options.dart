@@ -3,6 +3,8 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
 ///
@@ -43,38 +45,39 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'YOUR-API-KEY',
-    appId: 'YOUR-APP-ID',
-    messagingSenderId: 'YOUR-MESSAGING-SENDER-ID',
+  static FirebaseOptions get web => FirebaseOptions(
+    apiKey: dotenv.env['FIREBASE_WEB_API_KEY'] ?? '',
+    appId: dotenv.env['FIREBASE_WEB_APP_ID'] ?? '',
+    messagingSenderId: '1088041065522',
     projectId: 'streaksky-dev',
     authDomain: 'streaksky-dev.firebaseapp.com',
-    storageBucket: 'streaksky-dev.appspot.com',
+    storageBucket: 'streaksky-dev.firebasestorage.app',
+    measurementId: 'G-K6L0RCYCZT',
   );
 
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'YOUR-API-KEY',
-    appId: 'YOUR-APP-ID',
-    messagingSenderId: 'YOUR-MESSAGING-SENDER-ID',
+  static FirebaseOptions get android => FirebaseOptions(
+    apiKey: dotenv.env['FIREBASE_ANDROID_API_KEY'] ?? '',
+    appId: dotenv.env['FIREBASE_ANDROID_APP_ID'] ?? '',
+    messagingSenderId: '1088041065522',
     projectId: 'streaksky-dev',
-    storageBucket: 'streaksky-dev.appspot.com',
+    storageBucket: 'streaksky-dev.firebasestorage.app',
   );
 
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'YOUR-API-KEY',
-    appId: 'YOUR-APP-ID',
-    messagingSenderId: 'YOUR-MESSAGING-SENDER-ID',
+  static FirebaseOptions get ios => FirebaseOptions(
+    apiKey: dotenv.env['FIREBASE_IOS_API_KEY'] ?? '',
+    appId: dotenv.env['FIREBASE_IOS_APP_ID'] ?? '',
+    messagingSenderId: '1088041065522',
     projectId: 'streaksky-dev',
-    storageBucket: 'streaksky-dev.appspot.com',
+    storageBucket: 'streaksky-dev.firebasestorage.app',
     iosBundleId: 'com.example.streaksky',
   );
 
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'YOUR-API-KEY',
-    appId: 'YOUR-APP-ID',
-    messagingSenderId: 'YOUR-MESSAGING-SENDER-ID',
+  static FirebaseOptions get macos => FirebaseOptions(
+    apiKey: dotenv.env['FIREBASE_IOS_API_KEY'] ?? '',
+    appId: dotenv.env['FIREBASE_IOS_APP_ID'] ?? '',
+    messagingSenderId: '1088041065522',
     projectId: 'streaksky-dev',
-    storageBucket: 'streaksky-dev.appspot.com',
+    storageBucket: 'streaksky-dev.firebasestorage.app',
     iosBundleId: 'com.example.streaksky',
   );
 }
