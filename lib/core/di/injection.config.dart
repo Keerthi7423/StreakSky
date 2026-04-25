@@ -16,6 +16,10 @@ import 'package:streaksky/features/auth/data/repositories/firebase_auth_service.
     as _i900;
 import 'package:streaksky/features/auth/domain/repositories/auth_repository.dart'
     as _i799;
+import 'package:streaksky/features/habits/data/repositories/habit_repository_impl.dart'
+    as _i524;
+import 'package:streaksky/features/habits/domain/repositories/habit_repository.dart'
+    as _i593;
 import 'package:streaksky/features/profile/data/repositories/supabase_profile_repository.dart'
     as _i425;
 import 'package:streaksky/features/profile/domain/repositories/profile_repository.dart'
@@ -32,6 +36,9 @@ extension GetItInjectableX on _i174.GetIt {
     final registerModule = _$RegisterModule();
     gh.lazySingleton<_i454.SupabaseClient>(() => registerModule.supabaseClient);
     gh.lazySingleton<_i799.AuthRepository>(() => _i900.FirebaseAuthService());
+    gh.lazySingleton<_i593.HabitRepository>(
+      () => _i524.HabitRepositoryImpl(gh<_i454.SupabaseClient>()),
+    );
     gh.lazySingleton<_i293.ProfileRepository>(
       () => _i425.SupabaseProfileRepository(gh<_i454.SupabaseClient>()),
     );
