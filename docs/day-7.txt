@@ -1,0 +1,85 @@
+================================================================
+DAY 7: CORE HABIT ENGINE - IMPLEMENTATION LOG
+================================================================
+
+1. OVERVIEW
+-----------
+Day 7 focused on building the foundational habit management system. This includes the data models, backend integration with Supabase, state management with Riverpod, and a premium UI for adding new habits.
+
+2. WHAT I IMPLEMENTED
+---------------------
+
+A. HABIT MODEL DESIGN (Task 19)
+- Created 'HabitModel' using the Freezed package for immutability and deep copy support.
+- Implemented 'HabitFrequency' model to handle JSONB frequency data from Supabase.
+- Supported Frequency Types:
+  * Daily: For habits done every day.
+  * Weekdays: For habits like "Morning Gym" done Mon-Fri.
+  * Custom: For habits done X times per week.
+- Fields mapped to Supabase: id, user_id, name, emoji, color_hex, frequency, category, start_date.
+
+B. HABIT REPOSITORY (Task 21)
+- Created 'HabitRepository' interface in the domain layer to decouple logic from the data source.
+- Implemented 'HabitRepositoryImpl' using 'supabase_flutter'.
+- Integrated full CRUD logic:
+  * Fetching: Get all habits for the logged-in user, sorted by 'created_at' (defaulting to creation time if 'sort_order' is not yet present in the DB).
+  * Creation: Insert new habits into the Supabase 'habits' table.
+  * Updating: Sync changes (name, icon, frequency) back to the cloud.
+  * Deletion: Remove habits permanently from the user's list.
+
+C. RIVERPOD CONTROLLER (Task 21)
+- Implemented 'HabitController' using 'StateNotifierProvider'.
+- Added 'habitsListProvider' (FutureProvider) for reactive UI updates.
+- DEMO MODE INTEGRATION:
+  * Added logic to detect 'demo@streaksky.com'.
+  * In demo mode, the app provides a curated list of mock habits (Read 20 pages, Gym Session) so you can showcase the app without needing a live database.
+
+D. "ADD HABIT" BOTTOM SHEET (Task 20)
+- Designed a high-fidelity bottom sheet following the "Dark & Powerful" aesthetic.
+- Key Components:
+  * Interactive Emoji Picker: A horizontal strip of 10+ habit-related icons.
+  * Neon Color Picker: Selection of signature accent colors (Neon Green, Blue, Purple, etc.).
+  * Category Chips: Categorization for better analytics (Health, Learning, Work).
+  * Smooth Animations: Integrated with the system keyboard using MediaQuery.
+
+E. HOME SCREEN UPDATES
+- Transformed the placeholder Home Screen into a functional Habit List.
+- Implemented "Empty State" with a "START YOUR LEGACY" call-to-action.
+- Created stylized Habit Cards featuring a 4px left-border accent matching the habit's color.
+
+3. INTERVIEW PREPARATION - KEY TALKING POINTS
+---------------------------------------------
+
+Q1: Why did you use JSONB for the habit frequency?
+A1: Habit frequency is non-linear. Some users want it daily, others on specific days, others just "3 times a week". Storing this as a JSONB column in Postgres (Supabase) allows us to be flexible without creating a complex schema with many nullable columns or joins.
+
+Q2: How did you handle state management for the habit list?
+A2: I used Riverpod's 'FutureProvider' to fetch the habits. This allows the UI to easily handle Loading, Data, and Error states using the .when() pattern. I used a 'StateNotifier' for the 'HabitController' to handle the side-effects like adding or deleting habits, and then used ref.invalidate() to refresh the list automatically.
+
+Q3: How do you handle offline-first or demo scenarios?
+A3: For Day 7, I implemented a 'Demo Mode' logic inside the providers. This is a great talking point for interviews because it shows you've thought about "Offline UX" or "Preview UX". If the user is in demo mode, we bypass the repository calls and return local constants, ensuring the recruiter or user always sees a beautiful, populated app.
+
+Q4: What's the benefit of using the Repository Pattern here?
+A4: It separates the domain logic (what the app does) from the data source logic (how it fetches data). If we decide to switch from Supabase to Firebase or local SQLite in the future, we only change the implementation of the repository, not the UI or the Controllers.
+
+4. NEXT STEPS (DAY 8)
+---------------------
+- Build Home Screen Habits List UI with neon glow.
+- Implement Habit Completion logic with bounce animations.
+- Configure haptic feedback on completion.
+
+================================================================
+TROUBLESHOOTING: MISSING COLUMN ERROR
+================================================================
+
+If you see an error: "column habits.sort_order does not exist", run the 
+following SQL in your Supabase SQL Editor:
+
+ALTER TABLE public.habits ADD COLUMN IF NOT EXISTS sort_order INTEGER DEFAULT 0;
+
+This will add the missing column and allow you to re-enable custom 
+sorting in the future.
+
+================================================================
+STREAKSKY - DAY 7 COMPLETE
+================================================================
