@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'app_config.dart';
 import 'core/di/injection.dart';
@@ -12,6 +13,9 @@ import 'firebase_options.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Load environment variables
+  await dotenv.load(fileName: ".env");
+
   // 1. AppConfig initialization (handled by flavor mains, but safety check here)
   try {
     AppConfig.instance;
@@ -20,8 +24,8 @@ Future<void> main() async {
       appTitle: 'StreakSky',
       flavor: AppFlavor.dev,
       apiBaseUrl: 'http://localhost:3000',
-      supabaseUrl: 'https://fwwcbiskdyunwtuzwstj.supabase.co',
-      supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ3d2NiaXNrZHl1bnd0dXp3c3RqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMTU3MTksImV4cCI6MjA5MjY5MTcxOX0.bQCELUv6d5LvPM33jKrSRS6BsOwIUJkH6TSQj0gVATQ',
+      supabaseUrl: dotenv.env['SUPABASE_URL'] ?? '',
+      supabaseAnonKey: dotenv.env['SUPABASE_ANON_KEY'] ?? '',
     );
   }
 
