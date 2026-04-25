@@ -1,0 +1,66 @@
+================================================================
+DAY 05: USER PROFILE & DATABASE INTEGRATION
+================================================================
+
+Today's focus was on bridging the gap between Authentication and User Data. We implemented the User Profile system using Supabase as our primary data store, following a clean architecture approach with Riverpod for state management.
+
+---------------------------------------------------------
+1. IMPLEMENTATION OVERVIEW
+---------------------------------------------------------
+
+### A. User Profile Model (Domain Layer)
+- **Path**: `lib/features/profile/domain/models/user_profile.dart`
+- **Tech**: Freezed + JsonSerializable
+- **Rationale**: Used `freezed` to ensure immutability, which is a best practice in Flutter to prevent accidental state mutations. `json_serializable` handles the mapping between Supabase (Postgres) column names and Dart field names.
+
+### B. Profile Repository (Data Layer)
+- **Path**: `lib/features/profile/data/repositories/supabase_profile_repository.dart`
+- **Logic**: Implemented a repository that interacts directly with the Supabase client. 
+  - `getProfile()`: Fetches a single user record.
+  - `updateProfile()`: Updates only user-editable fields (Name, Avatar, etc.).
+  - `createProfile()`: Inserts a new record when a user first signs up.
+- **Dependency Injection**: Registered via `injectable` as a `LazySingleton`.
+
+### C. Profile Controller (Presentation Layer - Logic)
+- **Path**: `lib/features/profile/presentation/controllers/profile_controller.dart`
+- **Tech**: Riverpod 2.0 (AsyncNotifier)
+- **Feature: Auto-Creation**: The `build()` method now includes proactive logic to check if a profile exists in Supabase upon login. If it doesn't (new user), it automatically creates one using Firebase Auth metadata (Email, Display Name, Avatar).
+- **Bug Fix**: Corrected relative import paths (using `../../../../` to reach the `core` directory from nested feature folders).
+
+### D. UI Implementation (Presentation Layer - Views)
+- **Profile Screen**: 
+  - Integrated with `profileControllerProvider`.
+  - Added a "Neon Aesthetic" avatar with a glowing border.
+  - **Bug Fix**: Removed invalid `const` keyword on widgets containing dynamic values (like `AppTheme.neonAccent`).
+- **Profile Edit Screen**:
+  - Implemented form validation and state-based updates.
+  - Uses the "Dark & Powerful" theme: #0D0D0D background and #B3FF00 accents.
+
+---------------------------------------------------------
+2. TECHNICAL INTERVIEW - KEY TALKING POINTS
+---------------------------------------------------------
+
+**Q: Why use both Firebase and Supabase?**
+**A:** Firebase is industry-standard for Authentication and FCM. Supabase provides a powerful Relational Database (PostgreSQL) which is superior for complex habit tracking queries and relational data.
+
+**Q: How do you handle "Race Conditions" during profile creation?**
+**A:** In the `ProfileController`, the `build` method is reactive. We check for profile existence and create it if missing, ensuring that the UI always has a valid profile object once the user is authenticated.
+
+**Q: Why did you remove 'const' from the CircularProgressIndicator?**
+**A:** In Flutter, `const` constructors require all parameters to be constant. Since `AppTheme.neonAccent` is a variable (even if final), the widget tree containing it cannot be marked as `const`.
+
+---------------------------------------------------------
+3. STEP-BY-STEP IMPLEMENTATION DETAIL
+---------------------------------------------------------
+
+1. **Model Definition**: Created `UserProfile` with `@freezed`.
+2. **DI Setup**: Created `RegisterModule` to provide the `SupabaseClient`.
+3. **Repository**: Built `SupabaseProfileRepository` to encapsulate database calls.
+4. **State Management**: Wrote `ProfileController` with auto-sync logic. 
+5. **UI & Navigation**: Built `ProfileScreen` and `ProfileEditScreen` with neon theme.
+
+---------------------------------------------------------
+[Day 05] Status: COMPLETE ✅
+Next Task: [Day 06] - Onboarding Flow & Anonymous Guest Mode.
+================================================================
+

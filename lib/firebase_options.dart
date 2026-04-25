@@ -44,37 +44,38 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'YOUR-API-KEY',
-    appId: 'YOUR-APP-ID',
-    messagingSenderId: 'YOUR-MESSAGING-SENDER-ID',
+    apiKey: 'AIzaSyANUtQmo49FcMKwnC1O8dVrP2l0Gt-aC1w',
+    appId: '1:1088041065522:web:0681556b9989349521f02b',
+    messagingSenderId: '1088041065522',
     projectId: 'streaksky-dev',
     authDomain: 'streaksky-dev.firebaseapp.com',
-    storageBucket: 'streaksky-dev.appspot.com',
+    storageBucket: 'streaksky-dev.firebasestorage.app',
+    measurementId: 'G-K6L0RCYCZT',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'YOUR-API-KEY',
-    appId: 'YOUR-APP-ID',
-    messagingSenderId: 'YOUR-MESSAGING-SENDER-ID',
+    apiKey: 'AIzaSyBI9wrTateK1PM_R1tJ_KXIKrGjLmtkmiU',
+    appId: '1:1088041065522:android:2b44016f0e637d9d21f02b',
+    messagingSenderId: '1088041065522',
     projectId: 'streaksky-dev',
-    storageBucket: 'streaksky-dev.appspot.com',
+    storageBucket: 'streaksky-dev.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'YOUR-API-KEY',
-    appId: 'YOUR-APP-ID',
-    messagingSenderId: 'YOUR-MESSAGING-SENDER-ID',
+    apiKey: 'AIzaSyANUtQmo49FcMKwnC1O8dVrP2l0Gt-aC1w',
+    appId: 'YOUR-APP-ID', // TODO: Update this for iOS
+    messagingSenderId: '1088041065522',
     projectId: 'streaksky-dev',
-    storageBucket: 'streaksky-dev.appspot.com',
+    storageBucket: 'streaksky-dev.firebasestorage.app',
     iosBundleId: 'com.example.streaksky',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'YOUR-API-KEY',
-    appId: 'YOUR-APP-ID',
-    messagingSenderId: 'YOUR-MESSAGING-SENDER-ID',
+    apiKey: 'AIzaSyANUtQmo49FcMKwnC1O8dVrP2l0Gt-aC1w',
+    appId: 'YOUR-APP-ID', // TODO: Update this for macOS
+    messagingSenderId: '1088041065522',
     projectId: 'streaksky-dev',
-    storageBucket: 'streaksky-dev.appspot.com',
+    storageBucket: 'streaksky-dev.firebasestorage.app',
     iosBundleId: 'com.example.streaksky',
   );
 }
