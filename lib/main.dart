@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app_config.dart';
 import 'core/di/injection.dart';
@@ -48,9 +49,16 @@ Future<void> main() async {
   }
 
 
+  // 5. Initialize Shared Preferences & Onboarding Status
+  final prefs = await SharedPreferences.getInstance();
+  final bool onboardingCompleted = prefs.getBool('onboarding_completed') ?? false;
+
   runApp(
-    const ProviderScope(
-      child: StreakSkyApp(),
+    ProviderScope(
+      overrides: [
+        onboardingCompletedProvider.overrideWith((ref) => onboardingCompleted),
+      ],
+      child: const StreakSkyApp(),
     ),
   );
 }

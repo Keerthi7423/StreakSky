@@ -67,6 +67,21 @@ class AuthController extends StateNotifier<AsyncValue<void>> {
     });
   }
 
+  Future<void> signInAnonymously() async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      await _authRepository.signInAnonymously();
+    });
+  }
+
+  Future<void> deleteAccount() async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      await _authRepository.deleteAccount();
+      _ref.read(demoLoggedInProvider.notifier).state = false;
+    });
+  }
+
   Future<void> signOut() async {
     state = const AsyncValue.loading();
     _ref.read(demoLoggedInProvider.notifier).state = false;
