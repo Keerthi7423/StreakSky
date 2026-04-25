@@ -1,0 +1,57 @@
+================================================================
+DAY 6: ONBOARDING, GUEST MODE & ACCOUNT MANAGEMENT
+================================================================
+
+In Day 6 of the StreakSky (Habit Tracker) development, we focused on the initial user experience (Onboarding) and providing flexible authentication options (Guest Mode) along with critical account management features (Logout/Delete).
+
+---------------------------------------------------------
+1. IMPLEMENTED FEATURES & TECHNICAL DEEP DIVE
+---------------------------------------------------------
+
+### A. Onboarding Flow (Task 16)
+- **Implementation**: Created `OnboardingScreen` using a `PageView.builder` to showcase the app's value proposition.
+- **Design**: Used a "Dark & Powerful" aesthetic with #0D0D0D background and neon accents.
+- **Animations**: Integrated `flutter_animate` for smooth fade-ins and scale transitions of icons/illustrations.
+- **Persistence**: Used `shared_preferences` to track the `onboarding_completed` flag. This ensures the user only sees onboarding once.
+- **Navigation Logic**: Updated `GoRouter` redirect logic to check the onboarding status before allowing access to Login or Home screens.
+
+### B. Anonymous Guest Mode (Task 17)
+- **Logic**: Implemented `signInAnonymously` in `AuthRepository` and `FirebaseAuthService` using Firebase Auth's built-in support.
+- **Persistence**: Guest accounts are persistent across app restarts until the user logs out or clears app data.
+- **UI**: Added a "CONTINUE AS GUEST" button on the `LoginScreen` for low-friction entry into the app.
+
+### C. Logout & Destructive Account Delete (Task 18)
+- **Logout**: Standard Firebase `signOut()` implementation, also resetting local demo states.
+- **Delete Account**: Implemented `user.delete()` in the repository.
+- **UI/UX**: Added both options in the `ProfileScreen`. For account deletion, a custom `AlertDialog` was implemented to prevent accidental data loss, following security best practices for destructive actions.
+
+---------------------------------------------------------
+2. INTERVIEW PREPARATION - Q&A
+---------------------------------------------------------
+
+**Q: Why use SharedPreferences for onboarding instead of a database?**
+A: Onboarding is a device-specific UI state. Storing it locally is faster and doesn't require an authenticated session or network call. It's the standard way to handle "First Run" logic in mobile apps.
+
+**Q: How does the GoRouter redirect logic handle the different states (Splashing, Onboarding, Unauth, Auth)?**
+A: The redirect function acts as a state machine. It prioritizes states in this order:
+1. Splash (Let it finish its animation).
+2. Onboarding (If not completed, force to /onboarding).
+3. Auth (If not logged in, force to /login, unless they are already trying to log in/register).
+4. Authenticated (If logged in, prevent access to login/onboarding and redirect to /home).
+
+**Q: What are the risks of 'Guest Mode' and how do you handle them?**
+A: The main risk is data loss if the user uninstalls the app, as the anonymous UID is lost. In future phases, we should implement an "Account Linking" feature to convert anonymous users to permanent accounts (Email/Google/Apple) without losing their streak data.
+
+**Q: What is a 'Redirect Loop' in GoRouter and how did you fix it today?**
+A: A redirect loop occurs when two or more routes keep redirecting to each other (e.g., Home -> Onboarding -> Home). I encountered this when the logic tried to force Onboarding (because it wasn't done) while simultaneously trying to force Home (because the user was logged in). I fixed it by prioritizing the states: Onboarding status is checked first and is absolute; auth status is only checked after onboarding is confirmed as complete.
+
+---------------------------------------------------------
+3. ARCHITECTURAL PATTERN
+---------------------------------------------------------
+- **Pattern**: Clean Architecture + Riverpod (StateNotifier).
+- **Flow**: UI -> Controller (StateNotifier) -> Repository (Interface) -> Service (Firebase Implementation).
+- **Benefit**: This decoupling allows us to swap Firebase for another auth provider (like Supabase or a custom backend) by just creating a new implementation of `AuthRepository` without touching the UI logic.
+
+================================================================
+NEXT STEP: PHASE 3 - CORE HABIT ENGINE (DAY 7)
+================================================================

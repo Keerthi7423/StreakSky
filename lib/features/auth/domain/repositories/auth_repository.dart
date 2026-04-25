@@ -8,6 +8,8 @@ abstract class AuthRepository {
   Future<UserCredential> createUserWithEmailAndPassword(String email, String password);
   Future<UserCredential> signInWithGoogle();
   Future<UserCredential> signInWithApple();
+  Future<UserCredential> signInAnonymously();
+  Future<void> deleteAccount();
   Future<void> signOut();
   Future<void> sendPasswordResetEmail(String email);
 }

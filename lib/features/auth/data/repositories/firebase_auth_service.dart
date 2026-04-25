@@ -60,6 +60,19 @@ class FirebaseAuthService implements AuthRepository {
   }
 
   @override
+  Future<UserCredential> signInAnonymously() async {
+    return await _firebaseAuth.signInAnonymously();
+  }
+
+  @override
+  Future<void> deleteAccount() async {
+    final user = _firebaseAuth.currentUser;
+    if (user != null) {
+      await user.delete();
+    }
+  }
+
+  @override
   Future<void> signOut() async {
     await _googleSignIn.signOut();
     await _firebaseAuth.signOut();

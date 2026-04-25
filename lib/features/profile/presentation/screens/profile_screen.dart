@@ -122,14 +122,53 @@ class ProfileScreen extends ConsumerWidget {
             child: OutlinedButton(
               onPressed: () => ref.read(authControllerProvider.notifier).signOut(),
               style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: Colors.redAccent, width: 1),
+                side: BorderSide(color: Colors.white.withOpacity(0.2), width: 1),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
               child: const Text(
                 'LOG OUT',
-                style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold, letterSpacing: 1),
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, letterSpacing: 1),
               ),
             ),
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            height: 56,
+            child: TextButton(
+              onPressed: () => _showDeleteConfirmation(context, ref),
+              child: const Text(
+                'DELETE ACCOUNT',
+                style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.w600, letterSpacing: 1),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showDeleteConfirmation(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFF1A1A1A),
+        title: const Text('Delete Account?', style: TextStyle(color: Colors.white)),
+        content: const Text(
+          'This action is permanent and will delete all your streaks and data. Are you sure?',
+          style: TextStyle(color: Colors.white70),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('CANCEL', style: TextStyle(color: Colors.white60)),
+          ),
+          TextButton(
+            onPressed: () {
+              ref.read(authControllerProvider.notifier).deleteAccount();
+              Navigator.pop(context);
+            },
+            child: const Text('DELETE', style: TextStyle(color: Colors.redAccent)),
           ),
         ],
       ),

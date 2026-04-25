@@ -8,29 +8,50 @@ import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/splash/presentation/screens/splash_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
+import '../../features/auth/presentation/screens/onboarding_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../features/auth/presentation/controllers/auth_controller.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> _shellNavigatorKey = GlobalKey<NavigatorState>();
 
+final onboardingCompletedProvider = StateProvider<bool>((ref) => false);
+
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateProvider);
   final demoLoggedIn = ref.watch(demoLoggedInProvider);
+  final onboardingCompleted = ref.watch(onboardingCompletedProvider);
 
   return GoRouter(
     initialLocation: '/splash',
     navigatorKey: _rootNavigatorKey,
     redirect: (context, state) {
       final bool loggedIn = authState.asData?.value != null || demoLoggedIn;
-
       final bool loggingIn = state.matchedLocation == '/login' || state.matchedLocation == '/register';
-
       final bool splashing = state.matchedLocation == '/splash';
+      final bool onboarding = state.matchedLocation == '/onboarding';
 
-      if (splashing) return null; // Let splash handle its own navigation after animation
+      if (splashing) return null;
 
-      if (!loggedIn && !loggingIn) return '/login';
-      if (loggedIn && loggingIn) return '/home';
+      // 1. Handle Onboarding first
+      if (!onboardingCompleted) {
+        return onboarding ? null : '/onboarding';
+      }
+
+      // 2. If onboarding is done, prevent going back to onboarding
+      if (onboarding) {
+        return loggedIn ? '/home' : '/login';
+      }
+
+      // 3. Handle Auth state
+      if (!loggedIn) {
+        return loggingIn ? null : '/login';
+      }
+
+      // 4. If logged in, prevent going back to login/register
+      if (loggingIn) {
+        return '/home';
+      }
 
       return null;
     },
@@ -38,6 +59,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/splash',
         builder: (context, state) => const SplashScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding',
+        builder: (context, state) => const OnboardingScreen(),
       ),
       GoRoute(
         path: '/login',

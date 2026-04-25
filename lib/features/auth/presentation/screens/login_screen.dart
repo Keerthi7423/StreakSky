@@ -135,6 +135,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   'assets/icons/apple.png',
                   () => ref.read(authControllerProvider.notifier).signInWithApple(),
                 ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: TextButton(
+                    onPressed: () => ref.read(authControllerProvider.notifier).signInAnonymously(),
+                    child: Text(
+                      'CONTINUE AS GUEST',
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.5),
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.1,
+                      ),
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 40),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
