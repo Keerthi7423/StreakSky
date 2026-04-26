@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' as fs;
 import 'package:streaksky/core/di/injection.dart';
 import 'package:streaksky/features/auth/presentation/controllers/auth_controller.dart';
 import '../../domain/models/habit_model.dart';
@@ -53,7 +54,7 @@ final habitsListProvider = FutureProvider<List<HabitModel>>((ref) async {
   final isDemo = ref.watch(demoLoggedInProvider);
   
   if (isDemo) {
-    return ref.watch(demoHabitsProvider);
+    return ref.watch(demoHabitsProvider).where((h) => !h.isArchived).toList();
   }
 
   final user = ref.watch(authStateProvider).asData?.value;
@@ -66,7 +67,7 @@ final habitsListProvider = FutureProvider<List<HabitModel>>((ref) async {
     final repo = ref.watch(habitRepositoryProvider);
     final habits = await repo.getHabits(user.uid);
     debugPrint('HabitListProvider: Fetched ${habits.length} habits for ${user.uid}');
-    return habits;
+    return habits.where((h) => !h.isArchived).toList();
   } catch (e) {
     debugPrint('HabitListProvider Error: $e');
     rethrow;
@@ -75,12 +76,31 @@ final habitsListProvider = FutureProvider<List<HabitModel>>((ref) async {
 
 final demoCompletionsProvider = StateProvider<Set<String>>((ref) => {'demo-1'});
 
+final firestoreRealtimeProvider = StreamProvider<Set<String>>((ref) {
+  final user = ref.watch(authStateProvider).asData?.value;
+  if (user == null) return Stream.value({});
+
+  return fs.FirebaseFirestore.instance
+      .collection('sync')
+      .doc(user.uid)
+      .snapshots()
+      .map((snapshot) {
+    if (!snapshot.exists) return {};
+    final data = snapshot.data() as Map<String, dynamic>;
+    final completions = data['habit_completions'] as List<dynamic>?;
+    return completions?.map((e) => e.toString()).toSet() ?? {};
+  });
+});
+
 final habitCompletionsProvider = FutureProvider<Set<String>>((ref) async {
   final isDemo = ref.watch(demoLoggedInProvider);
   if (isDemo) return ref.watch(demoCompletionsProvider);
 
   final user = ref.watch(authStateProvider).asData?.value;
   if (user == null) return {};
+
+  // Watch realtime Firestore updates
+  final realtimeCompletions = ref.watch(firestoreRealtimeProvider).asData?.value ?? {};
 
   final supabase = getIt<SupabaseClient>();
   final localService = getIt<HabitLocalService>();
@@ -90,6 +110,9 @@ final habitCompletionsProvider = FutureProvider<Set<String>>((ref) async {
   // 1. Get from local storage first (Offline-first)
   final localCompletions = localService.getCompletionsForDate(dateStr);
   
+  // Combine with realtime Firestore data for cross-device sync
+  final combinedCompletions = localCompletions.union(realtimeCompletions);
+
   // 2. Fetch from remote and update local if online
   try {
     final response = await supabase
@@ -113,11 +136,19 @@ final habitCompletionsProvider = FutureProvider<Set<String>>((ref) async {
       }
     }
     
-    return remoteHabitIds.union(localCompletions);
+    return remoteHabitIds.union(combinedCompletions);
   } catch (e) {
     debugPrint('HabitCompletionsProvider: Offline mode or error: $e');
-    return localCompletions;
+    return combinedCompletions;
   }
+});
+
+final habitHistoryProvider = FutureProvider.family<List<HabitCompletionModel>, String>((ref, habitId) async {
+  final isDemo = ref.watch(demoLoggedInProvider);
+  if (isDemo) return []; // Demo history not implemented for now
+
+  final repo = ref.watch(habitRepositoryProvider);
+  return await repo.getHabitCompletions(habitId);
 });
 
 class HabitController extends StateNotifier<AsyncValue<void>> {
@@ -168,6 +199,23 @@ class HabitController extends StateNotifier<AsyncValue<void>> {
     state = await AsyncValue.guard(() async {
       if (!isDemo) {
         await _repository.deleteHabit(habitId);
+      } else {
+        _ref.read(demoHabitsProvider.notifier).update((state) => state.where((h) => h.id != habitId).toList());
+      }
+      _ref.invalidate(habitsListProvider);
+    });
+  }
+
+  Future<void> archiveHabit(String habitId) async {
+    final isDemo = _ref.read(demoLoggedInProvider);
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      if (!isDemo) {
+        await _repository.archiveHabit(habitId);
+      } else {
+        _ref.read(demoHabitsProvider.notifier).update((state) => 
+          state.map((h) => h.id == habitId ? h.copyWith(isArchived: true) : h).toList()
+        );
       }
       _ref.invalidate(habitsListProvider);
     });

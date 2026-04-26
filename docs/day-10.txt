@@ -1,0 +1,97 @@
+================================================================
+DAY 10: ADVANCED HABIT MANAGEMENT & REAL-TIME SYNC
+================================================================
+
+Today's focus was on enhancing the core habit experience by adding granular 
+detail views, implementing data preservation strategies (archiving), and 
+enabling real-time multi-device synchronization using Firebase Firestore.
+
+----------------------------------------------------------------
+1. CONCEPT: HABIT DETAIL SCREEN & HISTORY
+----------------------------------------------------------------
+The Habit Detail Screen provides a deep dive into a specific habit's 
+performance. It serves as the primary hub for habit analytics and management.
+
+Key Technical Implementation:
+- FAMILY PROVIDERS: Used `FutureProvider.family` to fetch history for a 
+  specific habit ID. This enables efficient caching and reactive updates 
+  at the habit level.
+- DATA AGGREGATION: Combined habit metadata (name, emoji, color) with 
+  historical completion logs fetched from Supabase.
+- UI/UX: Implemented a "Dark & Powerful" aesthetic with neon accents 
+  matching the habit's theme color. Used `intl` for precise date formatting.
+
+Interview Tip: "Why use a family provider?"
+Answer: Family providers allow you to pass parameters (like a habit ID) 
+to a provider. This ensures that each habit has its own independent 
+state and data-fetching logic, preventing UI glitches when switching 
+between different detail screens.
+
+----------------------------------------------------------------
+2. CONCEPT: SOFT DELETION & ARCHIVING
+----------------------------------------------------------------
+Instead of permanent deletion, we implemented "Archiving" (Soft Deletion).
+
+The Logic:
+- Added an `is_archived` boolean flag to the `HabitModel` and database.
+- UPDATED MODEL: Added `note` and `energy_level` to `HabitCompletionModel` 
+  to support detailed habit logging and data-rich history views.
+- When archived, a habit is filtered out of the `habitsListProvider` 
+  (the daily list) but remains in the database.
+- This preserves the user's historical data and streaks for analytics 
+  without cluttering their daily dashboard.
+
+Interview Tip: "What are the benefits of Soft Deletion?"
+Answer: Data is gold. Permanent deletion destroys historical context 
+needed for year-end reviews or AI pattern recognition. Soft deletion 
+allows the user to "clean up" their UI while keeping the underlying 
+data intact for long-term stats.
+
+----------------------------------------------------------------
+3. CONCEPT: REAL-TIME SYNC (FIREBASE FIRESTORE)
+----------------------------------------------------------------
+While Supabase handles structured persistence, Firebase Firestore is used 
+for low-latency, real-time "broadcasting" of habit completions across devices.
+
+Architectural Split:
+- SUPABASE (Source of Truth): Handles all historical data, user profiles, 
+  and complex relational queries.
+- FIRESTORE (Sync Layer): Specifically used to listen for "Today's" 
+  completions. When a habit is checked on a phone, the tablet UI 
+  updates instantly.
+
+Implementation Detail:
+- `firestoreRealtimeProvider`: A `StreamProvider` that listens to a 
+  single document in Firestore: `sync/{uid}`.
+- RECONCILIATION: In `habitCompletionsProvider`, we perform a UNION 
+  operation between:
+    1. Local Hive completions (Offline-first)
+    2. Firestore real-time completions (Cross-device)
+    3. Supabase fetched completions (Remote persistence)
+
+Interview Tip: "How do you handle multi-device sync conflicts?"
+Answer: We use an "Optimistic UI with Reconciliation" strategy. The app 
+updates locally immediately (Hive). It then pushes to Firestore for 
+instant broadcasting and Supabase for permanent storage. By merging the 
+Firestore stream with local state, the UI stays in sync without 
+manual refreshes.
+
+----------------------------------------------------------------
+4. CONCEPT: REORDERABLE LISTS (UX)
+----------------------------------------------------------------
+Used `SliverReorderableList` on the Home Screen for drag-and-drop.
+
+Technical Flow:
+1. User drags item -> `onReorder` triggers.
+2. `HabitController` performs an optimistic local reorder.
+3. Updated `sort_order` is pushed to Supabase via `upsert`.
+4. The list provider is invalidated to ensure consistency.
+
+----------------------------------------------------------------
+SUMMARY OF WORK DONE:
+- Built `HabitDetailScreen` with history and management options.
+- Implemented `archiveHabit` logic in Repository and Controller.
+- Integrated `cloud_firestore` for real-time completion syncing.
+- Created `firestoreRealtimeProvider` to listen for remote updates.
+- Refined `HabitCard` navigation and UI state.
+================================================================

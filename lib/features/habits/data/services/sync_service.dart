@@ -3,6 +3,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'habit_local_service.dart';
 
 @lazySingleton
@@ -41,6 +42,14 @@ class SyncService {
 
           await _supabase.from('habit_completions').upsert(data);
           await _localService.markAsSynced(completion.habitId, completion.completedDate);
+          
+          // Real-time Firestore sync (for today's completions as per PRD)
+          final today = DateTime.now();
+          final todayStr = "${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}";
+          if (completion.completedDate == todayStr) {
+            await _syncToFirestore(completion.userId, completion.habitId, true);
+          }
+          
           debugPrint('SyncService: Synced habit ${completion.habitId} for ${completion.completedDate}');
         } catch (e) {
           debugPrint('SyncService: Error syncing completion: $e');
@@ -48,6 +57,27 @@ class SyncService {
       }
     } finally {
       _isSyncing = false;
+    }
+  }
+
+  Future<void> _syncToFirestore(String userId, String habitId, bool isCompleted) async {
+    try {
+      final firestore = FirebaseFirestore.instance;
+      final docRef = firestore.collection('sync').doc(userId);
+      
+      if (isCompleted) {
+        await docRef.set({
+          'habit_completions': FieldValue.arrayUnion([habitId]),
+          'updated_at': FieldValue.serverTimestamp(),
+        }, SetOptions(merge: true));
+      } else {
+        await docRef.set({
+          'habit_completions': FieldValue.arrayRemove([habitId]),
+          'updated_at': FieldValue.serverTimestamp(),
+        }, SetOptions(merge: true));
+      }
+    } catch (e) {
+      debugPrint('SyncService: Firestore sync error: $e');
     }
   }
 

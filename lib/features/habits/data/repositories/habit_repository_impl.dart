@@ -1,6 +1,7 @@
 import 'package:injectable/injectable.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../domain/models/habit_model.dart';
+import '../../domain/models/habit_completion_model.dart';
 import '../../domain/repositories/habit_repository.dart';
 
 @LazySingleton(as: HabitRepository)
@@ -55,8 +56,27 @@ class HabitRepositoryImpl implements HabitRepository {
   }
 
   @override
+  Future<void> archiveHabit(String habitId) async {
+    await _supabase
+        .from('habits')
+        .update({'is_archived': true})
+        .eq('id', habitId);
+  }
+
+  @override
   Future<void> reorderHabits(List<HabitModel> habits) async {
     final data = habits.map((h) => h.toJson()).toList();
     await _supabase.from('habits').upsert(data);
+  }
+
+  @override
+  Future<List<HabitCompletionModel>> getHabitCompletions(String habitId) async {
+    final response = await _supabase
+        .from('habit_completions')
+        .select()
+        .eq('habit_id', habitId)
+        .order('completed_date', ascending: false);
+    
+    return (response as List).map((json) => HabitCompletionModel.fromJson(json)).toList();
   }
 }

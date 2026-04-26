@@ -28,6 +28,9 @@ mixin _$HabitCompletionModel {
   String get userId => throw _privateConstructorUsedError;
   @JsonKey(name: 'completed_date')
   String get completedDate => throw _privateConstructorUsedError;
+  String? get note => throw _privateConstructorUsedError;
+  @JsonKey(name: 'energy_level')
+  int? get energyLevel => throw _privateConstructorUsedError;
   @JsonKey(name: 'synced')
   bool get synced => throw _privateConstructorUsedError;
   @JsonKey(name: 'created_at')
@@ -55,6 +58,8 @@ abstract class $HabitCompletionModelCopyWith<$Res> {
     @JsonKey(name: 'habit_id') String habitId,
     @JsonKey(name: 'user_id') String userId,
     @JsonKey(name: 'completed_date') String completedDate,
+    String? note,
+    @JsonKey(name: 'energy_level') int? energyLevel,
     @JsonKey(name: 'synced') bool synced,
     @JsonKey(name: 'created_at') DateTime? createdAt,
   });
@@ -82,6 +87,8 @@ class _$HabitCompletionModelCopyWithImpl<
     Object? habitId = null,
     Object? userId = null,
     Object? completedDate = null,
+    Object? note = freezed,
+    Object? energyLevel = freezed,
     Object? synced = null,
     Object? createdAt = freezed,
   }) {
@@ -103,6 +110,14 @@ class _$HabitCompletionModelCopyWithImpl<
                 ? _value.completedDate
                 : completedDate // ignore: cast_nullable_to_non_nullable
                       as String,
+            note: freezed == note
+                ? _value.note
+                : note // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            energyLevel: freezed == energyLevel
+                ? _value.energyLevel
+                : energyLevel // ignore: cast_nullable_to_non_nullable
+                      as int?,
             synced: null == synced
                 ? _value.synced
                 : synced // ignore: cast_nullable_to_non_nullable
@@ -131,6 +146,8 @@ abstract class _$$HabitCompletionModelImplCopyWith<$Res>
     @JsonKey(name: 'habit_id') String habitId,
     @JsonKey(name: 'user_id') String userId,
     @JsonKey(name: 'completed_date') String completedDate,
+    String? note,
+    @JsonKey(name: 'energy_level') int? energyLevel,
     @JsonKey(name: 'synced') bool synced,
     @JsonKey(name: 'created_at') DateTime? createdAt,
   });
@@ -154,6 +171,8 @@ class __$$HabitCompletionModelImplCopyWithImpl<$Res>
     Object? habitId = null,
     Object? userId = null,
     Object? completedDate = null,
+    Object? note = freezed,
+    Object? energyLevel = freezed,
     Object? synced = null,
     Object? createdAt = freezed,
   }) {
@@ -175,6 +194,14 @@ class __$$HabitCompletionModelImplCopyWithImpl<$Res>
             ? _value.completedDate
             : completedDate // ignore: cast_nullable_to_non_nullable
                   as String,
+        note: freezed == note
+            ? _value.note
+            : note // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        energyLevel: freezed == energyLevel
+            ? _value.energyLevel
+            : energyLevel // ignore: cast_nullable_to_non_nullable
+                  as int?,
         synced: null == synced
             ? _value.synced
             : synced // ignore: cast_nullable_to_non_nullable
@@ -196,6 +223,8 @@ class _$HabitCompletionModelImpl implements _HabitCompletionModel {
     @JsonKey(name: 'habit_id') required this.habitId,
     @JsonKey(name: 'user_id') required this.userId,
     @JsonKey(name: 'completed_date') required this.completedDate,
+    this.note,
+    @JsonKey(name: 'energy_level') this.energyLevel,
     @JsonKey(name: 'synced') this.synced = false,
     @JsonKey(name: 'created_at') this.createdAt,
   });
@@ -215,6 +244,11 @@ class _$HabitCompletionModelImpl implements _HabitCompletionModel {
   @JsonKey(name: 'completed_date')
   final String completedDate;
   @override
+  final String? note;
+  @override
+  @JsonKey(name: 'energy_level')
+  final int? energyLevel;
+  @override
   @JsonKey(name: 'synced')
   final bool synced;
   @override
@@ -223,7 +257,7 @@ class _$HabitCompletionModelImpl implements _HabitCompletionModel {
 
   @override
   String toString() {
-    return 'HabitCompletionModel(id: $id, habitId: $habitId, userId: $userId, completedDate: $completedDate, synced: $synced, createdAt: $createdAt)';
+    return 'HabitCompletionModel(id: $id, habitId: $habitId, userId: $userId, completedDate: $completedDate, note: $note, energyLevel: $energyLevel, synced: $synced, createdAt: $createdAt)';
   }
 
   @override
@@ -236,6 +270,9 @@ class _$HabitCompletionModelImpl implements _HabitCompletionModel {
             (identical(other.userId, userId) || other.userId == userId) &&
             (identical(other.completedDate, completedDate) ||
                 other.completedDate == completedDate) &&
+            (identical(other.note, note) || other.note == note) &&
+            (identical(other.energyLevel, energyLevel) ||
+                other.energyLevel == energyLevel) &&
             (identical(other.synced, synced) || other.synced == synced) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt));
@@ -249,6 +286,8 @@ class _$HabitCompletionModelImpl implements _HabitCompletionModel {
     habitId,
     userId,
     completedDate,
+    note,
+    energyLevel,
     synced,
     createdAt,
   );
@@ -277,6 +316,8 @@ abstract class _HabitCompletionModel implements HabitCompletionModel {
     @JsonKey(name: 'habit_id') required final String habitId,
     @JsonKey(name: 'user_id') required final String userId,
     @JsonKey(name: 'completed_date') required final String completedDate,
+    final String? note,
+    @JsonKey(name: 'energy_level') final int? energyLevel,
     @JsonKey(name: 'synced') final bool synced,
     @JsonKey(name: 'created_at') final DateTime? createdAt,
   }) = _$HabitCompletionModelImpl;
@@ -295,6 +336,11 @@ abstract class _HabitCompletionModel implements HabitCompletionModel {
   @override
   @JsonKey(name: 'completed_date')
   String get completedDate;
+  @override
+  String? get note;
+  @override
+  @JsonKey(name: 'energy_level')
+  int? get energyLevel;
   @override
   @JsonKey(name: 'synced')
   bool get synced;
