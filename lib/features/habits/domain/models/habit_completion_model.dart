@@ -10,6 +10,8 @@ class HabitCompletionModel with _$HabitCompletionModel {
     @JsonKey(name: 'habit_id') required String habitId,
     @JsonKey(name: 'user_id') required String userId,
     @JsonKey(name: 'completed_date') required String completedDate,
+    String? note,
+    @JsonKey(name: 'energy_level') int? energyLevel,
     @JsonKey(name: 'synced') @Default(false) bool synced,
     @JsonKey(name: 'created_at') DateTime? createdAt,
   }) = _HabitCompletionModel;

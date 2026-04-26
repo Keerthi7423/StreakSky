@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/models/habit_model.dart';
 import '../controllers/habit_controller.dart';
+import '../screens/habit_detail_screen.dart';
 
 class HabitCard extends ConsumerStatefulWidget {
   final HabitModel habit;
@@ -76,7 +77,14 @@ class _HabitCardState extends ConsumerState<HabitCard> with SingleTickerProvider
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: _handleToggle,
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HabitDetailScreen(habit: widget.habit),
+              ),
+            );
+          },
           borderRadius: BorderRadius.circular(20),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),

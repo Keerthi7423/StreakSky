@@ -13,6 +13,8 @@ _$HabitCompletionModelImpl _$$HabitCompletionModelImplFromJson(
   habitId: json['habit_id'] as String,
   userId: json['user_id'] as String,
   completedDate: json['completed_date'] as String,
+  note: json['note'] as String?,
+  energyLevel: (json['energy_level'] as num?)?.toInt(),
   synced: json['synced'] as bool? ?? false,
   createdAt: json['created_at'] == null
       ? null
@@ -26,6 +28,8 @@ Map<String, dynamic> _$$HabitCompletionModelImplToJson(
   'habit_id': instance.habitId,
   'user_id': instance.userId,
   'completed_date': instance.completedDate,
+  'note': instance.note,
+  'energy_level': instance.energyLevel,
   'synced': instance.synced,
   'created_at': instance.createdAt?.toIso8601String(),
 };
