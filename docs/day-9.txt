@@ -1,0 +1,78 @@
+# StreakSky Development - Day 9: Offline-First Experience & Reordering Logic
+
+## Task Overview
+Today's implementation focused on making StreakSky robust and user-friendly through offline-first data management and interactive UI features. We integrated Hive for local storage, built a background sync system, and implemented drag-and-drop reordering for habits.
+
+---
+
+## 1. Hive-Based Offline Storage (Task 25)
+
+### Why Hive?
+For a habit tracker, responsiveness is key. Users want to log their habits instantly without waiting for a network request. **Hive** was chosen because:
+- **Performance:** It is incredibly fast as it's a key-value store built in pure Dart.
+- **Lightweight:** No complex setup like SQLite.
+- **Offline-First:** Data is written locally first, ensuring the UI updates immediately regardless of connectivity.
+
+### Implementation Details:
+- **HabitCompletionModel:** A new model was created to track habit completions, including a `synced` flag to distinguish between local and remote data.
+- **HabitLocalService:** A singleton service that manages the Hive box (`habit_completions`). It provides methods for saving, removing, and retrieving unsynced completions.
+- **Initialization:** Hive is initialized in `main.dart` using `Hive.initFlutter()`, and the completion box is opened during app startup.
+
+---
+
+## 2. Background Sync Logic (Task 26)
+
+### The Strategy:
+We implemented an **Offline-First with Reconciliation** strategy.
+
+### How it works:
+1. **Local Write:** When a user toggles a habit, the change is saved immediately to Hive.
+2. **Connectivity Monitoring:** We use the `connectivity_plus` package to listen for network changes.
+3. **Sync Trigger:** Whenever the device comes online, the `SyncService` is triggered to push all unsynced completions to Supabase.
+4. **Data Reconciliation:** The `habitCompletionsProvider` (Riverpod) reads from Hive first to show immediate results, then fetches from Supabase in the background to ensure consistency.
+
+### Interview Key Point: "Optimistic UI Updates"
+By updating the local Hive store and invalidating the Riverpod provider immediately, we provide a "zero-latency" feel. The sync happens in the background without blocking the user.
+
+---
+
+## 3. Drag-and-Drop Habit Reordering (Task 27)
+
+### Technical Challenge:
+Maintaining a consistent order across devices and sessions.
+
+### Implementation:
+- **Model Update:** `HabitModel` includes a `sortOrder` (int) field.
+- **UI:** Replaced `SliverList` with `SliverReorderableList` in `HomeScreen`.
+- **Logic:**
+    - The `onReorder` callback in the UI calculates the new indices.
+    - `HabitController.reorderHabits` updates the `sortOrder` for the entire list.
+    - The updated list is then sent to Supabase using an `upsert` operation in `HabitRepository`.
+- **Database:** Supabase `upsert` handles updating multiple rows efficiently in a single call based on their primary key (`id`).
+
+---
+
+## Technical Deep Dive (Interview Prep)
+
+### Q: How do you handle sync conflicts?
+**A:** In this implementation, we use a "Last Write Wins" or "Remote Reconciliation" approach for simplicity. For a habit tracker, completions are usually binary (done/not done), so conflicts are rare. If a remote completion exists that isn't in local storage, we pull it down to keep the state consistent.
+
+### Q: Why use `SliverReorderableList` instead of `ReorderableListView`?
+**A:** `SliverReorderableList` is used because the Home Screen uses a `CustomScrollView` for a "Dark & Powerful" aesthetic with a pinned `SliverAppBar`. Slivers provide better performance and more control over scrolling effects compared to standard box widgets.
+
+### Q: What is the benefit of `LazySingleton` in Dependency Injection?
+**A:** Using `getIt` with `@lazySingleton` ensures that services like `HabitLocalService` and `SyncService` are only initialized when first needed, saving memory and improving startup time.
+
+---
+
+## Summary of Changes
+- **New Files:**
+    - `lib/features/habits/domain/models/habit_completion_model.dart`
+    - `lib/features/habits/data/services/habit_local_service.dart`
+    - `lib/features/habits/data/services/sync_service.dart`
+- **Modified Files:**
+    - `lib/main.dart`: Hive initialization.
+    - `lib/features/habits/domain/repositories/habit_repository.dart`: Added reordering method.
+    - `lib/features/habits/data/repositories/habit_repository_impl.dart`: Implemented reordering.
+    - `lib/features/habits/presentation/controllers/habit_controller.dart`: Integrated local storage and reordering logic.
+    - `lib/features/habits/presentation/screens/home_screen.dart`: Added reorderable UI.
