@@ -53,4 +53,10 @@ class HabitRepositoryImpl implements HabitRepository {
   Future<void> deleteHabit(String habitId) async {
     await _supabase.from('habits').delete().eq('id', habitId);
   }
+
+  @override
+  Future<void> reorderHabits(List<HabitModel> habits) async {
+    final data = habits.map((h) => h.toJson()).toList();
+    await _supabase.from('habits').upsert(data);
+  }
 }

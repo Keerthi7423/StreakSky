@@ -22,8 +22,7 @@ HabitFrequency _$HabitFrequencyFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$HabitFrequency {
   FrequencyType get type => throw _privateConstructorUsedError;
-  List<int>? get daysOfWeek =>
-      throw _privateConstructorUsedError; // 1-7 (Mon-Sun) if type is weekdays or custom
+  List<int>? get daysOfWeek => throw _privateConstructorUsedError;
   int? get timesPerWeek => throw _privateConstructorUsedError;
 
   /// Serializes this HabitFrequency to a JSON map.
@@ -159,7 +158,6 @@ class _$HabitFrequencyImpl implements _HabitFrequency {
     return EqualUnmodifiableListView(value);
   }
 
-  // 1-7 (Mon-Sun) if type is weekdays or custom
   @override
   final int? timesPerWeek;
 
@@ -221,7 +219,7 @@ abstract class _HabitFrequency implements HabitFrequency {
   @override
   FrequencyType get type;
   @override
-  List<int>? get daysOfWeek; // 1-7 (Mon-Sun) if type is weekdays or custom
+  List<int>? get daysOfWeek;
   @override
   int? get timesPerWeek;
 

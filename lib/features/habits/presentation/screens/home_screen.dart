@@ -134,20 +134,26 @@ class HomeScreen extends ConsumerWidget {
   Widget _buildHabitList(List<HabitModel> habits, Set<String> completedIds) {
     return SliverPadding(
       padding: const EdgeInsets.all(24),
-      sliver: SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            final habit = habits[index];
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: HabitCard(
-                habit: habit,
-                isCompleted: completedIds.contains(habit.id),
-              ),
-            );
-          },
-          childCount: habits.length,
-        ),
+      sliver: Consumer(
+        builder: (context, ref, child) {
+          return SliverReorderableList(
+            itemBuilder: (context, index) {
+              final habit = habits[index];
+              return Padding(
+                key: ValueKey(habit.id),
+                padding: const EdgeInsets.only(bottom: 16),
+                child: HabitCard(
+                  habit: habit,
+                  isCompleted: completedIds.contains(habit.id),
+                ),
+              );
+            },
+            itemCount: habits.length,
+            onReorder: (oldIndex, newIndex) {
+              ref.read(habitControllerProvider.notifier).reorderHabits(oldIndex, newIndex);
+            },
+          );
+        },
       ),
     );
   }
