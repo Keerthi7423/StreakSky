@@ -74,6 +74,17 @@ final habitsListProvider = FutureProvider<List<HabitModel>>((ref) async {
   }
 });
 
+final todaysHabitsProvider = FutureProvider<List<HabitModel>>((ref) async {
+  final habits = await ref.watch(habitsListProvider.future);
+  final today = DateTime.now();
+  
+  // For simple frequencies (daily, weekdays, custom days), we can filter directly
+  // For 'times per week', it's always 'due' until the count is met for the week.
+  // We'll need to fetch this week's completions to be precise.
+  
+  return habits.where((h) => h.isDue(today)).toList();
+});
+
 final demoCompletionsProvider = StateProvider<Set<String>>((ref) => {'demo-1'});
 
 final firestoreRealtimeProvider = StreamProvider<Set<String>>((ref) {
@@ -189,6 +200,21 @@ class HabitController extends StateNotifier<AsyncValue<void>> {
         _ref.read(demoHabitsProvider.notifier).update((state) => [...state, habit]);
       }
       
+      _ref.invalidate(habitsListProvider);
+    });
+  }
+
+  Future<void> updateHabit(HabitModel habit) async {
+    final isDemo = _ref.read(demoLoggedInProvider);
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      if (!isDemo) {
+        await _repository.updateHabit(habit);
+      } else {
+        _ref.read(demoHabitsProvider.notifier).update((state) => 
+          state.map((h) => h.id == habit.id ? habit : h).toList()
+        );
+      }
       _ref.invalidate(habitsListProvider);
     });
   }

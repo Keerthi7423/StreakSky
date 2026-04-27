@@ -14,6 +14,8 @@ enum FrequencyType {
 
 @freezed
 class HabitFrequency with _$HabitFrequency {
+  const HabitFrequency._();
+
   const factory HabitFrequency({
     @Default(FrequencyType.daily) FrequencyType type,
     List<int>? daysOfWeek,
@@ -22,4 +24,23 @@ class HabitFrequency with _$HabitFrequency {
 
   factory HabitFrequency.fromJson(Map<String, dynamic> json) =>
       _$HabitFrequencyFromJson(json);
+
+  bool isDue(DateTime date, {int completionsThisWeek = 0}) {
+    switch (type) {
+      case FrequencyType.daily:
+        return true;
+      case FrequencyType.weekdays:
+        return date.weekday >= DateTime.monday && date.weekday <= DateTime.friday;
+      case FrequencyType.custom:
+        if (daysOfWeek != null && daysOfWeek!.isNotEmpty) {
+          return daysOfWeek!.contains(date.weekday);
+        }
+        if (timesPerWeek != null) {
+          // If we haven't reached the target for the week, it's "due" every day
+          // until the target is met. This is a common pattern for "X times per week".
+          return completionsThisWeek < timesPerWeek!;
+        }
+        return true;
+    }
+  }
 }

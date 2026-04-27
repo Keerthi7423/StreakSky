@@ -6,6 +6,8 @@ part 'habit_model.g.dart';
 
 @freezed
 class HabitModel with _$HabitModel {
+  const HabitModel._();
+
   const factory HabitModel({
     required String id,
     @JsonKey(name: 'user_id') required String userId,
@@ -22,4 +24,12 @@ class HabitModel with _$HabitModel {
 
   factory HabitModel.fromJson(Map<String, dynamic> json) =>
       _$HabitModelFromJson(json);
+
+  bool isDue(DateTime date, {int completionsThisWeek = 0}) {
+    // If habit hasn't started yet, it's not due
+    if (startDate != null && date.isBefore(startDate!)) {
+      return false;
+    }
+    return frequency.isDue(date, completionsThisWeek: completionsThisWeek);
+  }
 }

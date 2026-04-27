@@ -268,7 +268,7 @@ class __$$HabitModelImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$HabitModelImpl implements _HabitModel {
+class _$HabitModelImpl extends _HabitModel {
   const _$HabitModelImpl({
     required this.id,
     @JsonKey(name: 'user_id') required this.userId,
@@ -281,7 +281,7 @@ class _$HabitModelImpl implements _HabitModel {
     @JsonKey(name: 'is_archived') this.isArchived = false,
     @JsonKey(name: 'sort_order') this.sortOrder = 0,
     @JsonKey(name: 'created_at') this.createdAt,
-  });
+  }) : super._();
 
   factory _$HabitModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$HabitModelImplFromJson(json);
@@ -377,7 +377,7 @@ class _$HabitModelImpl implements _HabitModel {
   }
 }
 
-abstract class _HabitModel implements HabitModel {
+abstract class _HabitModel extends HabitModel {
   const factory _HabitModel({
     required final String id,
     @JsonKey(name: 'user_id') required final String userId,
@@ -391,6 +391,7 @@ abstract class _HabitModel implements HabitModel {
     @JsonKey(name: 'sort_order') final int sortOrder,
     @JsonKey(name: 'created_at') final DateTime? createdAt,
   }) = _$HabitModelImpl;
+  const _HabitModel._() : super._();
 
   factory _HabitModel.fromJson(Map<String, dynamic> json) =
       _$HabitModelImpl.fromJson;
