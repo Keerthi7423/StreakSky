@@ -19,7 +19,7 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final habitsAsync = ref.watch(habitsListProvider);
+    final habitsAsync = ref.watch(todaysHabitsProvider);
     final completionsAsync = ref.watch(habitCompletionsProvider);
 
     // Listen for errors in the habit controller (e.g. during creation)

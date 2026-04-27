@@ -135,12 +135,13 @@ class __$$HabitFrequencyImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$HabitFrequencyImpl implements _HabitFrequency {
+class _$HabitFrequencyImpl extends _HabitFrequency {
   const _$HabitFrequencyImpl({
     this.type = FrequencyType.daily,
     final List<int>? daysOfWeek,
     this.timesPerWeek,
-  }) : _daysOfWeek = daysOfWeek;
+  }) : _daysOfWeek = daysOfWeek,
+       super._();
 
   factory _$HabitFrequencyImpl.fromJson(Map<String, dynamic> json) =>
       _$$HabitFrequencyImplFromJson(json);
@@ -206,12 +207,13 @@ class _$HabitFrequencyImpl implements _HabitFrequency {
   }
 }
 
-abstract class _HabitFrequency implements HabitFrequency {
+abstract class _HabitFrequency extends HabitFrequency {
   const factory _HabitFrequency({
     final FrequencyType type,
     final List<int>? daysOfWeek,
     final int? timesPerWeek,
   }) = _$HabitFrequencyImpl;
+  const _HabitFrequency._() : super._();
 
   factory _HabitFrequency.fromJson(Map<String, dynamic> json) =
       _$HabitFrequencyImpl.fromJson;

@@ -1,0 +1,57 @@
+================================================================
+STREAKSKY - DAY 11: CORE HABIT ENGINE FINALIZATION
+================================================================
+
+1. OVERVIEW
+-----------
+Day 11 focused on finalizing the core habit logic, implementing the "Habit Heartbeat" for immediate user engagement on app open, and ensuring the full habit lifecycle (Create -> Complete -> Sync -> Edit -> Archive) is robustly handled.
+
+2. TASKS COMPLETED
+------------------
+- Task 31: Finalize Daily Habit Logic
+  - Implemented frequency-based "due" logic in `HabitFrequency` and `HabitModel`.
+  - Supports:
+    - Daily: Due every day.
+    - Weekdays: Due Monday through Friday.
+    - Custom Days: Due on specific days (e.g., Mon, Wed, Fri).
+    - Custom Count: Due until a target number of completions is reached for the week.
+  - Created `todaysHabitsProvider` in `HabitController` to filter habits displayed on the home screen based on the current date.
+
+- Task 32: Implement "Habit Heartbeat"
+  - Created `HapticService` to handle custom vibration patterns.
+  - Patterns implemented:
+    - Slow Pulse: Triggered when all habits for the day are completed (on track).
+    - Fast Pulse: Triggered when there are pending habits for the day (behind).
+    - Double Pulse: Designed for milestone celebrations.
+  - Integrated heartbeat logic in `SplashScreen` to provide immediate tactile feedback upon data loading.
+
+- Task 33: Smoke Test Habit Lifecycle
+  - Verified and refined the following operations in `HabitController`:
+    - Create: `addHabit` with support for different frequencies.
+    - Complete: `toggleCompletion` with local storage and background sync.
+    - Sync: Integration with `SyncService` for Hive to Supabase/Firestore data flow.
+    - Edit: Added `updateHabit` to allow users to modify habit details.
+    - Archive: `archiveHabit` for soft deletion logic (preserves history but removes from active lists).
+
+3. TECHNICAL BREAKDOWN (INTERVIEW PREP)
+---------------------------------------
+
+Q: How do you handle complex habit frequencies like "3 times per week"?
+A: In StreakSky, I implemented an `isDue` method that checks the `FrequencyType`. For "times per week", the logic checks the total completions for the current week. If the count is less than the target, the habit remains "due" every day until the goal is met. This ensures the user is consistently prompted until they fulfill their weekly commitment.
+
+Q: What is the benefit of the "Habit Heartbeat"?
+A: It's a UX micro-interaction that provides immediate psychological feedback. By using haptics on app open, we tell the user their status (on track vs. behind) without them even looking at the screen. This builds a somatic connection with the app, making the habit-tracking experience feel more visceral and "alive".
+
+Q: Explain your Offline-First strategy for habit completion.
+A: We use Hive for local storage and Supabase for remote storage. When a user toggles a habit, we first save it to Hive and then trigger a background sync. This ensures zero latency and works perfectly in poor network conditions. We also use a Firestore realtime listener to ensure cross-device synchronization.
+
+Q: How do you handle "Soft Deletion" (Archiving)?
+A: Instead of deleting records from the database, we use an `is_archived` boolean flag. This is critical for habit trackers because even if a user stops a habit, we want to preserve their historical heatmap and streak data. In the UI, we filter out archived habits using providers like `habitsListProvider.where((h) => !h.isArchived)`.
+
+4. NEXT STEPS
+-------------
+Tomorrow (Day 12) starts Phase 4: Streak & Weather System, where we will implement the complex engine that calculates current and longest streaks, and the "Streak Shield" mechanism.
+
+================================================================
+END OF DAY 11 REPORT
+================================================================

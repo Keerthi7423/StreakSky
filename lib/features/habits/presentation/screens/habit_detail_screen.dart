@@ -25,6 +25,10 @@ class HabitDetailScreen extends ConsumerWidget {
         ),
         actions: [
           IconButton(
+            icon: const Icon(Icons.edit_outlined, color: Colors.white70),
+            onPressed: () => _showEditDialog(context, ref),
+          ),
+          IconButton(
             icon: const Icon(Icons.archive_outlined, color: Colors.white54),
             onPressed: () => _showArchiveDialog(context, ref),
           ),
@@ -214,8 +218,12 @@ class HabitDetailScreen extends ConsumerWidget {
           TextButton(
             onPressed: () {
               ref.read(habitControllerProvider.notifier).archiveHabit(habit.id);
-              Navigator.pop(context); // Close dialog
-              Navigator.pop(context); // Close detail screen
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (context.mounted) {
+                  Navigator.pop(context); // Close dialog
+                  Navigator.pop(context); // Close detail screen
+                }
+              });
             },
             child: const Text('ARCHIVE', style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold)),
           ),
@@ -242,10 +250,75 @@ class HabitDetailScreen extends ConsumerWidget {
           TextButton(
             onPressed: () {
               ref.read(habitControllerProvider.notifier).deleteHabit(habit.id);
-              Navigator.pop(context); // Close dialog
-              Navigator.pop(context); // Close detail screen
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (context.mounted) {
+                  Navigator.pop(context); // Close dialog
+                  Navigator.pop(context); // Close detail screen
+                }
+              });
             },
             child: const Text('DELETE', style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showEditDialog(BuildContext context, WidgetRef ref) {
+    final nameController = TextEditingController(text: habit.name);
+    final categoryController = TextEditingController(text: habit.category ?? '');
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFF1A1A1A),
+        title: const Text('Edit Habit', style: TextStyle(color: Colors.white)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameController,
+              style: const TextStyle(color: Colors.white),
+              decoration: const InputDecoration(
+                labelText: 'Habit Name',
+                labelStyle: TextStyle(color: Colors.white54),
+                enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: categoryController,
+              style: const TextStyle(color: Colors.white),
+              decoration: const InputDecoration(
+                labelText: 'Category',
+                labelStyle: TextStyle(color: Colors.white54),
+                enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('CANCEL', style: TextStyle(color: Colors.white38)),
+          ),
+          TextButton(
+            onPressed: () {
+              final updatedHabit = habit.copyWith(
+                name: nameController.text,
+                category: categoryController.text.isEmpty ? null : categoryController.text,
+              );
+              ref.read(habitControllerProvider.notifier).updateHabit(updatedHabit);
+              
+              // Safe navigation to avoid !_debugLocked error
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (context.mounted) {
+                  Navigator.pop(context); // Close dialog
+                  Navigator.pop(context); // Close detail screen
+                }
+              });
+            },
+            child: const Text('SAVE', style: TextStyle(color: Color(0xFFB3FF00), fontWeight: FontWeight.bold)),
           ),
         ],
       ),

@@ -3,6 +3,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:streaksky/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:streaksky/features/habits/presentation/controllers/habit_controller.dart';
+import 'package:streaksky/core/utils/haptic_service.dart';
 
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -20,11 +22,32 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 
   Future<void> _startApp() async {
-    await Future.delayed(const Duration(seconds: 3));
+    // Small delay to allow initial setup
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    // Try to pre-fetch habits to determine status
+    try {
+      final habits = await ref.read(todaysHabitsProvider.future);
+      final completions = await ref.read(habitCompletionsProvider.future);
+      
+      if (habits.isNotEmpty) {
+        final allCompleted = habits.every((h) => completions.contains(h.id));
+        if (allCompleted) {
+          // Slow pulse = on track
+          HapticService.slowPulse();
+        } else {
+          // Fast pulse = behind today
+          HapticService.fastPulse();
+        }
+      }
+    } catch (e) {
+      debugPrint('Heartbeat Error: $e');
+    }
+
+    await Future.delayed(const Duration(seconds: 2));
     if (mounted) {
       final user = ref.read(authStateProvider).asData?.value;
       if (user != null) {
-
         context.go('/home');
       } else {
         context.go('/login');
