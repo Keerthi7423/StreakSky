@@ -314,7 +314,6 @@ class HabitDetailScreen extends ConsumerWidget {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (context.mounted) {
                   Navigator.pop(context); // Close dialog
-                  Navigator.pop(context); // Close detail screen
                 }
               });
             },

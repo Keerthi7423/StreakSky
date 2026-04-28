@@ -95,6 +95,9 @@ final firestoreRealtimeProvider = StreamProvider<Set<String>>((ref) {
       .collection('sync')
       .doc(user.uid)
       .snapshots()
+      .handleError((error) {
+        debugPrint('Firestore Stream Error: $error');
+      })
       .map((snapshot) {
     if (!snapshot.exists) return {};
     final data = snapshot.data() as Map<String, dynamic>;

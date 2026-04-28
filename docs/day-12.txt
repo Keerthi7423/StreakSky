@@ -1,0 +1,50 @@
+================================================================
+STREAKSKY - DAY 12: STREAK ENGINE LOGIC & BACKEND
+================================================================
+
+1. OVERVIEW
+-----------
+Day 12 marks the beginning of Phase 4: Streak & Weather System. The focus was on designing the core data models, database tables, and calculation logic required to track user streaks. This forms the backbone of the app's gamification features.
+
+2. TASKS COMPLETED
+------------------
+- Task 34: Design Streak Engine logic
+  - Created the `StreakModel` class using Freezed for immutability and JSON serialization.
+  - Defined key metrics:
+    - `currentStreak`: Consecutive days the habit was completed.
+    - `longestStreak`: Personal best consecutive run.
+    - `shieldsHeld`: Grace mechanism (0-3 max) to protect a streak if missed.
+    - `comebackCount`: Tracks resilience (number of times a streak was restarted after breaking).
+    - `lastActive`: Date of the last registered activity for the streak.
+
+- Task 35: Build Streak table in Supabase with RLS
+  - Validated that the `streaks` table was appropriately modeled in `20260422_initial_schema.sql`.
+  - Enforced Row Level Security (RLS) policies to ensure users can only access their own streak records (`auth.uid() = user_id`).
+  - Added referential integrity with cascading deletes for `habit_id` and `user_id`.
+
+- Task 36: Implement Streak Calculation logic
+  - Built a Supabase Edge Function (`calculate_streak`) in Deno to handle server-side streak updates. This handles atomic incrementing, longest streak comparisons, and shield logic.
+  - Implemented `StreakService` in Flutter as a local fallback. It uses the `StreakRepository` interface to try calling the Edge Function first, and if offline, computes the streak progression locally before syncing it later.
+
+3. TECHNICAL BREAKDOWN (INTERVIEW PREP)
+---------------------------------------
+
+Q: Why separate the Streak Engine logic from the Habit Model?
+A: Separation of concerns. A Habit describes what the user wants to do, but the Streak is an aggregated performance metric over time. Keeping them separate prevents bloated models and allows us to update the streak frequently without triggering re-renders or updates on the core habit definition. It also makes gamification features (like leaderboards) easier to implement by just querying the `streaks` table.
+
+Q: Why calculate the streak using a Server-side Edge Function instead of only on the client?
+A: Security and atomicity. If we rely solely on the client, users could spoof their device time or tamper with the payload to artificially inflate their streak. A server-side Edge Function provides a single source of truth, prevents cheating, and natively handles race conditions when multiple devices sync at the same time.
+
+Q: How does the "Local Fallback" work if the user is offline?
+A: If the Edge Function fails (e.g., due to no network), `StreakService` catches the exception and computes the new streak locally based on cached data in Hive. It optimistically updates the UI so the user sees their streak go up instantly. In the background, `SyncService` queues the true completion event to be resolved by Supabase when the connection is restored.
+
+Q: What is a "Streak Shield" and how does the data structure support it?
+A: A Streak Shield allows a user to miss a day without their streak resetting to zero. In the data structure, we track `shields_held` (integer). When a "missed" action occurs, the Edge Function checks if `shields_held > 0`. If so, it decrements the shield by 1 and preserves the `currentStreak`; otherwise, the `currentStreak` is reset to 0, and the `comebackCount` goes up.
+
+4. NEXT STEPS
+-------------
+Tomorrow (Day 13) focuses on the UI and visual indicators for the Streak Engine, implementing the Streak Shield mechanism on habit cards and designing the Streak Milestone badges (from Seedling to Legend).
+
+================================================================
+END OF DAY 12 REPORT
+================================================================
