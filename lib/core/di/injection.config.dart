@@ -28,6 +28,10 @@ import 'package:streaksky/features/profile/data/repositories/supabase_profile_re
     as _i425;
 import 'package:streaksky/features/profile/domain/repositories/profile_repository.dart'
     as _i293;
+import 'package:streaksky/features/streaks/data/services/streak_service.dart'
+    as _i184;
+import 'package:streaksky/features/streaks/domain/repositories/streak_repository.dart'
+    as _i170;
 import 'package:supabase_flutter/supabase_flutter.dart' as _i454;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -40,6 +44,9 @@ extension GetItInjectableX on _i174.GetIt {
     final registerModule = _$RegisterModule();
     gh.lazySingleton<_i454.SupabaseClient>(() => registerModule.supabaseClient);
     gh.lazySingleton<_i461.HabitLocalService>(() => _i461.HabitLocalService());
+    gh.lazySingleton<_i170.StreakRepository>(
+      () => _i184.StreakService(gh<_i454.SupabaseClient>()),
+    );
     gh.lazySingleton<_i799.AuthRepository>(() => _i900.FirebaseAuthService());
     gh.lazySingleton<_i1050.SyncService>(
       () => _i1050.SyncService(

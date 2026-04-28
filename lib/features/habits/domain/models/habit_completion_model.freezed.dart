@@ -33,8 +33,8 @@ mixin _$HabitCompletionModel {
   int? get energyLevel => throw _privateConstructorUsedError;
   @JsonKey(name: 'synced')
   bool get synced => throw _privateConstructorUsedError;
-  @JsonKey(name: 'created_at')
-  DateTime? get createdAt => throw _privateConstructorUsedError;
+  @JsonKey(name: 'completed_at')
+  DateTime? get completedAt => throw _privateConstructorUsedError;
 
   /// Serializes this HabitCompletionModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -61,7 +61,7 @@ abstract class $HabitCompletionModelCopyWith<$Res> {
     String? note,
     @JsonKey(name: 'energy_level') int? energyLevel,
     @JsonKey(name: 'synced') bool synced,
-    @JsonKey(name: 'created_at') DateTime? createdAt,
+    @JsonKey(name: 'completed_at') DateTime? completedAt,
   });
 }
 
@@ -90,7 +90,7 @@ class _$HabitCompletionModelCopyWithImpl<
     Object? note = freezed,
     Object? energyLevel = freezed,
     Object? synced = null,
-    Object? createdAt = freezed,
+    Object? completedAt = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -122,9 +122,9 @@ class _$HabitCompletionModelCopyWithImpl<
                 ? _value.synced
                 : synced // ignore: cast_nullable_to_non_nullable
                       as bool,
-            createdAt: freezed == createdAt
-                ? _value.createdAt
-                : createdAt // ignore: cast_nullable_to_non_nullable
+            completedAt: freezed == completedAt
+                ? _value.completedAt
+                : completedAt // ignore: cast_nullable_to_non_nullable
                       as DateTime?,
           )
           as $Val,
@@ -149,7 +149,7 @@ abstract class _$$HabitCompletionModelImplCopyWith<$Res>
     String? note,
     @JsonKey(name: 'energy_level') int? energyLevel,
     @JsonKey(name: 'synced') bool synced,
-    @JsonKey(name: 'created_at') DateTime? createdAt,
+    @JsonKey(name: 'completed_at') DateTime? completedAt,
   });
 }
 
@@ -174,7 +174,7 @@ class __$$HabitCompletionModelImplCopyWithImpl<$Res>
     Object? note = freezed,
     Object? energyLevel = freezed,
     Object? synced = null,
-    Object? createdAt = freezed,
+    Object? completedAt = freezed,
   }) {
     return _then(
       _$HabitCompletionModelImpl(
@@ -206,9 +206,9 @@ class __$$HabitCompletionModelImplCopyWithImpl<$Res>
             ? _value.synced
             : synced // ignore: cast_nullable_to_non_nullable
                   as bool,
-        createdAt: freezed == createdAt
-            ? _value.createdAt
-            : createdAt // ignore: cast_nullable_to_non_nullable
+        completedAt: freezed == completedAt
+            ? _value.completedAt
+            : completedAt // ignore: cast_nullable_to_non_nullable
                   as DateTime?,
       ),
     );
@@ -226,7 +226,7 @@ class _$HabitCompletionModelImpl implements _HabitCompletionModel {
     this.note,
     @JsonKey(name: 'energy_level') this.energyLevel,
     @JsonKey(name: 'synced') this.synced = false,
-    @JsonKey(name: 'created_at') this.createdAt,
+    @JsonKey(name: 'completed_at') this.completedAt,
   });
 
   factory _$HabitCompletionModelImpl.fromJson(Map<String, dynamic> json) =>
@@ -252,12 +252,12 @@ class _$HabitCompletionModelImpl implements _HabitCompletionModel {
   @JsonKey(name: 'synced')
   final bool synced;
   @override
-  @JsonKey(name: 'created_at')
-  final DateTime? createdAt;
+  @JsonKey(name: 'completed_at')
+  final DateTime? completedAt;
 
   @override
   String toString() {
-    return 'HabitCompletionModel(id: $id, habitId: $habitId, userId: $userId, completedDate: $completedDate, note: $note, energyLevel: $energyLevel, synced: $synced, createdAt: $createdAt)';
+    return 'HabitCompletionModel(id: $id, habitId: $habitId, userId: $userId, completedDate: $completedDate, note: $note, energyLevel: $energyLevel, synced: $synced, completedAt: $completedAt)';
   }
 
   @override
@@ -274,8 +274,8 @@ class _$HabitCompletionModelImpl implements _HabitCompletionModel {
             (identical(other.energyLevel, energyLevel) ||
                 other.energyLevel == energyLevel) &&
             (identical(other.synced, synced) || other.synced == synced) &&
-            (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt));
+            (identical(other.completedAt, completedAt) ||
+                other.completedAt == completedAt));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -289,7 +289,7 @@ class _$HabitCompletionModelImpl implements _HabitCompletionModel {
     note,
     energyLevel,
     synced,
-    createdAt,
+    completedAt,
   );
 
   /// Create a copy of HabitCompletionModel
@@ -319,7 +319,7 @@ abstract class _HabitCompletionModel implements HabitCompletionModel {
     final String? note,
     @JsonKey(name: 'energy_level') final int? energyLevel,
     @JsonKey(name: 'synced') final bool synced,
-    @JsonKey(name: 'created_at') final DateTime? createdAt,
+    @JsonKey(name: 'completed_at') final DateTime? completedAt,
   }) = _$HabitCompletionModelImpl;
 
   factory _HabitCompletionModel.fromJson(Map<String, dynamic> json) =
@@ -345,8 +345,8 @@ abstract class _HabitCompletionModel implements HabitCompletionModel {
   @JsonKey(name: 'synced')
   bool get synced;
   @override
-  @JsonKey(name: 'created_at')
-  DateTime? get createdAt;
+  @JsonKey(name: 'completed_at')
+  DateTime? get completedAt;
 
   /// Create a copy of HabitCompletionModel
   /// with the given fields replaced by the non-null parameter values.

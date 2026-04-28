@@ -13,7 +13,7 @@ class HabitCompletionModel with _$HabitCompletionModel {
     String? note,
     @JsonKey(name: 'energy_level') int? energyLevel,
     @JsonKey(name: 'synced') @Default(false) bool synced,
-    @JsonKey(name: 'created_at') DateTime? createdAt,
+    @JsonKey(name: 'completed_at') DateTime? completedAt,
   }) = _HabitCompletionModel;
 
   factory HabitCompletionModel.fromJson(Map<String, dynamic> json) =>
