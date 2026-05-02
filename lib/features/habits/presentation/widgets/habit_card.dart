@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/models/habit_model.dart';
 import '../controllers/habit_controller.dart';
 import '../screens/habit_detail_screen.dart';
+import '../../../streaks/presentation/controllers/streak_controller.dart';
+import '../../../streaks/domain/models/streak_milestone.dart';
 
 class HabitCard extends ConsumerStatefulWidget {
   final HabitModel habit;
@@ -57,6 +59,7 @@ class _HabitCardState extends ConsumerState<HabitCard> with SingleTickerProvider
   Widget build(BuildContext context) {
     final themeColor = Color(int.parse('0xFF${widget.habit.colorHex ?? "B3FF00"}'));
     final isCompleted = widget.isCompleted;
+    final streakAsync = ref.watch(streakProvider(widget.habit.id));
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
@@ -130,6 +133,51 @@ class _HabitCardState extends ConsumerState<HabitCard> with SingleTickerProvider
                             letterSpacing: 1.2,
                           ),
                         ),
+                      
+                      // Streak & Shields Indicator
+                      streakAsync.when(
+                        data: (streak) {
+                          if (streak == null) return const SizedBox.shrink();
+                          
+                          final milestone = StreakMilestone.fromDays(streak.currentStreak);
+                          
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 4),
+                            child: Row(
+                              children: [
+                                // Streak Count + Milestone
+                                Text(
+                                  '${streak.currentStreak} day streak ${milestone.emoji}',
+                                  style: TextStyle(
+                                    color: themeColor,
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                
+                                // Shields
+                                if (streak.shieldsHeld > 0)
+                                  Row(
+                                    children: List.generate(
+                                      streak.shieldsHeld,
+                                      (index) => Padding(
+                                        padding: const EdgeInsets.only(right: 2),
+                                        child: Icon(
+                                          Icons.shield,
+                                          size: 12,
+                                          color: themeColor.withOpacity(0.8),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          );
+                        },
+                        loading: () => const SizedBox.shrink(),
+                        error: (_, __) => const SizedBox.shrink(),
+                      ),
                     ],
                   ),
                 ),
