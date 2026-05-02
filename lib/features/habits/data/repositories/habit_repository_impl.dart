@@ -79,4 +79,17 @@ class HabitRepositoryImpl implements HabitRepository {
     
     return (response as List).map((json) => HabitCompletionModel.fromJson(json)).toList();
   }
+
+  @override
+  Future<List<HabitCompletionModel>> getCompletionsForDateRange(String userId, String startDate, String endDate) async {
+    final response = await _supabase
+        .from('habit_completions')
+        .select()
+        .eq('user_id', userId)
+        .gte('completed_date', startDate)
+        .lte('completed_date', endDate)
+        .order('completed_date', ascending: false);
+    
+    return (response as List).map((json) => HabitCompletionModel.fromJson(json)).toList();
+  }
 }
