@@ -10,6 +10,7 @@ import '../../domain/models/habit_frequency.dart';
 import '../../domain/repositories/habit_repository.dart';
 import '../../data/services/habit_local_service.dart';
 import '../../data/services/sync_service.dart';
+import '../../../streaks/presentation/controllers/streak_controller.dart';
 
 final habitRepositoryProvider = Provider<HabitRepository>((ref) {
   return getIt<HabitRepository>();
@@ -295,14 +296,16 @@ class HabitController extends StateNotifier<AsyncValue<void>> {
           );
           await getIt<HabitLocalService>().saveCompletion(completion);
           
-          // Trigger background sync
-          getIt<SyncService>().syncCompletions();
+          // Update streak (Task 37 & 39 integration)
+          await _ref.read(streakControllerProvider.notifier).handleCompletion(habitId, user.uid);
         } else {
           _ref.read(demoCompletionsProvider.notifier).update((state) {
             final newState = Set<String>.from(state);
             newState.add(habitId);
             return newState;
           });
+          
+          // For demo mode, we can also simulate streak update if needed
         }
       }
       
