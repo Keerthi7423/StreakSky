@@ -4,6 +4,7 @@ import '../../domain/models/habit_model.dart';
 import '../controllers/habit_controller.dart';
 import '../widgets/add_habit_bottom_sheet.dart';
 import '../widgets/habit_card.dart';
+import '../../../weather/presentation/widgets/weather_hero_card.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -41,6 +42,7 @@ class HomeScreen extends ConsumerWidget {
       body: CustomScrollView(
         slivers: [
           _buildAppBar(context),
+          const SliverToBoxAdapter(child: WeatherHeroCard()),
           habitsAsync.when(
             data: (habits) => habits.isEmpty
                 ? SliverFillRemaining(child: _buildEmptyState(context))

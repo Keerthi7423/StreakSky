@@ -1,0 +1,68 @@
+================================================================
+STREAKSKY: DAY 14 - HABIT WEATHER SYSTEM
+================================================================
+
+1. OVERVIEW
+-----------
+Day 14 focuses on implementing the "Habit Weather System," a unique feature of StreakSky that transforms raw habit data into emotional, visual feedback. Instead of just showing percentages, we show the user their "Sky."
+
+2. KEY IMPLEMENTATIONS
+----------------------
+
+A. Weather Engine (Logic)
+- Created `WeatherType` enum in `lib/features/weather/domain/models/weather_model.dart`.
+- Defined 7 weather states: Sunny, Partly Cloudy, Cloudy, Rainy, Storm, Rainbow, and Tornado.
+- Logic:
+  * Sunny: 100% completion.
+  * Partly Cloudy: 60-99% completion.
+  * Cloudy: 40-59% completion.
+  * Rainy: < 40% completion.
+  * Storm/Rainbow/Tornado: Advanced states triggered by specific patterns (3-day misses, comebacks, or broken records).
+
+B. Weather Controller (State Management)
+- Implemented `weatherProvider` to calculate today's weather in real-time.
+- Implemented `weatherForecastProvider` to look back at the last 7 days of history.
+- Leveraged Riverpod's `ref.watch` to automatically update the weather whenever a habit is completed.
+
+C. Weather Hero Card (UI/UX)
+- Designed a premium "Hero Card" for the Home Screen.
+- Features:
+  * Dynamic Gradients: The card's background shifts colors based on the weather (e.g., Neon Green for Sunny, Deep Blue/Red for Storm).
+  * Animated Emoji: Large, high-impact emoji representing the current state.
+  * Forecast Strip: A horizontal mini-strip showing the weather for the past 7 days, giving the user a sense of their recent "climate."
+
+D. Database & Repository Updates
+- Updated `HabitRepository` and `HabitLocalService` to support date-range queries (`getCompletionsForDateRange`).
+- This allows efficient calculation of historical weather without multiple database hits.
+
+3. INTERVIEW PREPARATION (KNOWLEDGE DEEP-DIVE)
+---------------------------------------------
+
+Q: Why use an Enum with properties for this feature?
+A: It's a "Rich Enum" pattern. By putting labels, emojis, and gradient colors directly in the enum, we centralize the "Design System" for weather. If we want to change the "Sunny" color, we change it in one place, and both the logic and UI update.
+
+Q: How do you handle the performance of a 7-day forecast?
+A: We use "Offline-First" logic. The forecast is primarily calculated using the `HabitLocalService` (Hive), which is extremely fast. We only hit the remote database (Supabase) for the current day's sync to ensure accuracy across devices.
+
+Q: How does this feature improve User Retention?
+A: Emotional feedback. Raw data like "80% complete" feels clinical. "Partly Cloudy" feels like something that can be fixed. The "Rainbow" (Comeback) state specifically rewards users for returning after a failure, which is the most critical moment for habit retention.
+
+Q: What is the benefit of using Riverpod's FutureProvider for this?
+A: It handles the loading and error states of the weather calculation gracefully. When the app is fetching completions from Supabase, Riverpod shows the loading state, ensuring the UI doesn't flicker or show incorrect "Rainy" weather before data arrives.
+
+4. TECHNICAL STACK USED
+-----------------------
+- Flutter & Riverpod 2.0
+- Supabase (Postgres)
+- Hive (Local Storage)
+- Custom LinearGradients & BoxShadows
+
+5. TASKS COMPLETED
+------------------
+- [Task 40] Habit Weather System logic implementation.
+- [Task 41] Weather Hero Card UI for Home Screen.
+- [Task 42] 7-day rolling history forecast logic.
+
+================================================================
+"Your sky is a reflection of your discipline." - StreakSky
+================================================================

@@ -44,4 +44,11 @@ class HabitLocalService {
         .map((c) => c.habitId)
         .toSet();
   }
+
+  List<HabitCompletionModel> getCompletionsForDateRange(String startDate, String endDate) {
+    return _completionBox.values
+        .map((json) => HabitCompletionModel.fromJson(Map<String, dynamic>.from(json)))
+        .where((c) => c.completedDate.compareTo(startDate) >= 0 && c.completedDate.compareTo(endDate) <= 0)
+        .toList();
+  }
 }
