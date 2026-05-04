@@ -10,6 +10,8 @@ import '../../domain/models/weather_model.dart';
 final weatherProvider = FutureProvider<WeatherModel>((ref) async {
   final habits = await ref.watch(todaysHabitsProvider.future);
   final completions = await ref.watch(habitCompletionsProvider.future);
+  final user = ref.watch(authStateProvider).asData?.value;
+  final isDemo = ref.watch(demoLoggedInProvider);
 
   if (habits.isEmpty) {
     return WeatherModel(
@@ -22,16 +24,51 @@ final weatherProvider = FutureProvider<WeatherModel>((ref) async {
 
   final completionRate = completions.length / habits.length;
   
-  // Check for Tornado (Task 44: Longest streak broken today)
-  // For simplicity, we check if any streak was broken today.
-  // In a real app, this would be more complex.
-  bool isTornado = false; // Placeholder for Task 44 logic
+  // Fetch historical data for Storm and Rainbow logic
+  final localService = getIt<HabitLocalService>();
+  final allHabits = await ref.watch(habitsListProvider.future);
+  final now = DateTime.now();
   
+  final pastRates = <double>[];
+  for (int i = 1; i <= 3; i++) {
+    final date = now.subtract(Duration(days: i));
+    final dateStr = "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+    final habitsDue = allHabits.where((h) => h.isDue(date)).toList();
+    if (habitsDue.isEmpty) {
+      pastRates.add(1.0); // Assume sunny if no habits due
+    } else {
+      final doneCount = localService.getCompletionsForDate(dateStr).length;
+      pastRates.add(doneCount / habitsDue.length);
+    }
+  }
+
   // Check for Storm (Task 45: 0% for 3+ days)
-  bool isStorm = false; // Placeholder for Task 45 logic
+  // PRD 7.5: Storm — 0% for 3+ days. 
+  // We check if today is 0% and the last 2 days were also 0%.
+  bool isStorm = completionRate == 0 && pastRates.take(2).every((r) => r == 0);
   
   // Check for Rainbow (Task 43: First flawless day after 0% storm)
-  bool isRainbow = false; // Placeholder for Task 43 logic
+  // Rainbow: 100% today and the previous period was a storm (0% for 3 days).
+  bool wasStormy = pastRates.every((r) => r == 0);
+  bool isRainbow = completionRate == 1.0 && wasStormy;
+
+  // Check for Tornado (Task 44: Longest streak broken today)
+  // Tornado: Any habit's longest streak was broken today.
+  bool isTornado = false;
+  if (!isDemo && user != null) {
+    final streakRepo = ref.watch(streakRepositoryProvider);
+    final allStreaks = await streakRepo.getAllStreaks(user.uid);
+    
+    final yesterday = now.subtract(const Duration(days: 1));
+    isTornado = allStreaks.any((s) => 
+      s.currentStreak == 0 && 
+      s.longestStreak > 0 && 
+      s.lastActive != null &&
+      s.lastActive!.year == yesterday.year &&
+      s.lastActive!.month == yesterday.month &&
+      s.lastActive!.day == yesterday.day
+    );
+  }
 
   final type = WeatherType.fromCompletionRate(
     completionRate,

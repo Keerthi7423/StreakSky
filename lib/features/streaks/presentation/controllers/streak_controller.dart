@@ -13,6 +13,28 @@ final streakProvider = FutureProvider.family<StreakModel?, String>((ref, habitId
   return await repo.getStreak(habitId);
 });
 
+final leaderboardProvider = FutureProvider<List<StreakModel>>((ref) async {
+  final user = ref.watch(authStateProvider).asData?.value;
+  final isDemo = ref.watch(demoLoggedInProvider);
+  
+  if (isDemo) {
+    // Return mock data for demo
+    return [
+      StreakModel(id: '1', habitId: 'demo-1', userId: 'demo', currentStreak: 45, longestStreak: 45, lastActive: DateTime.now()),
+      StreakModel(id: '2', habitId: 'demo-2', userId: 'demo', currentStreak: 21, longestStreak: 30, lastActive: DateTime.now()),
+    ];
+  }
+
+  if (user == null) return [];
+
+  final repo = ref.watch(streakRepositoryProvider);
+  final allStreaks = await repo.getAllStreaks(user.uid);
+  
+  // Sort by longest streak descending and take top 5
+  allStreaks.sort((a, b) => b.longestStreak.compareTo(a.longestStreak));
+  return allStreaks.take(5).toList();
+});
+
 class StreakController extends StateNotifier<AsyncValue<void>> {
   final StreakRepository _repository;
   final Ref _ref;
