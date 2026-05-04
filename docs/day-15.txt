@@ -1,0 +1,63 @@
+================================================================
+STREAKSKY DAY 15: RAINBOW, TORNADO & LEADERBOARD
+================================================================
+
+Today's focus was on completing the advanced emotional mechanics of the Streak and Weather systems. We implemented the logic for "Rainbow" and "Tornado" weather states and built the personal "Streak Leaderboard" to showcase long-term consistency.
+
+----------------------------------------------------------------
+1. RAINBOW (COMEBACK) LOGIC [Task 43]
+----------------------------------------------------------------
+The "Rainbow" state is triggered when a user makes a stunning comeback after a rough patch (Storm).
+
+- Logic Implementation:
+  * We added a historical completion check in `WeatherController`.
+  * A "Storm" is defined as 0% completion for 3+ consecutive days.
+  * A "Rainbow" triggers when the user achieves 100% completion (Flawless Day) immediately following a storm period.
+  * This state provides emotional rewards for resilience, signaling a fresh start and the end of a negative cycle.
+
+----------------------------------------------------------------
+2. TORNADO LOGIC [Task 44]
+----------------------------------------------------------------
+The "Tornado" state is a high-stakes emotional trigger that occurs when a significant streak is broken.
+
+- Logic Implementation:
+  * We implemented detection in `WeatherController` that scans all active streaks.
+  * A "Tornado" is triggered if any habit's streak was broken today (i.e., its `current_streak` reset to 0, it was active yesterday, and it had a positive `longest_streak`).
+  * The UI shifts to a dark, chaotic theme (Tornado emoji 🌪️ and dark gradients) to acknowledge the loss and motivate the user to "rebuild from the debris."
+
+----------------------------------------------------------------
+3. STREAK LEADERBOARD (PERSONAL) [Task 45]
+----------------------------------------------------------------
+The Streak Leaderboard focuses on personal growth rather than social pressure, highlighting the user's top 5 all-time best streaks.
+
+- Backend Integration:
+  * Created a `leaderboardProvider` that fetches all streaks from Supabase, sorts them by `longest_streak` descending, and takes the top 5.
+  * Added fallback mock data for the demo mode to ensure a premium first-look experience.
+
+- UI Component:
+  * Built the `StreakLeaderboard` widget with a premium aesthetic:
+    * Gold/Silver/Bronze rank indicators for top 3 records.
+    * Neon accent colors for streak counts.
+    * Integrated with the Stats Screen for easy access.
+
+----------------------------------------------------------------
+TECHNICAL INTERVIEW PREPARATION
+----------------------------------------------------------------
+
+Q1: Why did you choose to implement Rainbow and Tornado logic in the WeatherController rather than the StreakController?
+A: While the triggers are based on streaks and completions, these states are ultimately "Weather Types" that affect the entire app's visual theme and messaging. Keeping the logic in the WeatherController allows us to centralize how the "Sky" state is calculated from multiple data sources (habits, completions, and streaks) without bloating the individual feature controllers.
+
+Q2: How do you handle efficient historical data fetching for the weather states?
+A: We use a look-back window of 3-7 days. In `WeatherController`, we query the `HabitLocalService` for recent completion records. Since we use Hive for local storage (offline-first), these queries are near-instant and don't require network calls, ensuring the Home Screen remains responsive.
+
+Q3: What was the rationale behind making the Leaderboard "Personal Only"?
+A: The PRD emphasizes that "The sky never resets" and focuses on long-term vision. Social leaderboards can often lead to "comparison fatigue" or demotivation if others are far ahead. A personal leaderboard reinforces the "You vs. You" philosophy, celebrating your own legacy and growth milestones.
+
+----------------------------------------------------------------
+FILES CREATED/MODIFIED:
+- lib/features/weather/presentation/controllers/weather_controller.dart (Logic)
+- lib/features/streaks/presentation/controllers/streak_controller.dart (Provider)
+- lib/features/streaks/presentation/widgets/streak_leaderboard.dart (New Widget)
+- lib/features/graphs/presentation/screens/stats_screen.dart (UI Integration)
+- docs/day-15.txt (Documentation)
+================================================================
