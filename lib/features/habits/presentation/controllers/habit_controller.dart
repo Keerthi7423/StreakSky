@@ -11,6 +11,7 @@ import '../../domain/repositories/habit_repository.dart';
 import '../../data/services/habit_local_service.dart';
 import '../../data/services/sync_service.dart';
 import '../../../streaks/presentation/controllers/streak_controller.dart';
+import '../../../../core/utils/streak_date_utils.dart';
 
 final habitRepositoryProvider = Provider<HabitRepository>((ref) {
   return getIt<HabitRepository>();
@@ -119,8 +120,8 @@ final habitCompletionsProvider = FutureProvider<Set<String>>((ref) async {
 
   final supabase = getIt<SupabaseClient>();
   final localService = getIt<HabitLocalService>();
-  final today = DateTime.now();
-  final dateStr = "${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}";
+  final effectiveDate = StreakDateUtils.getEffectiveDate();
+  final dateStr = StreakDateUtils.formatDate(effectiveDate);
 
   // 1. Get from local storage first (Offline-first)
   final localCompletions = localService.getCompletionsForDate(dateStr);
@@ -262,7 +263,8 @@ class HabitController extends StateNotifier<AsyncValue<void>> {
     final isCurrentlyCompleted = currentCompletions.contains(habitId);
 
     state = await AsyncValue.guard(() async {
-      final dateStr = "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+      final effectiveDate = StreakDateUtils.getEffectiveDate(date);
+      final dateStr = StreakDateUtils.formatDate(effectiveDate);
 
       if (isCurrentlyCompleted) {
         if (!isDemo) {

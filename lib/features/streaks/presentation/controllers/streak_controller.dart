@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:streaksky/core/di/injection.dart';
+import 'package:streaksky/core/utils/streak_date_utils.dart';
+import 'package:streaksky/features/auth/presentation/controllers/auth_controller.dart';
 import '../../domain/models/streak_model.dart';
 import '../../domain/models/streak_milestone.dart';
 import '../../domain/repositories/streak_repository.dart';
@@ -12,6 +14,8 @@ final streakProvider = FutureProvider.family<StreakModel?, String>((ref, habitId
   final repo = ref.watch(streakRepositoryProvider);
   return await repo.getStreak(habitId);
 });
+
+final milestoneCelebrationProvider = StateProvider<StreakMilestone?>((ref) => null);
 
 final leaderboardProvider = FutureProvider<List<StreakModel>>((ref) async {
   final user = ref.watch(authStateProvider).asData?.value;
@@ -54,7 +58,7 @@ class StreakController extends StateNotifier<AsyncValue<void>> {
           userId: userId,
           currentStreak: 1,
           longestStreak: 1,
-          lastActive: DateTime.now(),
+          lastActive: StreakDateUtils.getEffectiveDate(),
           shieldsHeld: 0,
           updatedAt: DateTime.now(),
         );
@@ -75,7 +79,7 @@ class StreakController extends StateNotifier<AsyncValue<void>> {
         final updatedStreak = currentStreak.copyWith(
           currentStreak: newStreakCount,
           longestStreak: newLongestStreak,
-          lastActive: DateTime.now(),
+          lastActive: StreakDateUtils.getEffectiveDate(),
           shieldsHeld: newShields,
           updatedAt: DateTime.now(),
         );
@@ -86,7 +90,7 @@ class StreakController extends StateNotifier<AsyncValue<void>> {
         final milestone = StreakMilestone.fromDays(newStreakCount);
         if (milestone != StreakMilestone.none && newStreakCount == milestone.days) {
           // Trigger milestone celebration event
-          // For now we just log it, but in a real app this would trigger a UI event
+          _ref.read(milestoneCelebrationProvider.notifier).state = milestone;
           print('Milestone reached: ${milestone.label} ${milestone.emoji}');
         }
       }
