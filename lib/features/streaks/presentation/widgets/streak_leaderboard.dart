@@ -73,7 +73,7 @@ class StreakLeaderboard extends ConsumerWidget {
                     data: (habits) {
                       final habit = habits.firstWhere(
                         (h) => h.id == streak.habitId,
-                        orElse: () => habits.isNotEmpty ? habits.first : habits.first, // Fallback
+                        orElse: () => habits.first,
                       );
                       
                       return Padding(
@@ -104,7 +104,7 @@ class StreakLeaderboard extends ConsumerWidget {
                             ),
                             const SizedBox(width: 16),
                             Text(
-                              habit.emoji,
+                              habit.emoji ?? '🔥',
                               style: const TextStyle(fontSize: 20),
                             ),
                             const SizedBox(width: 12),
