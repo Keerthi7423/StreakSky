@@ -1,0 +1,43 @@
+StreakSky - Day 17: Goals System (Phase 1)
+================================================================
+
+Today's focus was on laying the foundation for the 3-Tier Goals System (Weekly, Monthly, Career), enabling users to bridge the gap between daily habits and long-term legacy.
+
+1. TECHNICAL OVERVIEW
+----------------------------------------------------------------
+- Designed the 3-Tier Goal Model (Weekly, Monthly, Career) to support different time horizons.
+- Implemented the Supabase Repository for persistent storage and real-time syncing.
+- Built the Goals Screen UI shell with a neon-themed TabBar switcher.
+- Implemented Goal Creation logic via a modal bottom sheet.
+
+2. ARCHITECTURAL DECISIONS
+----------------------------------------------------------------
+- **3-Tier Hierarchy**: We used a single model with a 'type' discriminator instead of separate tables. This simplifies the API and allows for a unified 'Goal Cascade' logic where daily habits feed into weekly/monthly goals.
+- **Supabase for Persistence**: Chose Supabase for its strong relational support (Postgres), which is critical for linking habits to goals (UUID arrays).
+- **Riverpod State Management**: Used a combination of `FutureProvider.family` (for type-based filtering) and `StateNotifier` (for CRUD actions) to ensure a reactive and predictable UI.
+
+3. INTERVIEW PREPARATION (Q&A)
+----------------------------------------------------------------
+
+Q: Why did you choose a 3-tier goal system instead of just simple habits?
+A: Habits are the "how," but goals are the "why." A 3-tier system (Weekly, Monthly, Career) creates a "Goal Cascade." It helps users see how today's meditation habit contributes to their monthly mindfulness goal, which ultimately feeds into their career goal of "High-Performance Leadership." This hierarchical structure increases long-term retention.
+
+Q: How do you handle progress calculation for different goal types?
+A: We implemented a `progress` getter in the `GoalModel`. It calculates `currentValue / targetValue` and clamps it between 0 and 1. This decoupling of data and UI allows the `GoalCard` to simply consume the percentage and render a consistent neon progress bar regardless of the goal's unit or duration.
+
+Q: How is the state updated when a new goal is added?
+A: We use `ref.invalidate(goalsListProvider)` in the `GoalController` after a successful Supabase insertion. This triggers an automatic re-fetch of the goals, ensuring the UI is always in sync with the backend without needing complex local state mutations.
+
+Q: Why use a TabBar for goal tiers instead of a single list?
+A: User cognitive load. Mixing 7-day goals with 10-year career milestones in one list creates friction. The TabBar provides "Contextual Isolation"—allowing the user to focus on their immediate weekly targets or zoom out to their career legacy with a single tap.
+
+4. UI/UX DESIGN TOKENS
+----------------------------------------------------------------
+- Background: #0D0D0D (Deep Space)
+- Accent: #B3FF00 (Neon Green)
+- Progress Track: #1A1A1A (Elevated Surface)
+- Typography: Inter (with Tabular Figures for progress numbers)
+- Corner Radius: 16px (Premium rounded aesthetic)
+
+================================================================
+Legacy built one goal at a time.
