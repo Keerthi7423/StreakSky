@@ -11,6 +11,7 @@ import '../../domain/repositories/habit_repository.dart';
 import '../../data/services/habit_local_service.dart';
 import '../../data/services/sync_service.dart';
 import '../../../streaks/presentation/controllers/streak_controller.dart';
+import '../../../goals/presentation/controllers/goal_controller.dart';
 import '../../../../core/utils/streak_date_utils.dart';
 
 final habitRepositoryProvider = Provider<HabitRepository>((ref) {
@@ -300,6 +301,9 @@ class HabitController extends StateNotifier<AsyncValue<void>> {
           
           // Update streak (Task 37 & 39 integration)
           await _ref.read(streakControllerProvider.notifier).handleCompletion(habitId, user.uid);
+          
+          // Update goals (Goal Cascade - Task 53)
+          await _ref.read(goalControllerProvider.notifier).handleHabitCompletion(habitId, true);
         } else {
           _ref.read(demoCompletionsProvider.notifier).update((state) {
             final newState = Set<String>.from(state);
@@ -308,7 +312,13 @@ class HabitController extends StateNotifier<AsyncValue<void>> {
           });
           
           // For demo mode, we can also simulate streak update if needed
+          await _ref.read(goalControllerProvider.notifier).handleHabitCompletion(habitId, true);
         }
+      }
+      
+      // If we are un-completing, we should also update goals
+      if (isCurrentlyCompleted) {
+        await _ref.read(goalControllerProvider.notifier).handleHabitCompletion(habitId, false);
       }
       
       _ref.invalidate(habitCompletionsProvider);

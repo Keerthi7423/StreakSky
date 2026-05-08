@@ -1,0 +1,42 @@
+StreakSky - Day 18: Goals System (Phase 2) - Goal Cascade & UI Polish
+================================================================
+
+Today's implementation focused on the "Goal Cascade" logic and enhancing the visual identity of the Goals system with neon aesthetics and completion states.
+
+1. TECHNICAL OVERVIEW
+----------------------------------------------------------------
+- **Task 52 (Goal Cards UI)**: Rebuilt the `GoalCard` with a premium dark aesthetic. Added neon green progress bars with inner shadows and dark grey tracks. Used `AnimatedContainer` for smooth progress transitions.
+- **Task 53 (Goal Cascade Logic)**: Integrated habit completions with the goals system. When a habit is toggled, the system automatically identifies linked goals and updates their progress in real-time.
+- **Task 54 (Completion State)**: Implemented a distinct "COMPLETED" visual state for goals, including a neon badge, border glow, and subtle background elevation.
+
+2. ARCHITECTURAL DECISIONS
+----------------------------------------------------------------
+- **Array-Based Linking**: Goals store an array of `linked_habits` (UUIDs). We implemented `getGoalsByHabitId` using the Supabase `contains` filter for efficient Postgres array querying.
+- **Bidirectional Cascade**: The logic handles both completion (+1) and un-completion (-1), ensuring the "Goal Cascade" is always accurate even if a user corrects a log entry.
+- **State Invalidation**: Used Riverpod's `ref.invalidate(goalsListProvider)` after a cascade update to ensure the Goals screen remains in sync with habit logs across different tabs.
+
+3. INTERVIEW PREPARATION (Q&A)
+----------------------------------------------------------------
+
+Q: How did you implement the "Goal Cascade" efficiently?
+A: Instead of looping through all goals in memory, I added a repository method `getGoalsByHabitId` that uses the Postgres `contains` filter on the `linked_habits` array column. This ensures we only fetch and update the relevant goals, minimizing database overhead and app memory usage.
+
+Q: How do you handle the UI state when a goal's progress changes?
+A: I used an `AnimatedContainer` for the progress bar width. By tying the width to the `progress` getter (current/target), the bar smoothly slides to its new position whenever the parent widget rebuilds. This creates a "premium" feel compared to static progress updates.
+
+Q: What happens if a habit is un-checked? Does the goal progress decrease?
+A: Yes. The `handleHabitCompletion` logic takes a boolean `completed` flag. If `true`, it increments; if `false`, it decrements (clamped to 0). This "Bidirectional Sync" is crucial for data integrity, especially in a system where users might accidentally log a habit.
+
+Q: Why use a manual Stack for the progress bar instead of LinearProgressIndicator?
+A: Design control. While `LinearProgressIndicator` is functional, a custom `Stack` with `AnimatedContainer` allows for specific neon glow effects (`BoxShadow`), custom corner radii, and precise track coloring that matches our "Dark & Powerful" theme better than the default material widget.
+
+4. UI/UX DESIGN TOKENS
+----------------------------------------------------------------
+- **Card Background**: #1A1A1A (Surface)
+- **Border (Completed)**: #B3FF00 (80% opacity neon)
+- **Glow effect**: BoxShadow with 15px blur, #B3FF00 (10% opacity)
+- **Progress Track**: #242424 (Elevated Surface)
+- **Animations**: 500ms ease-in-out for progress bar transitions.
+
+================================================================
+Small wins today build the legacy of tomorrow.
