@@ -6,4 +6,5 @@ abstract class GoalRepository {
   Future<GoalModel> updateGoal(GoalModel goal);
   Future<void> deleteGoal(String goalId);
   Future<void> updateGoalProgress(String goalId, int newValue);
+  Future<List<GoalModel>> getGoalsByHabitId(String userId, String habitId);
 }

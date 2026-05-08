@@ -62,4 +62,15 @@ class GoalRepositoryImpl implements GoalRepository {
         .update({'current_value': newValue})
         .eq('id', goalId);
   }
+
+  @override
+  Future<List<GoalModel>> getGoalsByHabitId(String userId, String habitId) async {
+    final response = await _supabase
+        .from('goals')
+        .select()
+        .eq('user_id', userId)
+        .contains('linked_habits', [habitId]);
+    
+    return (response as List).map((json) => GoalModel.fromJson(json)).toList();
+  }
 }
