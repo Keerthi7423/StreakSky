@@ -33,6 +33,44 @@ final demoGoalsProvider = StateProvider<List<GoalModel>>((ref) {
       linkedHabits: ['demo-1', 'demo-2', 'demo-3'],
       createdAt: DateTime.now(),
     ),
+    GoalModel(
+      id: 'career-1',
+      userId: 'demo-user',
+      type: GoalType.career,
+      title: 'FOUNDATION',
+      description: 'Master the basics of consistency.',
+      targetValue: 30,
+      currentValue: 30,
+      isCompleted: true,
+      phase: 1,
+      isMilestone: true,
+      createdAt: DateTime.now().subtract(const Duration(days: 30)),
+    ),
+    GoalModel(
+      id: 'career-2',
+      userId: 'demo-user',
+      type: GoalType.career,
+      title: 'ROUTINE ARCHITECT',
+      description: 'Design and sustain 3 complex habits.',
+      targetValue: 90,
+      currentValue: 45,
+      phase: 2,
+      isMilestone: false,
+      rolledOver: true,
+      createdAt: DateTime.now().subtract(const Duration(days: 15)),
+    ),
+    GoalModel(
+      id: 'career-3',
+      userId: 'demo-user',
+      type: GoalType.career,
+      title: 'LEGACY BUILDER',
+      description: 'Complete 365 days of total logs.',
+      targetValue: 365,
+      currentValue: 120,
+      phase: 3,
+      isMilestone: true,
+      createdAt: DateTime.now(),
+    ),
   ];
 });
 
@@ -62,6 +100,8 @@ class GoalController extends StateNotifier<AsyncValue<void>> {
     required GoalType type,
     String? description,
     int? targetValue,
+    int? phase,
+    bool isMilestone = false,
     List<String> linkedHabits = const [],
   }) async {
     final user = _ref.read(authStateProvider).asData?.value;
@@ -77,8 +117,11 @@ class GoalController extends StateNotifier<AsyncValue<void>> {
         type: type,
         description: description,
         targetValue: targetValue,
+        phase: phase,
+        isMilestone: isMilestone,
         linkedHabits: linkedHabits,
         startDate: DateTime.now(),
+        createdAt: DateTime.now(),
       );
 
       if (!isDemo) {

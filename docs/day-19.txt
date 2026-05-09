@@ -1,0 +1,66 @@
+================================================================
+DAY 19: CAREER GOALS & PHASE TIMELINE
+================================================================
+
+Today's focus was on implementing the 3rd tier of the StreakSky Goals System: Career Goals. Unlike weekly and monthly goals which are cyclical, Career Goals represent the long-term arc of a user's personal growth journey, organized into sequential phases.
+
+----------------------------------------------------------------
+1. ARCHITECTURAL OVERVIEW
+----------------------------------------------------------------
+
+The Career Goal system introduces the concept of "Phases" and "Milestones vs Missions":
+- PHASES: Sequential stages in a career path (e.g., Phase 1, Phase 2).
+- MILESTONES: High-level achievements that mark the completion of a major stage.
+- MISSIONS: Smaller, tactical objectives within or between milestones.
+- ROLLOVER: Indicators that show if a goal has been carried over from a previous year.
+
+----------------------------------------------------------------
+2. TECHNICAL IMPLEMENTATION
+----------------------------------------------------------------
+
+A. MODEL UPDATES (goal_model.dart)
+- Added `isMilestone` boolean to distinguish between major achievements and smaller missions.
+- The `phase` (int) and `rolledOver` (bool) fields were already present but are now fully utilized in the UI.
+- Regenerated model files using build_runner to support JSON serialization and immutability (Freezed).
+
+B. VERTICAL PHASE TIMELINE (career_timeline.dart)
+- Created a custom vertical timeline using a Row with a fixed-width decoration column and a flexible content column.
+- Neon Aesthetic: Used dots with neon green borders and outer glows (`BoxShadow`) to represent timeline nodes.
+- Connecting Lines: Implemented a vertical divider that links dots, creating a "roadmap" feel.
+- Component Logic:
+    * Sorts goals by `phase` first, then by `createdAt`.
+    * Uses `IntrinsicHeight` to ensure the connecting lines match the height of the content.
+    * Dynamically changes dot style based on `isCompleted`.
+
+C. UI INTEGRATION (goals_screen.dart)
+- Updated the `GoalsScreen` to swap the standard `ListView` for the `CareerTimeline` specifically when the "CAREER" tab is active.
+- Enhanced the "Add Goal" Bottom Sheet:
+    * Added conditional fields for Career goals: `Phase Number` and `Milestone Toggle`.
+    * Updated `GoalController` to handle these new parameters.
+
+D. ROLLOVER INDICATORS
+- Implemented a "ROLLED OVER" badge in the timeline items.
+- This provides visual feedback for goals that haven't been completed in the previous year, reinforcing the "momentum" theme of StreakSky.
+
+----------------------------------------------------------------
+3. INTERVIEW PREPARATION (QUICK HITS)
+----------------------------------------------------------------
+
+Q: Why use a separate Timeline widget instead of just adding a flag to the standard GoalCard?
+A: Career goals have a sequential nature. A list of cards (Weekly/Monthly) implies independent tasks, whereas a timeline (Career) implies a journey or roadmap. Separating the UI ensures we can implement connecting lines and phase-based sorting which would clutter a standard card.
+
+Q: How do you handle the vertical lines in the timeline to make sure they match the content height?
+A: I used `IntrinsicHeight` on the Row. This forces the children (the line column and the content column) to be as tall as the tallest child. This allows the vertical line (which is inside an `Expanded`) to stretch exactly to the bottom of the content.
+
+Q: How is the 'Rollover' state managed?
+A: It's a boolean flag in the `GoalModel`. In a real-world scenario, our "Year-End Engine" (Day 33) will automatically identify incomplete goals and create new ones with the `rolledOver` flag set to true, preserving the user's progress.
+
+----------------------------------------------------------------
+4. STATUS CHECK
+----------------------------------------------------------------
+- Task 55: Career Goals UI (Timeline) -> COMPLETED
+- Task 56: Phase management (Milestones vs Missions) -> COMPLETED
+- Task 57: Rollover indicator -> COMPLETED
+
+"Your sky is clearing. Your legacy is taking shape."
+================================================================

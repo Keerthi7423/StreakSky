@@ -6,6 +6,7 @@ import '../../../../core/constants/app_spacing.dart';
 import '../../domain/models/goal_model.dart';
 import '../controllers/goal_controller.dart';
 import '../widgets/goal_card.dart';
+import '../widgets/career_timeline.dart';
 
 class GoalsScreen extends ConsumerStatefulWidget {
   const GoalsScreen({super.key});
@@ -118,6 +119,10 @@ class _GoalsList extends ConsumerWidget {
           );
         }
 
+        if (type == GoalType.career) {
+          return CareerTimeline(goals: goals);
+        }
+
         return ListView.builder(
           padding: const EdgeInsets.all(AppSpacing.horizontalPadding),
           itemCount: goals.length,
@@ -144,13 +149,16 @@ class _AddGoalBottomSheetState extends ConsumerState<_AddGoalBottomSheet> {
   final _titleController = TextEditingController();
   final _descController = TextEditingController();
   final _targetController = TextEditingController();
+  final _phaseController = TextEditingController();
   GoalType _selectedType = GoalType.weekly;
+  bool _isMilestone = false;
 
   @override
   void dispose() {
     _titleController.dispose();
     _descController.dispose();
     _targetController.dispose();
+    _phaseController.dispose();
     super.dispose();
   }
 
@@ -214,6 +222,37 @@ class _AddGoalBottomSheetState extends ConsumerState<_AddGoalBottomSheet> {
               ),
             ],
           ),
+          const SizedBox(height: 16),
+          if (_selectedType == GoalType.career) ...[
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _phaseController,
+                    decoration: const InputDecoration(
+                      labelText: 'PHASE (NUMBER)',
+                      labelStyle: AppTypography.micro,
+                      enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.divider)),
+                    ),
+                    keyboardType: TextInputType.number,
+                    style: AppTypography.bodyLarge,
+                  ),
+                ),
+                const SizedBox(width: 20),
+                Row(
+                  children: [
+                    Text('MILESTONE', style: AppTypography.micro.copyWith(color: AppColors.textSecondary)),
+                    Switch(
+                      value: _isMilestone,
+                      onChanged: (val) => setState(() => _isMilestone = val),
+                      activeColor: AppColors.primaryAccent,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+          ],
           const SizedBox(height: 32),
           ElevatedButton(
             onPressed: () async {
@@ -223,6 +262,8 @@ class _AddGoalBottomSheetState extends ConsumerState<_AddGoalBottomSheet> {
                   type: _selectedType,
                   description: _descController.text,
                   targetValue: int.tryParse(_targetController.text),
+                  phase: int.tryParse(_phaseController.text),
+                  isMilestone: _isMilestone,
                 );
                 if (mounted) Navigator.pop(context);
               }

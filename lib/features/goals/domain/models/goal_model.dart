@@ -28,6 +28,7 @@ class GoalModel with _$GoalModel {
     @JsonKey(name: 'end_date') DateTime? endDate,
     @JsonKey(name: 'linked_habits') @Default([]) List<String> linkedHabits,
     int? phase,
+    @JsonKey(name: 'is_milestone') @Default(false) bool isMilestone,
     @JsonKey(name: 'is_completed') @Default(false) bool isCompleted,
     @JsonKey(name: 'rolled_over') @Default(false) bool rolledOver,
     @JsonKey(name: 'created_at') DateTime? createdAt,
