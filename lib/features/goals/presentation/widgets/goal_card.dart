@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../../../../core/constants/app_spacing.dart';
+import 'package:intl/intl.dart';
 import '../../domain/models/goal_model.dart';
+import './goal_projection_chart.dart';
 
 class GoalCard extends StatelessWidget {
   final GoalModel goal;
@@ -146,6 +148,15 @@ class GoalCard extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 16),
+                if (goal.type != GoalType.career) ...[
+                  Text(
+                    'PROJECTION',
+                    style: AppTypography.micro.copyWith(letterSpacing: 1.0, color: AppColors.textTertiary),
+                  ),
+                  const SizedBox(height: 8),
+                  GoalProjectionChart(goal: goal),
+                  const SizedBox(height: 16),
+                ],
                 Row(
                   children: [
                     const Icon(Icons.sync, size: 14, color: AppColors.textTertiary),
@@ -155,7 +166,10 @@ class GoalCard extends StatelessWidget {
                       style: AppTypography.micro.copyWith(color: AppColors.textSecondary),
                     ),
                     const Spacer(),
-                    if (goal.linkedHabits.isNotEmpty)
+                    if (goal.type != GoalType.career)
+                      _buildResetIndicator(goal),
+                    if (goal.linkedHabits.isNotEmpty) ...[
+                      const SizedBox(width: 8),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
@@ -167,12 +181,37 @@ class GoalCard extends StatelessWidget {
                           style: AppTypography.micro.copyWith(color: AppColors.textTertiary),
                         ),
                       ),
+                    ],
                   ],
                 ),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildResetIndicator(GoalModel goal) {
+    final now = DateTime.now();
+    String resetText = '';
+    
+    if (goal.type == GoalType.weekly) {
+      final daysToMonday = (8 - now.weekday) % 7;
+      final nextMonday = now.add(Duration(days: daysToMonday == 0 ? 7 : daysToMonday));
+      final daysLeft = nextMonday.difference(now).inDays;
+      resetText = 'RESETS IN $daysLeft DAYS';
+    } else if (goal.type == GoalType.monthly) {
+      final nextMonth = DateTime(now.year, now.month + 1, 1);
+      final daysLeft = nextMonth.difference(now).inDays;
+      resetText = 'RESETS IN $daysLeft DAYS';
+    }
+
+    return Text(
+      resetText,
+      style: AppTypography.micro.copyWith(
+        color: AppColors.primaryAccent.withOpacity(0.7),
+        fontWeight: FontWeight.bold,
       ),
     );
   }

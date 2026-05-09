@@ -44,6 +44,8 @@ mixin _$GoalModel {
   bool get isCompleted => throw _privateConstructorUsedError;
   @JsonKey(name: 'rolled_over')
   bool get rolledOver => throw _privateConstructorUsedError;
+  @JsonKey(name: 'last_reset_at')
+  DateTime? get lastResetAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'created_at')
   DateTime? get createdAt => throw _privateConstructorUsedError;
 
@@ -77,6 +79,7 @@ abstract class $GoalModelCopyWith<$Res> {
     @JsonKey(name: 'is_milestone') bool isMilestone,
     @JsonKey(name: 'is_completed') bool isCompleted,
     @JsonKey(name: 'rolled_over') bool rolledOver,
+    @JsonKey(name: 'last_reset_at') DateTime? lastResetAt,
     @JsonKey(name: 'created_at') DateTime? createdAt,
   });
 }
@@ -110,6 +113,7 @@ class _$GoalModelCopyWithImpl<$Res, $Val extends GoalModel>
     Object? isMilestone = null,
     Object? isCompleted = null,
     Object? rolledOver = null,
+    Object? lastResetAt = freezed,
     Object? createdAt = freezed,
   }) {
     return _then(
@@ -170,6 +174,10 @@ class _$GoalModelCopyWithImpl<$Res, $Val extends GoalModel>
                 ? _value.rolledOver
                 : rolledOver // ignore: cast_nullable_to_non_nullable
                       as bool,
+            lastResetAt: freezed == lastResetAt
+                ? _value.lastResetAt
+                : lastResetAt // ignore: cast_nullable_to_non_nullable
+                      as DateTime?,
             createdAt: freezed == createdAt
                 ? _value.createdAt
                 : createdAt // ignore: cast_nullable_to_non_nullable
@@ -204,6 +212,7 @@ abstract class _$$GoalModelImplCopyWith<$Res>
     @JsonKey(name: 'is_milestone') bool isMilestone,
     @JsonKey(name: 'is_completed') bool isCompleted,
     @JsonKey(name: 'rolled_over') bool rolledOver,
+    @JsonKey(name: 'last_reset_at') DateTime? lastResetAt,
     @JsonKey(name: 'created_at') DateTime? createdAt,
   });
 }
@@ -236,6 +245,7 @@ class __$$GoalModelImplCopyWithImpl<$Res>
     Object? isMilestone = null,
     Object? isCompleted = null,
     Object? rolledOver = null,
+    Object? lastResetAt = freezed,
     Object? createdAt = freezed,
   }) {
     return _then(
@@ -296,6 +306,10 @@ class __$$GoalModelImplCopyWithImpl<$Res>
             ? _value.rolledOver
             : rolledOver // ignore: cast_nullable_to_non_nullable
                   as bool,
+        lastResetAt: freezed == lastResetAt
+            ? _value.lastResetAt
+            : lastResetAt // ignore: cast_nullable_to_non_nullable
+                  as DateTime?,
         createdAt: freezed == createdAt
             ? _value.createdAt
             : createdAt // ignore: cast_nullable_to_non_nullable
@@ -323,6 +337,7 @@ class _$GoalModelImpl extends _GoalModel {
     @JsonKey(name: 'is_milestone') this.isMilestone = false,
     @JsonKey(name: 'is_completed') this.isCompleted = false,
     @JsonKey(name: 'rolled_over') this.rolledOver = false,
+    @JsonKey(name: 'last_reset_at') this.lastResetAt,
     @JsonKey(name: 'created_at') this.createdAt,
   }) : _linkedHabits = linkedHabits,
        super._();
@@ -374,12 +389,15 @@ class _$GoalModelImpl extends _GoalModel {
   @JsonKey(name: 'rolled_over')
   final bool rolledOver;
   @override
+  @JsonKey(name: 'last_reset_at')
+  final DateTime? lastResetAt;
+  @override
   @JsonKey(name: 'created_at')
   final DateTime? createdAt;
 
   @override
   String toString() {
-    return 'GoalModel(id: $id, userId: $userId, type: $type, title: $title, description: $description, targetValue: $targetValue, currentValue: $currentValue, startDate: $startDate, endDate: $endDate, linkedHabits: $linkedHabits, phase: $phase, isMilestone: $isMilestone, isCompleted: $isCompleted, rolledOver: $rolledOver, createdAt: $createdAt)';
+    return 'GoalModel(id: $id, userId: $userId, type: $type, title: $title, description: $description, targetValue: $targetValue, currentValue: $currentValue, startDate: $startDate, endDate: $endDate, linkedHabits: $linkedHabits, phase: $phase, isMilestone: $isMilestone, isCompleted: $isCompleted, rolledOver: $rolledOver, lastResetAt: $lastResetAt, createdAt: $createdAt)';
   }
 
   @override
@@ -411,6 +429,8 @@ class _$GoalModelImpl extends _GoalModel {
                 other.isCompleted == isCompleted) &&
             (identical(other.rolledOver, rolledOver) ||
                 other.rolledOver == rolledOver) &&
+            (identical(other.lastResetAt, lastResetAt) ||
+                other.lastResetAt == lastResetAt) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt));
   }
@@ -433,6 +453,7 @@ class _$GoalModelImpl extends _GoalModel {
     isMilestone,
     isCompleted,
     rolledOver,
+    lastResetAt,
     createdAt,
   );
 
@@ -466,6 +487,7 @@ abstract class _GoalModel extends GoalModel {
     @JsonKey(name: 'is_milestone') final bool isMilestone,
     @JsonKey(name: 'is_completed') final bool isCompleted,
     @JsonKey(name: 'rolled_over') final bool rolledOver,
+    @JsonKey(name: 'last_reset_at') final DateTime? lastResetAt,
     @JsonKey(name: 'created_at') final DateTime? createdAt,
   }) = _$GoalModelImpl;
   const _GoalModel._() : super._();
@@ -510,6 +532,9 @@ abstract class _GoalModel extends GoalModel {
   @override
   @JsonKey(name: 'rolled_over')
   bool get rolledOver;
+  @override
+  @JsonKey(name: 'last_reset_at')
+  DateTime? get lastResetAt;
   @override
   @JsonKey(name: 'created_at')
   DateTime? get createdAt;

@@ -30,6 +30,9 @@ _$GoalModelImpl _$$GoalModelImplFromJson(Map<String, dynamic> json) =>
       isMilestone: json['is_milestone'] as bool? ?? false,
       isCompleted: json['is_completed'] as bool? ?? false,
       rolledOver: json['rolled_over'] as bool? ?? false,
+      lastResetAt: json['last_reset_at'] == null
+          ? null
+          : DateTime.parse(json['last_reset_at'] as String),
       createdAt: json['created_at'] == null
           ? null
           : DateTime.parse(json['created_at'] as String),
@@ -51,6 +54,7 @@ Map<String, dynamic> _$$GoalModelImplToJson(_$GoalModelImpl instance) =>
       'is_milestone': instance.isMilestone,
       'is_completed': instance.isCompleted,
       'rolled_over': instance.rolledOver,
+      'last_reset_at': instance.lastResetAt?.toIso8601String(),
       'created_at': instance.createdAt?.toIso8601String(),
     };
 
