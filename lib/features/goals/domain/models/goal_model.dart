@@ -31,6 +31,7 @@ class GoalModel with _$GoalModel {
     @JsonKey(name: 'is_milestone') @Default(false) bool isMilestone,
     @JsonKey(name: 'is_completed') @Default(false) bool isCompleted,
     @JsonKey(name: 'rolled_over') @Default(false) bool rolledOver,
+    @JsonKey(name: 'last_reset_at') DateTime? lastResetAt,
     @JsonKey(name: 'created_at') DateTime? createdAt,
   }) = _GoalModel;
 

@@ -1,0 +1,74 @@
+================================================================
+DAY 20: GOAL AUTOMATION & PROJECTION ENGINE
+================================================================
+
+OVERVIEW:
+On Day 20, we implemented critical automation and data visualization features for the Goals System. This phase focuses on the "maintenance" aspect of habits—ensuring that weekly and monthly targets reset correctly, and providing users with a "Projection Curve" to visualize their path toward success.
+
+KEY IMPLEMENTATIONS:
+1. Weekly Goal Auto-Reset Logic (Task 58)
+2. Monthly Goal Auto-Reset Logic (Task 59)
+3. Goal Projection Curve Data Generator (Task 60)
+4. UI Integration: GoalProjectionChart & Reset Indicators
+
+----------------------------------------------------------------
+1. RESET LOGIC (WEEKLY/MONTHLY)
+----------------------------------------------------------------
+TECHNICAL LOGIC:
+The reset logic is implemented in the `GoalController` within the `checkAndResetGoals` method. Instead of relying on a background worker (which can be unreliable on mobile), we use a "Lazy Reset" strategy:
+- Every time the goals are fetched (via `goalsListProvider`), we trigger a check.
+- We compare the `lastResetAt` (or `createdAt`) with the current date.
+- For WEEKLY goals: We calculate the start of the current week (Monday 00:00). If the last reset was before this, we reset the progress.
+- For MONTHLY goals: We check if the last reset was in a previous month.
+
+CODE SNIPPET (Conceptual):
+```dart
+if (goal.type == GoalType.weekly) {
+  final lastMonday = now.subtract(Duration(days: now.weekday - 1));
+  final startOfThisMonday = DateTime(lastMonday.year, lastMonday.month, lastMonday.day);
+  if (lastReset.isBefore(startOfThisMonday)) {
+    // Reset currentValue to 0, update lastResetAt
+  }
+}
+```
+
+INTERVIEW TALKING POINT:
+"I implemented a 'Lazy Reset' strategy for goal maintenance. This avoids unnecessary background processing and ensures that when the user opens the app, their goals are up-to-date. I used the `DateTime` API to calculate period boundaries (Mondays/1st of the month) and performed atomic updates to reset progress while preserving the goal's existence."
+
+----------------------------------------------------------------
+2. GOAL PROJECTION ENGINE
+----------------------------------------------------------------
+TECHNICAL LOGIC:
+The `GoalProjectionService` generates two sets of data points:
+- IDEAL PATH: A linear progression from 0 to the target value over the period (7 days for weekly, ~30 for monthly).
+- ACTUAL PATH: A representation of the user's current progress over time.
+
+DATA STRUCTURE:
+We use `fl_chart` to render these as a `LineChart`. The Ideal Path is rendered as a dashed line (ghost path), while the Actual Path is a solid neon green curve.
+
+INTERVIEW TALKING POINT:
+"To enhance user motivation, I built a Projection Engine that compares 'where you are' vs 'where you should be'. This required normalizing date ranges into a relative index (0 to N) and generating linear data sets for the chart. It's a great example of converting raw state into meaningful data visualization."
+
+----------------------------------------------------------------
+3. UI POLISH & NEON AESTHETIC
+----------------------------------------------------------------
+- Added `GoalProjectionChart` inside the `GoalCard`.
+- Implemented `_buildResetIndicator` which calculates the days remaining until the next reset.
+- Maintained the Dark/Neon aesthetic using `#B3FF00` (Primary Accent) and `#0D0D0D` (Surface).
+
+----------------------------------------------------------------
+ARCHITECTURAL DECISIONS:
+- IMMUTABILITY: Used `freezed` to handle goal state updates.
+- RIVERPOD: Invaliding providers to trigger UI updates immediately after a reset.
+- OPTIMIZATION: Used `ClipRRect` and `AnimatedContainer` for smooth progress bar transitions.
+
+----------------------------------------------------------------
+INTERVIEW Q&A PREP:
+Q: How do you handle timezones for goal resets?
+A: By using `DateTime.now()` which defaults to local time, ensuring the reset happens at the user's local Monday or 1st of the month. For server-side sync, I store timestamps in UTC but perform reset checks against the local calendar.
+
+Q: Why use a dashed line for the projection?
+A: It's a UX pattern that signifies a "target" or "forecast" rather than historical data, helping users distinguish between their actual achievement and the ideal pace.
+
+================================================================
+END OF DAY 20 LOG

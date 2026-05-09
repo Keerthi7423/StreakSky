@@ -76,6 +76,11 @@ final demoGoalsProvider = StateProvider<List<GoalModel>>((ref) {
 
 final goalsListProvider = FutureProvider.family<List<GoalModel>, GoalType?>((ref, type) async {
   final isDemo = ref.watch(demoLoggedInProvider);
+  
+  // Trigger reset check
+  final controller = ref.read(goalControllerProvider.notifier);
+  await controller.checkAndResetGoals();
+
   if (isDemo) {
     final allDemoGoals = ref.watch(demoGoalsProvider);
     if (type == null) return allDemoGoals;
@@ -165,6 +170,9 @@ class GoalController extends StateNotifier<AsyncValue<void>> {
     if (user == null && !isDemo) return;
 
     try {
+      // First check for any pending resets
+      await checkAndResetGoals();
+      
       List<GoalModel> linkedGoals;
       if (!isDemo) {
         linkedGoals = await _repository.getGoalsByHabitId(user!.uid, habitId);
@@ -199,6 +207,73 @@ class GoalController extends StateNotifier<AsyncValue<void>> {
       }
     } catch (e) {
       debugPrint('Error in Goal Cascade: $e');
+    }
+  }
+
+  Future<void> checkAndResetGoals() async {
+    final isDemo = _ref.read(demoLoggedInProvider);
+    final user = _ref.read(authStateProvider).asData?.value;
+    if (user == null && !isDemo) return;
+
+    List<GoalModel> goals;
+    if (isDemo) {
+      goals = _ref.read(demoGoalsProvider);
+    } else {
+      goals = await _repository.getGoals(user!.uid);
+    }
+
+    final now = DateTime.now();
+    bool updated = false;
+    final newGoals = <GoalModel>[];
+
+    for (var goal in goals) {
+      bool resetNeeded = false;
+      DateTime? newResetDate;
+
+      if (goal.type == GoalType.weekly) {
+        // Reset every Monday at 00:00
+        final lastReset = goal.lastResetAt ?? goal.createdAt ?? goal.startDate ?? now;
+        final lastMonday = now.subtract(Duration(days: now.weekday - 1));
+        final startOfThisMonday = DateTime(lastMonday.year, lastMonday.month, lastMonday.day);
+        
+        if (lastReset.isBefore(startOfThisMonday)) {
+          resetNeeded = true;
+          newResetDate = startOfThisMonday;
+        }
+      } else if (goal.type == GoalType.monthly) {
+        // Reset on the 1st of every month
+        final lastReset = goal.lastResetAt ?? goal.createdAt ?? goal.startDate ?? now;
+        final startOfThisMonth = DateTime(now.year, now.month, 1);
+        
+        if (lastReset.isBefore(startOfThisMonth)) {
+          resetNeeded = true;
+          newResetDate = startOfThisMonth;
+        }
+      }
+
+      if (resetNeeded) {
+        final resetGoal = goal.copyWith(
+          currentValue: 0,
+          isCompleted: false,
+          lastResetAt: newResetDate ?? now,
+          rolledOver: true,
+        );
+        newGoals.add(resetGoal);
+        updated = true;
+        
+        if (!isDemo) {
+          await _repository.updateGoal(resetGoal);
+        }
+      } else {
+        newGoals.add(goal);
+      }
+    }
+
+    if (updated) {
+      if (isDemo) {
+        _ref.read(demoGoalsProvider.notifier).state = newGoals;
+      }
+      _ref.invalidate(goalsListProvider);
     }
   }
 }
