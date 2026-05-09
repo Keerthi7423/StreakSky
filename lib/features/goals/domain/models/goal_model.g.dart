@@ -27,6 +27,7 @@ _$GoalModelImpl _$$GoalModelImplFromJson(Map<String, dynamic> json) =>
               .toList() ??
           const [],
       phase: (json['phase'] as num?)?.toInt(),
+      isMilestone: json['is_milestone'] as bool? ?? false,
       isCompleted: json['is_completed'] as bool? ?? false,
       rolledOver: json['rolled_over'] as bool? ?? false,
       createdAt: json['created_at'] == null
@@ -47,6 +48,7 @@ Map<String, dynamic> _$$GoalModelImplToJson(_$GoalModelImpl instance) =>
       'end_date': instance.endDate?.toIso8601String(),
       'linked_habits': instance.linkedHabits,
       'phase': instance.phase,
+      'is_milestone': instance.isMilestone,
       'is_completed': instance.isCompleted,
       'rolled_over': instance.rolledOver,
       'created_at': instance.createdAt?.toIso8601String(),

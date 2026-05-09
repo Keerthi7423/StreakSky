@@ -38,6 +38,8 @@ mixin _$GoalModel {
   @JsonKey(name: 'linked_habits')
   List<String> get linkedHabits => throw _privateConstructorUsedError;
   int? get phase => throw _privateConstructorUsedError;
+  @JsonKey(name: 'is_milestone')
+  bool get isMilestone => throw _privateConstructorUsedError;
   @JsonKey(name: 'is_completed')
   bool get isCompleted => throw _privateConstructorUsedError;
   @JsonKey(name: 'rolled_over')
@@ -72,6 +74,7 @@ abstract class $GoalModelCopyWith<$Res> {
     @JsonKey(name: 'end_date') DateTime? endDate,
     @JsonKey(name: 'linked_habits') List<String> linkedHabits,
     int? phase,
+    @JsonKey(name: 'is_milestone') bool isMilestone,
     @JsonKey(name: 'is_completed') bool isCompleted,
     @JsonKey(name: 'rolled_over') bool rolledOver,
     @JsonKey(name: 'created_at') DateTime? createdAt,
@@ -104,6 +107,7 @@ class _$GoalModelCopyWithImpl<$Res, $Val extends GoalModel>
     Object? endDate = freezed,
     Object? linkedHabits = null,
     Object? phase = freezed,
+    Object? isMilestone = null,
     Object? isCompleted = null,
     Object? rolledOver = null,
     Object? createdAt = freezed,
@@ -154,6 +158,10 @@ class _$GoalModelCopyWithImpl<$Res, $Val extends GoalModel>
                 ? _value.phase
                 : phase // ignore: cast_nullable_to_non_nullable
                       as int?,
+            isMilestone: null == isMilestone
+                ? _value.isMilestone
+                : isMilestone // ignore: cast_nullable_to_non_nullable
+                      as bool,
             isCompleted: null == isCompleted
                 ? _value.isCompleted
                 : isCompleted // ignore: cast_nullable_to_non_nullable
@@ -193,6 +201,7 @@ abstract class _$$GoalModelImplCopyWith<$Res>
     @JsonKey(name: 'end_date') DateTime? endDate,
     @JsonKey(name: 'linked_habits') List<String> linkedHabits,
     int? phase,
+    @JsonKey(name: 'is_milestone') bool isMilestone,
     @JsonKey(name: 'is_completed') bool isCompleted,
     @JsonKey(name: 'rolled_over') bool rolledOver,
     @JsonKey(name: 'created_at') DateTime? createdAt,
@@ -224,6 +233,7 @@ class __$$GoalModelImplCopyWithImpl<$Res>
     Object? endDate = freezed,
     Object? linkedHabits = null,
     Object? phase = freezed,
+    Object? isMilestone = null,
     Object? isCompleted = null,
     Object? rolledOver = null,
     Object? createdAt = freezed,
@@ -274,6 +284,10 @@ class __$$GoalModelImplCopyWithImpl<$Res>
             ? _value.phase
             : phase // ignore: cast_nullable_to_non_nullable
                   as int?,
+        isMilestone: null == isMilestone
+            ? _value.isMilestone
+            : isMilestone // ignore: cast_nullable_to_non_nullable
+                  as bool,
         isCompleted: null == isCompleted
             ? _value.isCompleted
             : isCompleted // ignore: cast_nullable_to_non_nullable
@@ -306,6 +320,7 @@ class _$GoalModelImpl extends _GoalModel {
     @JsonKey(name: 'end_date') this.endDate,
     @JsonKey(name: 'linked_habits') final List<String> linkedHabits = const [],
     this.phase,
+    @JsonKey(name: 'is_milestone') this.isMilestone = false,
     @JsonKey(name: 'is_completed') this.isCompleted = false,
     @JsonKey(name: 'rolled_over') this.rolledOver = false,
     @JsonKey(name: 'created_at') this.createdAt,
@@ -350,6 +365,9 @@ class _$GoalModelImpl extends _GoalModel {
   @override
   final int? phase;
   @override
+  @JsonKey(name: 'is_milestone')
+  final bool isMilestone;
+  @override
   @JsonKey(name: 'is_completed')
   final bool isCompleted;
   @override
@@ -361,7 +379,7 @@ class _$GoalModelImpl extends _GoalModel {
 
   @override
   String toString() {
-    return 'GoalModel(id: $id, userId: $userId, type: $type, title: $title, description: $description, targetValue: $targetValue, currentValue: $currentValue, startDate: $startDate, endDate: $endDate, linkedHabits: $linkedHabits, phase: $phase, isCompleted: $isCompleted, rolledOver: $rolledOver, createdAt: $createdAt)';
+    return 'GoalModel(id: $id, userId: $userId, type: $type, title: $title, description: $description, targetValue: $targetValue, currentValue: $currentValue, startDate: $startDate, endDate: $endDate, linkedHabits: $linkedHabits, phase: $phase, isMilestone: $isMilestone, isCompleted: $isCompleted, rolledOver: $rolledOver, createdAt: $createdAt)';
   }
 
   @override
@@ -387,6 +405,8 @@ class _$GoalModelImpl extends _GoalModel {
               _linkedHabits,
             ) &&
             (identical(other.phase, phase) || other.phase == phase) &&
+            (identical(other.isMilestone, isMilestone) ||
+                other.isMilestone == isMilestone) &&
             (identical(other.isCompleted, isCompleted) ||
                 other.isCompleted == isCompleted) &&
             (identical(other.rolledOver, rolledOver) ||
@@ -410,6 +430,7 @@ class _$GoalModelImpl extends _GoalModel {
     endDate,
     const DeepCollectionEquality().hash(_linkedHabits),
     phase,
+    isMilestone,
     isCompleted,
     rolledOver,
     createdAt,
@@ -442,6 +463,7 @@ abstract class _GoalModel extends GoalModel {
     @JsonKey(name: 'end_date') final DateTime? endDate,
     @JsonKey(name: 'linked_habits') final List<String> linkedHabits,
     final int? phase,
+    @JsonKey(name: 'is_milestone') final bool isMilestone,
     @JsonKey(name: 'is_completed') final bool isCompleted,
     @JsonKey(name: 'rolled_over') final bool rolledOver,
     @JsonKey(name: 'created_at') final DateTime? createdAt,
@@ -479,6 +501,9 @@ abstract class _GoalModel extends GoalModel {
   List<String> get linkedHabits;
   @override
   int? get phase;
+  @override
+  @JsonKey(name: 'is_milestone')
+  bool get isMilestone;
   @override
   @JsonKey(name: 'is_completed')
   bool get isCompleted;
