@@ -12,6 +12,7 @@
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:streaksky/core/di/register_module.dart' as _i356;
+import 'package:streaksky/core/services/analytics_service.dart' as _i812;
 import 'package:streaksky/features/auth/data/repositories/firebase_auth_service.dart'
     as _i900;
 import 'package:streaksky/features/auth/domain/repositories/auth_repository.dart'
@@ -48,6 +49,7 @@ extension GetItInjectableX on _i174.GetIt {
     final registerModule = _$RegisterModule();
     gh.lazySingleton<_i454.SupabaseClient>(() => registerModule.supabaseClient);
     gh.lazySingleton<_i461.HabitLocalService>(() => _i461.HabitLocalService());
+    gh.lazySingleton<_i812.AnalyticsService>(() => _i812.AnalyticsService());
     gh.lazySingleton<_i170.StreakRepository>(
       () => _i184.StreakService(gh<_i454.SupabaseClient>()),
     );

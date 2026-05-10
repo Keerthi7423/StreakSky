@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:streaksky/core/di/injection.dart';
+import 'package:streaksky/core/services/analytics_service.dart';
 import 'package:streaksky/features/auth/presentation/controllers/auth_controller.dart';
 import '../../domain/models/goal_model.dart';
 import '../../domain/repositories/goal_repository.dart';
@@ -76,22 +77,25 @@ final demoGoalsProvider = StateProvider<List<GoalModel>>((ref) {
 
 final goalsListProvider = FutureProvider.family<List<GoalModel>, GoalType?>((ref, type) async {
   final isDemo = ref.watch(demoLoggedInProvider);
-  
-  // Trigger reset check
-  final controller = ref.read(goalControllerProvider.notifier);
-  await controller.checkAndResetGoals();
+  debugPrint('🔄 Fetching goals for type: $type (isDemo: $isDemo)');
 
   if (isDemo) {
     final allDemoGoals = ref.watch(demoGoalsProvider);
-    if (type == null) return allDemoGoals;
-    return allDemoGoals.where((g) => g.type == type).toList();
+    final filtered = type == null ? allDemoGoals : allDemoGoals.where((g) => g.type == type).toList();
+    debugPrint('✅ Found ${filtered.length} demo goals');
+    return filtered;
   }
 
   final user = ref.watch(authStateProvider).asData?.value;
-  if (user == null) return [];
+  if (user == null) {
+    debugPrint('⚠️ No user logged in, returning empty goals');
+    return [];
+  }
 
   final repo = ref.watch(goalRepositoryProvider);
-  return await repo.getGoals(user.uid, type: type);
+  final goals = await repo.getGoals(user.uid, type: type);
+  debugPrint('✅ Found ${goals.length} real goals from repository');
+  return goals;
 });
 
 class GoalController extends StateNotifier<AsyncValue<void>> {
@@ -111,10 +115,16 @@ class GoalController extends StateNotifier<AsyncValue<void>> {
   }) async {
     final user = _ref.read(authStateProvider).asData?.value;
     final isDemo = _ref.read(demoLoggedInProvider);
-    if (user == null && !isDemo) return;
+    if (user == null && !isDemo) {
+      debugPrint('⚠️ addGoal: User is null and not in demo mode');
+      return;
+    }
 
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
+      // Ensure goals are current before adding new one
+      await checkAndResetGoals();
+
       final goal = GoalModel(
         id: isDemo ? 'demo-${DateTime.now().millisecondsSinceEpoch}' : '',
         userId: user?.uid ?? 'demo-user',
@@ -130,11 +140,18 @@ class GoalController extends StateNotifier<AsyncValue<void>> {
       );
 
       if (!isDemo) {
+        debugPrint('📤 Creating goal in Supabase...');
         await _repository.createGoal(goal);
       } else {
+        debugPrint('💾 Adding goal to Demo state...');
         _ref.read(demoGoalsProvider.notifier).update((state) => [...state, goal]);
       }
+      
+      // Log Analytics
+      _ref.read(analyticsServiceProvider).logGoalCreated(goal);
+      
       _ref.invalidate(goalsListProvider);
+      debugPrint('✅ Goal added and provider invalidated');
     });
   }
 
@@ -204,6 +221,17 @@ class GoalController extends StateNotifier<AsyncValue<void>> {
       
       if (linkedGoals.isNotEmpty) {
         _ref.invalidate(goalsListProvider);
+        
+        // Log Analytics for the first linked goal found (simplified)
+        if (linkedGoals.isNotEmpty) {
+          final goal = linkedGoals.first;
+          final newValue = (goal.currentValue + (completed ? 1 : -1)).clamp(0, goal.targetValue ?? 999999);
+          _ref.read(analyticsServiceProvider).logGoalProgress(goal, newValue);
+          
+          if (newValue >= (goal.targetValue ?? 999999)) {
+            _ref.read(analyticsServiceProvider).logGoalCompletion(goal);
+          }
+        }
       }
     } catch (e) {
       debugPrint('Error in Goal Cascade: $e');
@@ -231,18 +259,18 @@ class GoalController extends StateNotifier<AsyncValue<void>> {
       DateTime? newResetDate;
 
       if (goal.type == GoalType.weekly) {
-        // Reset every Monday at 00:00
-        final lastReset = goal.lastResetAt ?? goal.createdAt ?? goal.startDate ?? now;
-        final lastMonday = now.subtract(Duration(days: now.weekday - 1));
-        final startOfThisMonday = DateTime(lastMonday.year, lastMonday.month, lastMonday.day);
+        // Reset every Monday at 00:00 (Timezone safe comparison)
+        final lastReset = (goal.lastResetAt ?? goal.createdAt ?? goal.startDate ?? now).toLocal();
+        final startOfToday = DateTime(now.year, now.month, now.day);
+        final lastMonday = startOfToday.subtract(Duration(days: startOfToday.weekday - 1));
         
-        if (lastReset.isBefore(startOfThisMonday)) {
+        if (lastReset.isBefore(lastMonday)) {
           resetNeeded = true;
-          newResetDate = startOfThisMonday;
+          newResetDate = lastMonday;
         }
       } else if (goal.type == GoalType.monthly) {
-        // Reset on the 1st of every month
-        final lastReset = goal.lastResetAt ?? goal.createdAt ?? goal.startDate ?? now;
+        // Reset on the 1st of every month (Timezone safe comparison)
+        final lastReset = (goal.lastResetAt ?? goal.createdAt ?? goal.startDate ?? now).toLocal();
         final startOfThisMonth = DateTime(now.year, now.month, 1);
         
         if (lastReset.isBefore(startOfThisMonth)) {
@@ -264,6 +292,9 @@ class GoalController extends StateNotifier<AsyncValue<void>> {
         if (!isDemo) {
           await _repository.updateGoal(resetGoal);
         }
+        
+        // Log Analytics for reset
+        _ref.read(analyticsServiceProvider).logGoalReset(goal);
       } else {
         newGoals.add(goal);
       }

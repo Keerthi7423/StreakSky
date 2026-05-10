@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../../../../core/constants/app_spacing.dart';
@@ -65,6 +66,16 @@ class _GoalsScreenState extends ConsumerState<GoalsScreen> with SingleTickerProv
         backgroundColor: AppColors.primaryAccent,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: const Icon(Icons.add, color: Colors.black, size: 28),
+      ).animate(
+        onPlay: (controller) => controller.repeat(reverse: true),
+      ).scale(
+        duration: 2.seconds,
+        begin: const Offset(1.0, 1.0),
+        end: const Offset(1.1, 1.1),
+        curve: Curves.easeInOut,
+      ).shimmer(
+        duration: 3.seconds,
+        color: Colors.white.withOpacity(0.3),
       ),
     );
   }
