@@ -1,0 +1,54 @@
+================================================================
+DAY 22: GitHub-Style Heatmap & Data Visualization
+================================================================
+
+TOPIC: Implementing a custom Heatmap Grid with complex data aggregation and state management in Flutter.
+
+1. ARCHITECTURAL OVERVIEW
+-------------------------
+The Heatmap feature was implemented following the Feature-Driven Architecture (Clean Architecture principles):
+- **Presentation**: 
+  - `HeatmapController`: Managed via Riverpod `StateNotifier`. Handles data fetching, aggregation (by date), and business logic like "Comeback Detection".
+  - `HeatmapGrid`: A custom widget using `GridView.builder` with horizontal scroll to mimic the GitHub activity chart (52 weeks x 7 days).
+  - `HeatmapCell`: A granular widget that determines its color based on completion percentage.
+  - `StatsScreen`: Integrated the heatmap as a primary data visualization tool.
+
+2. DATA PROCESSING & AGGREGATION
+--------------------------------
+The heatmap requires mapping a list of individual habit completions into a "density" map.
+- **Aggregation Logic**: Completions are fetched for a specific date range (e.g., Jan 1 to Dec 31). They are grouped into a `Map<String, int>` where the key is the date string (`yyyy-MM-dd`).
+- **Percentage Calculation**: To determine the "green level" (0-4), we calculate the percentage: `(Completions on Day X) / (Total Active Habits)`.
+- **Comeback Detection (Rainbow Logic)**: A "Comeback" is defined as a day with 100% completion that immediately follows a day with 0% completion. This is detected by iterating through the sorted dates and tracking a `previousWasZero` flag.
+
+3. CUSTOM UI IMPLEMENTATION (THE GRID)
+--------------------------------------
+GitHub's heatmap is unique because it's a grid that flows horizontally (weeks) but is organized vertically (days of the week).
+- **GridView.builder**: Configured with `scrollDirection: Axis.horizontal` and a `SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 7)`.
+- **Alignment**: To ensure the first day of the year aligns with the correct day of the week (e.g., if Jan 1st is a Wednesday), we calculate `startPadding = firstDayOfYear.weekday - 1` and insert empty boxes.
+- **Performance**: Used `SingleChildScrollView` for the horizontal scroll, but the `GridView` itself is fixed in height to prevent layout shifts.
+
+4. INTERVIEW PREPARATION - Q&A
+------------------------------
+Q: Why use a Map for daily completions instead of a List?
+A: O(1) lookup. When rendering 365 cells, we need to quickly check if a specific date has data. A Map keyed by date string is significantly faster than searching a List 365 times.
+
+Q: How did you handle different years?
+A: The `HeatmapController` accepts a `changeYear(int year)` method. This invalidates the current state, triggers a new fetch from Supabase with a filtered date range (`year-01-01` to `year-12-31`), and recalculates the grid layout.
+
+Q: What are the challenges of "Comeback" logic?
+A: The main challenge is handling "missing" data. If a user doesn't log anything on a day, it counts as 0%. We must iterate through the calendar dates, not just the dates present in the database, to ensure the "previous day" logic is robust.
+
+5. KEY PIECES OF CODE
+---------------------
+- **Level Logic**:
+  ```dart
+  if (percentage <= 0.25) return AppColors.heatmapLevel1;
+  if (percentage <= 0.50) return AppColors.heatmapLevel2;
+  ...
+  ```
+- **Date Utilities**: Used `StreakDateUtils.formatDate` to ensure consistent date keys across the entire app (avoiding timezone offset bugs).
+
+================================================================
+STATUS: COMPLETED
+TASKS: 64, 65, 66
+================================================================
