@@ -1,0 +1,63 @@
+================================================================
+DAY 21: GOAL SYSTEM MATURATION & ANALYTICS INTEGRATION
+================================================================
+
+Today's focus was on finalizing the Goals system by adding tracking metrics, enhancing the UI with advanced animations, and ensuring logic robustness across timezones. This is a critical "Phase 5" milestone that bridges the gap between core habit tracking and long-term user retention.
+
+---------------------------------------------------------
+TASK 61: INTEGRATE GOAL METRICS INTO ANALYTICS PROVIDER
+---------------------------------------------------------
+Implementation:
+- Created 'AnalyticsService' in 'lib/core/services/analytics_service.dart'.
+- Integrated 'FirebaseAnalytics' to track key goal lifecycle events:
+    * 'goal_created': Tracks when a user sets a new target.
+    * 'goal_progress_updated': Tracks incremental progress (linked habit completions).
+    * 'goal_completed': Captures the moment of success.
+    * 'goal_reset': Tracks when weekly/monthly goals roll over.
+- Connected 'AnalyticsService' to 'GoalController' via Riverpod, ensuring every action in the controller triggers a corresponding analytic event.
+
+Interview Context (Why we do this):
+- Data-Driven Decisions: Analytics allow us to see which types of goals (Weekly vs Monthly) are most popular and where users tend to drop off.
+- User Engagement: By tracking 'goal_completion', we can identify our most successful users and potentially trigger rewards or social sharing prompts.
+- Troubleshooting: If goal resets aren't happening correctly, analytics logs help us see if the 'goal_reset' event is firing as expected.
+
+---------------------------------------------------------
+TASK 62: ADD "ADD GOAL" FAB WITH SPRING ANIMATION
+---------------------------------------------------------
+Implementation:
+- Updated 'GoalsScreen' to use 'flutter_animate' for the Floating Action Button (FAB).
+- Applied a composite animation:
+    * Scale Animation: A subtle pulse (1.0 to 1.1) that repeats to draw the user's eye to the primary action.
+    * Shimmer Effect: A white light sweep across the neon button, reinforcing the premium, high-tech aesthetic.
+- Used 'Curves.easeInOut' to ensure the movement feels organic and "springy" rather than mechanical.
+
+Interview Context (UI/UX Design):
+- Visual Hierarchy: The FAB is the most important action on the screen. Animation ensures it stands out without being intrusive.
+- Aesthetic Consistency: The shimmer effect aligns with the "Neon & Dark" design system (StreakSky aesthetic).
+- Performance: Using 'flutter_animate' is more performant and easier to maintain than manual 'AnimationController' logic for simple repetitive effects.
+
+---------------------------------------------------------
+TASK 63: VALIDATE GOAL PROGRESS CALCULATIONS (TIMEZONES)
+---------------------------------------------------------
+Implementation:
+- Refined 'checkAndResetGoals' logic in 'GoalController'.
+- Fixed a potential bug where UTC vs Local time mismatches could cause premature or delayed resets.
+- Key fix: Explicitly using '.toLocal()' on stored timestamps and calculating 'startOfToday' using local year/month/day before subtracting weekday offsets.
+- This ensures that if a user travels, their "Monday" reset happens relative to their current local midnight, which is the expected behavior for a personal productivity app.
+
+Interview Context (Logic & Edge Cases):
+- Timezone Sensitivity: Discussing how 'DateTime.now()' vs 'DateTime.now().toUtc()' impacts logic is a classic interview question.
+- Idempotency: The reset logic is designed to be idempotent—it checks if a reset is *needed* based on the 'lastResetAt' flag, preventing multiple resets on the same day if the app is opened multiple times.
+- Offline-First: Since this logic runs in the controller (on the device), it works even if the user is offline, ensuring consistency until the next sync.
+
+---------------------------------------------------------
+SUMMARY OF CHANGES
+---------------------------------------------------------
+1. lib/core/services/analytics_service.dart: New service for event tracking.
+2. lib/features/goals/presentation/controllers/goal_controller.dart: Integrated analytics and timezone-robust reset logic.
+3. lib/features/goals/presentation/screens/goals_screen.dart: Added spring-animated FAB with shimmer.
+4. docs/day-21.txt: Comprehensive documentation for interview prep.
+
+================================================================
+STREAKSKY: DAY 21 COMPLETED
+================================================================
