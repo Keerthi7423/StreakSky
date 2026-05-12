@@ -1,0 +1,40 @@
+StreakSky Development Diary - Day 24: Advanced Data Visualization with FL_Chart
+
+Objective:
+Implement a comprehensive statistics and performance tracking system using advanced data visualization techniques. The goal was to transform raw habit data into actionable insights with a premium, high-performance UI.
+
+Tasks Completed:
+1. Integrated FL_Chart for Weekly Trends: Built a dynamic bar chart showing habit completion counts over the last 7 days.
+2. 2x2 Stat Card Grid: Implemented a responsive grid of stat cards for key performance indicators (KPIs): Total Habits Done, Current Streak, Best Streak, and Overall Completion Rate.
+3. Mini Waveform Charts: Integrated subtle, neon-styled line charts inside each stat card to show historical trends at a glance.
+
+Technical Deep Dive & Interview Prep:
+
+1. Data Visualization with FL_Chart:
+- Choice of Library: We chose FL_Chart because it is the most powerful and flexible charting library for Flutter. It supports complex animations, touch interactions, and custom rendering which align with our "Dark & Powerful" aesthetic.
+- Bar Chart Implementation: The 'WeeklyTrendChart' uses BarChartData to map completion counts. We used a background rod (backDrawRodData) to create a "track" effect, making the chart look more modern and premium.
+- Line Chart (Waveforms): For the mini charts, we used LineChart with all axes and grids disabled. This creates a "sparkline" effect that provides context without cluttering the UI.
+
+2. State Management & Data Aggregation:
+- We implemented a 'StatsController' (using a Riverpod Provider) to aggregate data from multiple sources:
+    - HeatmapController: Provides raw daily completion counts.
+    - StreakController/Leaderboard: Provides current and best streak data.
+- Aggregation Logic: The controller performs the heavy lifting, such as calculating the total habits done, finding the best streak across all habits, and generating the weekly trend list. This keeps the UI code clean and focused on rendering.
+
+3. Performance Optimization:
+- GridView & SingleChildScrollView: We used GridView.count with shrinkWrap: true and NeverScrollableScrollPhysics to embed the grid within the main scrollable area. This ensures a smooth, unified scrolling experience.
+- Opacity & BoxShadows: Instead of heavy gradients, we used subtle colored shadows (accentColor.withOpacity(0.05)) and borders (divider.withOpacity(0.1)) to create depth while maintaining high frame rates.
+
+4. UI/UX & Aesthetic Decisions:
+- Tabular Figures: As specified in the PRD, we used FontFeature.tabularFigures() for all numbers to ensure they align perfectly in columns, which is critical for a "data-heavy" look.
+- Neon Accents: Each stat card uses a specific neon accent color (Green for Total, Purple for Streaks, Blue for Completion) to help users distinguish between different metrics instantly.
+
+Interview Questions to Anticipate:
+Q: Why use a separate Controller for stats instead of just using the Heatmap state?
+A: Separation of Concerns. The Heatmap controller is responsible for managing the large 365-day grid data. The Stats controller aggregates this data along with streak and goal data to provide a high-level summary. This makes the code more maintainable and testable.
+
+Q: How do you ensure the charts are performant on older devices?
+A: We minimize the number of points rendered in the mini charts (sparklines) and avoid using expensive effects like complex gradients or high-precision touch tracking where not needed. FL_Chart is also highly optimized for Flutter's rendering engine.
+
+Q: How do you handle empty states in the charts?
+A: We ensure the charts have a default 'maxY' and handle cases where data might be missing by providing safe defaults (0.0 or empty lists), preventing crashes or weird layout shifts.
