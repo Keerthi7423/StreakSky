@@ -1,0 +1,52 @@
+================================================================
+STREAKSKY DEVELOPMENT LOG: DAY 23
+================================================================
+Topic: Advanced Heatmap Analytics & Social Sharing
+Status: COMPLETED
+Branch: day-23
+================================================================
+
+OVERVIEW
+---------------------------------------------------------
+Today's focus was on transforming the Heatmap from a simple grid into a powerful analytical tool. We implemented deep-dive filtering, multi-year progression tracking, and a high-fidelity sharing mechanism. These features empower users to visualize their long-term growth and share their consistency milestones with their social circles.
+
+CORE TASKS COMPLETED
+---------------------------------------------------------
+1. [Task 67] Pill-based Habit Filtering:
+   - Added a horizontal scrollable chip list to filter the heatmap by individual habits.
+   - This allows users to see specific consistency patterns for high-priority habits like "Gym" or "Reading" without noise from other daily tasks.
+
+2. [Task 68] Multi-year Comparison Toggle:
+   - Implemented a "Legacy View" that stacks heatmaps for the last 3 years (2024-2026).
+   - Enhanced the HeatmapController to handle concurrent data fetching for multiple years using parallelized Supabase queries.
+
+3. [Task 69] Heatmap Stylized Export:
+   - Integrated the 'screenshot' and 'share_plus' packages.
+   - Built a high-fidelity capture engine that wraps the heatmap grid (including neon glows) into a shareable PNG.
+   - Added a system share sheet trigger to facilitate viral growth through social proof.
+
+TECHNICAL DEEP DIVE
+---------------------------------------------------------
+- State Management: 
+  The HeatmapState was expanded to include 'multiYearPercentages' and 'selectedHabitId'. The controller now intelligently switches between single-year and multi-year data loading modes based on UI state.
+
+- Data Aggregation:
+  For filtering, we optimized the repository calls to fetch completions for the entire year but filter them in-memory to maintain a snappy UI experience. The "Comeback" logic (100% after 0%) was refined to work within the filtered context.
+
+- Screenshot Workflow:
+  Used the 'ScreenshotController' to capture a RepaintBoundary. This ensures that even on high-DPI screens, the exported image remains crisp and professional, matching the "Dark & Powerful" aesthetic of StreakSky.
+
+INTERVIEW PREPARATION (Q&A)
+---------------------------------------------------------
+Q: Why did you choose in-memory filtering for the heatmap instead of server-side filtering?
+A: Since the user might toggle between different habits frequently, fetching the entire year's completion data once and filtering it in the Riverpod controller provides a much smoother, near-instant user experience compared to making a network request every time a chip is tapped.
+
+Q: How do you handle UI responsiveness when rendering 365+ cells in multiple grids?
+A: We used a custom HeatmapGrid widget that utilizes a GridView.count with crossAxisCount: 7. To ensure performance, we use 'const' constructors where possible and only rebuild cells when their specific data changes.
+
+Q: How does the "Multi-year" toggle impact the database load?
+A: We fetch data for the specific years defined in the plan. To minimize load, we use indexed columns in Supabase (user_id, completed_date) so that fetching thousands of completion records is extremely fast.
+
+================================================================
+PREPARED FOR INTERVIEW BY: Antigravity AI
+================================================================
