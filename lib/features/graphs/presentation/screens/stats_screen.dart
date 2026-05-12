@@ -6,6 +6,8 @@ import '../../../streaks/presentation/widgets/streak_leaderboard.dart';
 import '../../../heatmap/presentation/controllers/heatmap_controller.dart';
 import '../../../heatmap/presentation/widgets/heatmap_grid.dart';
 import '../../../heatmap/presentation/widgets/heatmap_year_selector.dart';
+import '../controllers/stats_controller.dart';
+import '../widgets/stat_widgets.dart';
 import 'package:intl/intl.dart';
 
 class StatsScreen extends ConsumerWidget {
@@ -15,6 +17,7 @@ class StatsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final heatmapState = ref.watch(heatmapControllerProvider);
     final heatmapNotifier = ref.read(heatmapControllerProvider.notifier);
+    final stats = ref.watch(statsProvider);
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -70,9 +73,52 @@ class StatsScreen extends ConsumerWidget {
               ),
             ),
 
+            const Text('Performance', style: AppTypography.h3),
+            const SizedBox(height: 16),
+            
+            // 2x2 Stat Card Grid (Task 71, 72)
+            GridView.count(
+              crossAxisCount: 2,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              mainAxisSpacing: 16,
+              crossAxisSpacing: 16,
+              childAspectRatio: 1.1,
+              children: [
+                StatCard(
+                  title: 'Total Done',
+                  value: stats.totalHabitsDone.toString(),
+                  waveformData: stats.miniWaveforms[0],
+                  accentColor: AppColors.primaryAccent,
+                ),
+                StatCard(
+                  title: 'Current Streak',
+                  value: '${stats.currentStreak}d',
+                  waveformData: stats.miniWaveforms[1],
+                  accentColor: AppColors.rainbow,
+                ),
+                StatCard(
+                  title: 'Best Streak',
+                  value: '${stats.bestStreak}d',
+                  waveformData: stats.miniWaveforms[3],
+                  accentColor: Colors.purpleAccent,
+                ),
+                StatCard(
+                  title: 'Completion',
+                  value: '${(stats.completionRate * 100).toInt()}%',
+                  waveformData: stats.miniWaveforms[2],
+                  accentColor: Colors.blueAccent,
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 24),
+
+            // Weekly Trend Chart (Task 70)
+            WeeklyTrendChart(data: stats.weeklyTrend),
+
             const SizedBox(height: 24),
             
-            // Placeholder for other stats (Task 71, 72 etc.)
             const Text('Insights', style: AppTypography.h3),
             const SizedBox(height: 16),
             Container(
@@ -81,7 +127,7 @@ class StatsScreen extends ConsumerWidget {
               decoration: BoxDecoration(
                 color: AppColors.surface,
                 borderRadius: BorderRadius.circular(24),
-                border: Border.all(color: AppColors.divider),
+                border: Border.all(color: AppColors.divider.withOpacity(0.1)),
               ),
               child: Column(
                 children: [

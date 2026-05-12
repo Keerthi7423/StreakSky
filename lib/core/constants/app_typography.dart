@@ -54,6 +54,13 @@ class AppTypography {
     color: AppColors.textPrimary,
   );
 
+  static const TextStyle bodySmall = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 13,
+    fontWeight: FontWeight.normal,
+    color: AppColors.textPrimary,
+  );
+
   static const TextStyle caption = TextStyle(
     fontFamily: fontFamily,
     fontSize: 12,
