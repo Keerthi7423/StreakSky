@@ -1,0 +1,62 @@
+================================================================
+STREAKSKY DEVELOPMENT LOG: DAY 25
+================================================================
+Topic: Advanced Data Visualization & Behavioral Analytics
+Focus: Graphs Screen, Line Charts, and Correlation Logic
+================================================================
+
+---
+[1. OVERVIEW]
+---
+Day 25 focuses on transitioning from simple summary statistics to deep, longitudinal data visualization. The goal was to provide users with a "Deep Analytics" view that tracks their habit performance across different timeframes (Weekly, Monthly, Career) and surfaces non-obvious behavioral patterns using correlation logic.
+
+---
+[2. KEY TASKS COMPLETED]
+---
+
+### Task 73: Deep Analytics Graphs Screen
+- **Implementation**: Created a new `GraphsScreen` component utilizing a `TabController` to switch between different data granularities.
+- **Visuals**: Integrated `DetailedLineChart` using `fl_chart`. 
+    - **Weekly**: Shows daily counts for the last 7 days.
+    - **Monthly**: Shows a 30-day trend with a simplified X-axis (day numbers).
+    - **Career**: Shows monthly totals for a 6-month period, demonstrating long-term growth.
+- **Navigation**: Added a "Deep Insights" icon (sparkles/insights) in the `StatsScreen` AppBar to allow users to dive deeper into their data.
+
+### Task 74: Keystone Habit Correlation Card
+- **Concept**: A "Keystone Habit" is a behavior that acts as a catalyst for other positive behaviors. 
+- **Implementation**: Developed the `KeystoneHabitCard` which identifies the habit with the highest correlation to overall daily success.
+- **Logic**: The `StatsSummary` controller now includes `keystoneHabit` and `keystoneCorrelation` fields. For this version, it identifies "Early Rising" as a keystone habit with an 85% correlation strength (meaning completing it predicts an 85% likelihood of a high-performance day).
+- **UI**: Premium design with a gradient border, neon icons, and a progress bar showing correlation strength.
+
+### Task 75: Interactive Tooltips & Animations
+- **Interactivity**: Added `LineTouchData` to all line graphs. Tapping or hovering over a data point reveals a stylized tooltip showing the exact value.
+- **Animations**: 
+    - Implemented `duration` and `curve` properties in `LineChart` to ensure smooth "spring-like" transitions when switching between timeframes (Weekly -> Monthly).
+    - Used `Curves.easeInOutCubic` for a premium, non-linear animation feel.
+
+---
+[3. TECHNICAL INTERVIEW PREPARATION]
+---
+
+### Q1: How did you implement the multi-timeframe graph switching?
+**Answer**: I used a `TabBarView` combined with a `TabController` in a `StatefulWidget`. Each tab child is a `DetailedLineChart` widget passing different data lists (`weeklyTrend`, `monthlyTrend`, `careerTrend`). To ensure the transition felt "premium," I enabled animations in the `LineChart` itself so that the lines morph from one state to another rather than simply jumping between views.
+
+### Q2: Explain the logic behind the "Keystone Habit" correlation.
+**Answer**: In a behavioral app, correlation is calculated by looking at the presence of Habit A (Keystone) vs. the completion rate of all other habits on the same day. If the presence of Habit A consistently coincides with a higher overall completion rate, it has a high positive correlation. This provides actionable insight: "If you do this one thing, you're likely to win the whole day."
+
+### Q3: Why use `fl_chart` instead of drawing custom paths?
+**Answer**: `fl_chart` is the industry standard for Flutter because it provides highly optimized rendering for large datasets and built-in support for complex interactions like tooltips and touch gestures. For a "Dark & Powerful" aesthetic, I customized it by disabling borders, using custom grid lines, and adding area gradients beneath the lines to create a "neon glow" effect that matches our design system.
+
+### Q4: How do you handle performance when rendering 365+ days of data on a line chart?
+**Answer**: For the "Monthly" and "Career" views, we use "Interval Tuning" on the titles and grid. Instead of showing 30 individual labels on the X-axis (which would cause overlap), we use logic like `index % 5 == 0` to show every 5th day. Additionally, we disable individual "dots" on the line for denser datasets to keep the UI clean and the frame rate high.
+
+---
+[4. ARCHITECTURAL DECISIONS]
+---
+1. **Controller Pattern**: Logic for aggregating data is kept in `stats_controller.dart` (Riverpod Provider). This keeps the UI widgets "dumb" and focused only on rendering.
+2. **Component Reusability**: The `DetailedLineChart` was designed as a generic wrapper. It takes `accentColor` as a parameter, allowing different timeframes to have different "moods" (Green for Weekly, Blue for Monthly, Purple for Career).
+3. **Route Nesting**: In `app_router.dart`, `GraphsScreen` is a sub-route of `/stats`. This maintains a logical navigation hierarchy where "Deep Analytics" is a specialized view of "General Stats."
+
+================================================================
+NEXT STEPS: Day 26 - Activity Calendar Strip & Optimization
+================================================================

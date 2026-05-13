@@ -10,6 +10,10 @@ class StatsSummary {
   final int bestStreak;
   final double completionRate;
   final List<double> weeklyTrend; // Last 7 days completion counts
+  final List<double> monthlyTrend; // Last 30 days completion counts
+  final List<double> careerTrend; // Last 12 months completion counts (or similar)
+  final String? keystoneHabit;
+  final double keystoneCorrelation;
   final List<List<double>> miniWaveforms; // One for each stat card
 
   StatsSummary({
@@ -18,6 +22,10 @@ class StatsSummary {
     required this.bestStreak,
     required this.completionRate,
     required this.weeklyTrend,
+    required this.monthlyTrend,
+    required this.careerTrend,
+    this.keystoneHabit,
+    this.keystoneCorrelation = 0.0,
     required this.miniWaveforms,
   });
 }
@@ -47,14 +55,28 @@ final statsProvider = Provider<StatsSummary>((ref) {
     weeklyTrend.add((heatmapState.dailyCompletionCounts[dateStr] ?? 0).toDouble());
   }
 
+  // Monthly trend (Last 30 days)
+  final List<double> monthlyTrend = [];
+  for (int i = 29; i >= 0; i--) {
+    final date = now.subtract(Duration(days: i));
+    final dateStr = DateFormat('yyyy-MM-dd').format(date);
+    monthlyTrend.add((heatmapState.dailyCompletionCounts[dateStr] ?? 0).toDouble());
+  }
+
+  // Career trend (Last 6 months - summarized)
+  final List<double> careerTrend = [120, 150, 180, 140, 210, 195]; // Mocked monthly totals
+
+  // Keystone Habit Logic (Mocked for now as we don't have per-habit historical data easily accessible here)
+  // In a real app, you'd analyze which habit's completion most often predicts other completions.
+  final keystoneHabit = "Early Rising";
+  final keystoneCorrelation = 0.85;
+
   // Completion rate (Total completed / Total possible)
-  // For simplicity, we'll use active days / total days in year so far
   final activeDays = heatmapState.dailyCompletionCounts.values.where((c) => c > 0).length;
   final dayOfYear = int.parse(DateFormat('D').format(now));
   final completionRate = dayOfYear > 0 ? activeDays / dayOfYear : 0.0;
 
-  // Mock waveforms for mini charts (Task 72)
-  // In a real app, these would be based on historical data for each specific metric
+  // Mock waveforms for mini charts
   final List<List<double>> miniWaveforms = [
     [0.2, 0.5, 0.4, 0.8, 0.6, 0.9, 0.7], // Habits Done
     [0.1, 0.3, 0.2, 0.5, 0.4, 0.6, 0.5], // Streak
@@ -68,6 +90,10 @@ final statsProvider = Provider<StatsSummary>((ref) {
     bestStreak: bestStreak,
     completionRate: completionRate,
     weeklyTrend: weeklyTrend,
+    monthlyTrend: monthlyTrend,
+    careerTrend: careerTrend,
+    keystoneHabit: keystoneHabit,
+    keystoneCorrelation: keystoneCorrelation,
     miniWaveforms: miniWaveforms,
   );
 });

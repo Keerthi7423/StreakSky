@@ -8,6 +8,7 @@ import '../../../heatmap/presentation/widgets/heatmap_grid.dart';
 import '../../../heatmap/presentation/widgets/heatmap_year_selector.dart';
 import '../controllers/stats_controller.dart';
 import '../widgets/stat_widgets.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 class StatsScreen extends ConsumerWidget {
@@ -31,6 +32,13 @@ class StatsScreen extends ConsumerWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.insights, color: AppColors.primaryAccent),
+            onPressed: () => GoRouter.of(context).push('/stats/graphs'),
+          ),
+          const SizedBox(width: 8),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),

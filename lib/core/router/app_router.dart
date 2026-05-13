@@ -9,6 +9,7 @@ import '../../features/splash/presentation/screens/splash_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/auth/presentation/screens/onboarding_screen.dart';
+import '../../features/graphs/presentation/screens/graphs_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../features/auth/presentation/controllers/auth_controller.dart';
 import '../../features/streaks/presentation/widgets/milestone_celebration_overlay.dart';
@@ -91,6 +92,12 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: '/stats',
                 builder: (context, state) => const StatsScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'graphs',
+                    builder: (context, state) => const GraphsScreen(),
+                  ),
+                ],
               ),
             ],
           ),
