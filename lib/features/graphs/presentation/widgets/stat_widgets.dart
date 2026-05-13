@@ -206,122 +206,138 @@ class DetailedLineChart extends StatelessWidget {
           Text(title, style: AppTypography.h3),
           const SizedBox(height: 32),
           Expanded(
-            child: LineChart(
-              LineChartData(
-                lineTouchData: LineTouchData(
-                  enabled: showTooltips,
-                  touchTooltipData: LineTouchTooltipData(
-                    getTooltipColor: (_) => AppColors.surface,
-                    tooltipBorderRadius: BorderRadius.circular(12),
-                    getTooltipItems: (touchedSpots) {
-                      return touchedSpots.map((spot) {
-                        return LineTooltipItem(
-                          spot.y.toInt().toString(),
-                          TextStyle(
-                            color: accentColor,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
-                        );
-                      }).toList();
-                    },
-                  ),
-                ),
-                gridData: FlGridData(
-                  show: true,
-                  drawVerticalLine: false,
-                  getDrawingHorizontalLine: (value) => FlLine(
-                    color: AppColors.divider.withOpacity(0.05),
-                    strokeWidth: 1,
-                  ),
-                ),
-                titlesData: FlTitlesData(
-                  show: true,
-                  rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                  topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                  bottomTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 30,
-                      interval: data.length > 10 ? (data.length / 5).toDouble() : 1,
-                      getTitlesWidget: (value, meta) {
-                        if (value % 1 != 0) return const SizedBox();
-                        final index = value.toInt();
-                        if (index < 0 || index >= data.length) return const SizedBox();
-                        
-                        String text = '';
-                        if (data.length <= 7) {
-                          text = ['M', 'T', 'W', 'T', 'F', 'S', 'S'][index];
-                        } else if (data.length <= 31) {
-                          if (index % 5 == 0) text = '${index + 1}';
-                        } else {
-                          text = 'M${index + 1}';
-                        }
-
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 8.0),
-                          child: Text(text, style: const TextStyle(color: Colors.grey, fontSize: 10)),
-                        );
-                      },
-                    ),
-                  ),
-                  leftTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 40,
-                      getTitlesWidget: (value, meta) {
-                        return Text(
-                          value.toInt().toString(),
-                          style: const TextStyle(color: Colors.grey, fontSize: 10),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-                borderData: FlBorderData(show: false),
-                minX: 0,
-                maxX: (data.length - 1).toDouble(),
-                minY: 0,
-                maxY: (data.reduce((a, b) => a > b ? a : b) * 1.2).toDouble() + 1,
-                lineBarsData: [
-                  LineChartBarData(
-                    spots: data.asMap().entries.map((e) {
-                      return FlSpot(e.key.toDouble(), e.value);
-                    }).toList(),
-                    isCurved: true,
-                    color: accentColor,
-                    barWidth: 4,
-                    isStrokeCapRound: true,
-                    dotData: FlDotData(
-                      show: data.length <= 7,
-                      getDotPainter: (spot, percent, barData, index) =>
-                          FlDotCirclePainter(
-                        radius: 4,
-                        color: AppColors.background,
-                        strokeWidth: 2,
-                        strokeColor: accentColor,
-                      ),
-                    ),
-                    belowBarData: BarAreaData(
-                      show: true,
-                      gradient: LinearGradient(
-                        colors: [
-                          accentColor.withOpacity(0.3),
-                          accentColor.withOpacity(0.0),
-                        ],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      ),
-                    ),
-                  ),
-                ],
+            child: RepaintBoundary(
+              child: LineChart(
+                _getOptimizedLineChartData(),
+                duration: const Duration(milliseconds: 400),
+                curve: Curves.easeInOutCubic,
               ),
-              duration: const Duration(milliseconds: 400),
-              curve: Curves.easeInOutCubic,
             ),
           ),
         ],
       ),
+    );
+  }
+
+  LineChartData _getOptimizedLineChartData() {
+    // Task 78: Optimize chart rendering for long historical data sets
+    // Downsampling logic for large data sets
+    List<FlSpot> spots = [];
+    if (data.length > 50) {
+      final int step = (data.length / 50).ceil();
+      for (int i = 0; i < data.length; i += step) {
+        spots.add(FlSpot(i.toDouble(), data[i]));
+      }
+    } else {
+      spots = data.asMap().entries.map((e) => FlSpot(e.key.toDouble(), e.value)).toList();
+    }
+
+    return LineChartData(
+      lineTouchData: LineTouchData(
+        enabled: showTooltips,
+        touchTooltipData: LineTouchTooltipData(
+          getTooltipColor: (_) => AppColors.surface,
+          tooltipBorderRadius: BorderRadius.circular(12),
+          getTooltipItems: (touchedSpots) {
+            return touchedSpots.map((spot) {
+              return LineTooltipItem(
+                spot.y.toInt().toString(),
+                TextStyle(
+                  color: accentColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
+              );
+            }).toList();
+          },
+        ),
+      ),
+      gridData: FlGridData(
+        show: true,
+        drawVerticalLine: false,
+        getDrawingHorizontalLine: (value) => FlLine(
+          color: AppColors.divider.withOpacity(0.05),
+          strokeWidth: 1,
+        ),
+      ),
+      titlesData: FlTitlesData(
+        show: true,
+        rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        bottomTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            reservedSize: 30,
+            interval: data.length > 10 ? (data.length / 5).toDouble() : 1,
+            getTitlesWidget: (value, meta) {
+              if (value % 1 != 0) return const SizedBox();
+              final index = value.toInt();
+              if (index < 0 || index >= data.length) return const SizedBox();
+              
+              String text = '';
+              if (data.length <= 7) {
+                text = ['M', 'T', 'W', 'T', 'F', 'S', 'S'][index];
+              } else if (data.length <= 31) {
+                if (index % 5 == 0) text = '${index + 1}';
+              } else {
+                text = 'M${index + 1}';
+              }
+
+              return Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Text(text, style: const TextStyle(color: Colors.grey, fontSize: 10)),
+              );
+            },
+          ),
+        ),
+        leftTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            reservedSize: 40,
+            getTitlesWidget: (value, meta) {
+              return Text(
+                value.toInt().toString(),
+                style: const TextStyle(color: Colors.grey, fontSize: 10),
+              );
+            },
+          ),
+        ),
+      ),
+      borderData: FlBorderData(show: false),
+      minX: 0,
+      maxX: (data.length - 1).toDouble(),
+      minY: 0,
+      maxY: (data.reduce((a, b) => a > b ? a : b) * 1.2).toDouble() + 1,
+      lineBarsData: [
+        LineChartBarData(
+          spots: spots,
+          isCurved: true,
+          color: accentColor,
+          barWidth: 4,
+          isStrokeCapRound: true,
+          dotData: FlDotData(
+            show: data.length <= 7,
+            getDotPainter: (spot, percent, barData, index) =>
+                FlDotCirclePainter(
+              radius: 4,
+              color: AppColors.background,
+              strokeWidth: 2,
+              strokeColor: accentColor,
+            ),
+          ),
+          belowBarData: BarAreaData(
+            show: true,
+            gradient: LinearGradient(
+              colors: [
+                accentColor.withOpacity(0.3),
+                accentColor.withOpacity(0.0),
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -411,6 +427,136 @@ class KeystoneHabitCard extends StatelessWidget {
           Text(
             'Completing this habit increases your overall daily success by ${(correlation * 100).toInt()}%.',
             style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary, height: 1.4),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ActivityCalendarStrip extends StatelessWidget {
+  const ActivityCalendarStrip({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final now = DateTime.now();
+    // Get the start of the week (Monday)
+    final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'ACTIVITY CALENDAR',
+          style: TextStyle(
+            color: AppColors.textSecondary,
+            fontSize: 10,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.2,
+          ),
+        ),
+        const SizedBox(height: 16),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: List.generate(7, (index) {
+            final day = startOfWeek.add(Duration(days: index));
+            final isToday = day.day == now.day && day.month == now.month && day.year == now.year;
+            final dayName = ['S', 'M', 'T', 'W', 'T', 'F', 'S'][day.weekday % 7];
+            
+            return Column(
+              children: [
+                Text(
+                  dayName,
+                  style: TextStyle(
+                    color: isToday ? AppColors.primaryAccent : AppColors.textSecondary,
+                    fontSize: 12,
+                    fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: isToday ? AppColors.primaryAccent : AppColors.surface,
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: isToday ? AppColors.primaryAccent : AppColors.divider.withOpacity(0.1),
+                    ),
+                  ),
+                  child: Center(
+                    child: Text(
+                      day.day.toString(),
+                      style: TextStyle(
+                        color: isToday ? Colors.black : AppColors.textPrimary,
+                        fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }),
+        ),
+      ],
+    );
+  }
+}
+
+class RecentHabitCard extends StatelessWidget {
+  final String emoji;
+  final String name;
+  final String date;
+  final Color color;
+
+  const RecentHabitCard({
+    super.key,
+    required this.emoji,
+    required this.name,
+    required this.date,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 160,
+      margin: const EdgeInsets.only(right: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.divider.withOpacity(0.1)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Text(emoji, style: const TextStyle(fontSize: 20)),
+          ),
+          const Spacer(),
+          Text(
+            name,
+            style: const TextStyle(
+              color: AppColors.textPrimary,
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            date,
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 11,
+            ),
           ),
         ],
       ),

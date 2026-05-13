@@ -1,0 +1,43 @@
+Day 26: Activity Calendar & Deep Performance Optimization
+
+### 1. Objective
+Finalize the Statistics screen by adding a 7-day Activity Calendar Strip and a "Recent Habits" section, while optimizing chart rendering for large datasets to maintain a smooth 60 FPS experience.
+
+### 2. Key Features Implemented
+
+#### Activity Calendar Strip (Task 76)
+- **Concept**: A 7-day horizontal strip that gives the user an immediate sense of the current week's progress.
+- **Implementation**: 
+    - Created a stateless widget `ActivityCalendarStrip` that calculates the start of the current week (Monday) and renders 7 circular day indicators.
+    - Today is highlighted with a neon green background and black text to draw immediate attention.
+    - Used standard 4px base unit spacing for a clean, professional layout.
+
+#### Recent Habits Horizontal Scroll (Task 77)
+- **Concept**: Display the 3 most recently completed habit logs to provide quick feedback on recent wins.
+- **Implementation**:
+    - Updated `HabitLocalService` to support querying the last N completions, sorted by `completedAt` (fallback to `completedDate`).
+    - Extended `StatsController` and `StatsSummary` to include `RecentHabitLog` objects, which join habit metadata (emoji, name, color) with completion data.
+    - Built `RecentHabitCard` with a stylized layout: emoji badge, habit name, and relative time/date.
+    - Integrated as a horizontal `ListView.builder` for efficient memory usage.
+
+#### Chart Rendering Optimization (Task 78)
+- **Concept**: As historical data grows (e.g., 1+ year of daily logs), rendering hundreds of data points on a mobile screen can cause significant frame drops.
+- **Techniques Used**:
+    - **RepaintBoundary**: Wrapped the `LineChart` in a `RepaintBoundary`. This tells Flutter's engine that the chart's pixels can be cached as a layer, so if other parts of the screen animate (like a scroll), the chart doesn't need to re-rasterize its complex paths every frame.
+    - **Downsampling (LTTB-lite)**: Implemented a sampling logic that limits the chart to 50 data points regardless of the actual dataset size. If the data exceeds 50 points, it takes evenly spaced samples. This prevents the GPU from drawing thousands of invisible line segments, significantly improving performance without losing the general "trend" visual.
+    - **Selective Point Drawing**: Configured `dotData` to only show dots when the dataset is small (<= 7 points), reducing the number of draw calls for large graphs.
+
+### 3. Interview-Ready Technical Deep Dive
+
+**Q: Why use RepaintBoundary for charts?**
+**A**: Charts are computationally expensive to paint because they involve complex Bezier curves and fill gradients. If the chart is inside a scrollable view, every time the user scrolls, Flutter might try to repaint the chart. `RepaintBoundary` creates a separate display list for the widget, allowing the engine to reuse the previously painted layer unless the data itself changes. This is a critical optimization for complex data viz.
+
+**Q: How do you handle "Long Historical Data" in Flutter charts?**
+**A**: Rendering too many points leads to "thick" lines and heavy CPU/GPU usage. I implemented a downsampling strategy where we limit the rendered points to 50. For a weekly view, we show all points. For a career view (months of data), we sample the peaks or average values to show the trend while keeping the draw call count low.
+
+**Q: How did you implement the "Recent Habits" logic efficiently?**
+**A**: I extended the Local Service (Hive) to sort completions by time and take the top 3. In the Riverpod controller, I performed a "join" operation between the completions and the habit metadata. By using `firstWhere` on the cached habit list, I avoid extra database lookups, ensuring the UI remains responsive even when the user has many habits.
+
+### 4. Architectural Decisions
+- **Join Logic in Controller**: Chose to combine Habit + Completion data in the `StatsController` rather than the UI. This keeps the widgets "dumb" and ensures that if we change the data source later (e.g., Supabase vs Hive), the UI components don't need to change.
+- **Declarative Layout**: Reorganized the `StatsScreen` to follow the PRD's "Dark & Powerful" aesthetic, using uppercase labels with letter spacing to distinguish sections clearly.
