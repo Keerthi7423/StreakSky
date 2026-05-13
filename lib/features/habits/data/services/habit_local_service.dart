@@ -51,4 +51,20 @@ class HabitLocalService {
         .where((c) => c.completedDate.compareTo(startDate) >= 0 && c.completedDate.compareTo(endDate) <= 0)
         .toList();
   }
+
+  List<HabitCompletionModel> getRecentCompletions(int limit) {
+    final completions = _completionBox.values
+        .where((json) => json != null)
+        .map((json) => HabitCompletionModel.fromJson(Map<String, dynamic>.from(json)))
+        .toList();
+    
+    // Sort by completedAt descending, fallback to completedDate
+    completions.sort((a, b) {
+      final dateA = a.completedAt ?? DateTime.tryParse(a.completedDate) ?? DateTime.now();
+      final dateB = b.completedAt ?? DateTime.tryParse(b.completedDate) ?? DateTime.now();
+      return dateB.compareTo(dateA);
+    });
+    
+    return completions.take(limit).toList();
+  }
 }

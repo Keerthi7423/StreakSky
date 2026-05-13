@@ -3,6 +3,11 @@ import '../../../../core/utils/streak_date_utils.dart';
 import '../../../heatmap/presentation/controllers/heatmap_controller.dart';
 import '../../../streaks/presentation/controllers/streak_controller.dart';
 import 'package:intl/intl.dart';
+import '../../../habits/presentation/controllers/habit_controller.dart';
+import '../../../habits/data/services/habit_local_service.dart';
+import '../../../../core/di/injection.dart';
+import '../../../habits/domain/models/habit_model.dart';
+import '../../../habits/domain/models/habit_completion_model.dart';
 
 class StatsSummary {
   final int totalHabitsDone;
@@ -15,6 +20,7 @@ class StatsSummary {
   final String? keystoneHabit;
   final double keystoneCorrelation;
   final List<List<double>> miniWaveforms; // One for each stat card
+  final List<RecentHabitLog> recentHabits;
 
   StatsSummary({
     required this.totalHabitsDone,
@@ -27,6 +33,21 @@ class StatsSummary {
     this.keystoneHabit,
     this.keystoneCorrelation = 0.0,
     required this.miniWaveforms,
+    required this.recentHabits,
+  });
+}
+
+class RecentHabitLog {
+  final String habitName;
+  final String emoji;
+  final String colorHex;
+  final String completedAt;
+
+  RecentHabitLog({
+    required this.habitName,
+    required this.emoji,
+    required this.colorHex,
+    required this.completedAt,
   });
 }
 
@@ -84,16 +105,62 @@ final statsProvider = Provider<StatsSummary>((ref) {
     [0.3, 0.6, 0.4, 0.7, 0.5, 0.8, 0.6], // Best Streak
   ];
 
-  return StatsSummary(
-    totalHabitsDone: totalDone,
-    currentStreak: currentStreak,
-    bestStreak: bestStreak,
-    completionRate: completionRate,
-    weeklyTrend: weeklyTrend,
-    monthlyTrend: monthlyTrend,
-    careerTrend: careerTrend,
-    keystoneHabit: keystoneHabit,
-    keystoneCorrelation: keystoneCorrelation,
-    miniWaveforms: miniWaveforms,
-  );
+  // Fetch recent habits (Task 77)
+  final localService = getIt<HabitLocalService>();
+  final List<HabitCompletionModel> recentCompletions = localService.getRecentCompletions(3);
+  final allHabits = ref.watch(habitsListProvider).asData?.value ?? [];
+  
+  print('StatsProvider: recentCompletions count: ${recentCompletions.length}');
+  print('StatsProvider: allHabits count: ${allHabits.length}');
+  
+  try {
+    final List<RecentHabitLog> recentHabits = recentCompletions.map<RecentHabitLog>((c) {
+      final habit = allHabits.firstWhere((h) => h.id == c.habitId, orElse: () => HabitModel(
+        id: 'unknown', userId: '', name: 'Unknown Habit', emoji: '❓', colorHex: '808080'
+      ));
+      return RecentHabitLog(
+        habitName: habit.name,
+        emoji: habit.emoji ?? '✨',
+        colorHex: habit.colorHex ?? 'B3FF00',
+        completedAt: c.completedAt != null 
+            ? DateFormat('MMM d, HH:mm').format(c.completedAt!)
+            : (c.completedDate.isNotEmpty 
+                ? DateFormat('MMM d').format(DateTime.tryParse(c.completedDate) ?? DateTime.now())
+                : 'Recent'),
+      );
+    }).toList();
+
+    print('StatsProvider: recentHabits processed, count: ${recentHabits.length}');
+
+    final summary = StatsSummary(
+      totalHabitsDone: totalDone,
+      currentStreak: currentStreak,
+      bestStreak: bestStreak,
+      completionRate: completionRate,
+      weeklyTrend: weeklyTrend,
+      monthlyTrend: monthlyTrend,
+      careerTrend: careerTrend,
+      keystoneHabit: keystoneHabit,
+      keystoneCorrelation: keystoneCorrelation,
+      miniWaveforms: miniWaveforms,
+      recentHabits: recentHabits,
+    );
+    print('StatsProvider: Successfully created StatsSummary');
+    return summary;
+  } catch (e, stack) {
+    print('StatsProvider ERROR: $e');
+    print('StatsProvider STACK: $stack');
+    // Return a default summary to avoid red screen
+    return StatsSummary(
+      totalHabitsDone: 0,
+      currentStreak: 0,
+      bestStreak: 0,
+      completionRate: 0,
+      weeklyTrend: [],
+      monthlyTrend: [],
+      careerTrend: [],
+      miniWaveforms: [[], [], [], []],
+      recentHabits: [],
+    );
+  }
 });

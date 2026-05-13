@@ -48,7 +48,15 @@ class StatsScreen extends ConsumerWidget {
             const StreakLeaderboard(),
             const SizedBox(height: 24),
             
-            const Text('Consistency Heatmap', style: AppTypography.h3),
+            const ActivityCalendarStrip(),
+            const SizedBox(height: 32),
+            
+            const Text('CONSISTENCY HEATMAP', style: TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.2,
+            )),
             const SizedBox(height: 16),
             
             Card(
@@ -81,7 +89,12 @@ class StatsScreen extends ConsumerWidget {
               ),
             ),
 
-            const Text('Performance', style: AppTypography.h3),
+            const Text('PERFORMANCE', style: TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.2,
+            )),
             const SizedBox(height: 16),
             
             // 2x2 Stat Card Grid (Task 71, 72)
@@ -127,8 +140,61 @@ class StatsScreen extends ConsumerWidget {
 
             const SizedBox(height: 24),
             
-            const Text('Insights', style: AppTypography.h3),
+            const Text('INSIGHTS', style: TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.2,
+            )),
             const SizedBox(height: 16),
+            
+            // Recent Habits (Task 77)
+            if (stats.recentHabits.isNotEmpty) ...[
+              const Text('MY LAST HABITS', style: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.2,
+              )),
+              const SizedBox(height: 16),
+              SizedBox(
+                height: 130,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: stats.recentHabits.length,
+                  itemBuilder: (context, index) {
+                    final log = stats.recentHabits[index];
+                    
+                    // Parse hex color safely (ensure 0xFF alpha prefix)
+                    String hex = log.colorHex.replaceAll('#', '');
+                    if (hex.length == 6) hex = 'FF$hex';
+                    final colorInt = int.tryParse(hex, radix: 16) ?? 0xFFB3FF00;
+                    
+                    return RecentHabitCard(
+                      emoji: log.emoji,
+                      name: log.habitName,
+                      date: log.completedAt,
+                      color: Color(colorInt),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 32),
+            ] else if (stats.recentHabits.isEmpty) ...[
+              const Text('MY LAST HABITS', style: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.2,
+              )),
+              const SizedBox(height: 16),
+              const Text(
+                'No recent activity logged yet. Start a habit to see it here!',
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+              ),
+              const SizedBox(height: 32),
+            ],
+
             Container(
               padding: const EdgeInsets.all(20),
               width: double.infinity,
