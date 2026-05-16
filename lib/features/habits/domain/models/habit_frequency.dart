@@ -1,29 +1,56 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
-
-part 'habit_frequency.freezed.dart';
-part 'habit_frequency.g.dart';
-
 enum FrequencyType {
-  @JsonValue('daily')
   daily,
-  @JsonValue('weekdays')
   weekdays,
-  @JsonValue('custom')
   custom,
 }
 
-@freezed
-class HabitFrequency with _$HabitFrequency {
-  const HabitFrequency._();
+class HabitFrequency {
+  final FrequencyType type;
+  final List<int>? daysOfWeek;
+  final int? timesPerWeek;
 
-  const factory HabitFrequency({
-    @Default(FrequencyType.daily) FrequencyType type,
+  const HabitFrequency({
+    this.type = FrequencyType.daily,
+    this.daysOfWeek,
+    this.timesPerWeek,
+  });
+
+  factory HabitFrequency.fromJson(Map<String, dynamic> json) {
+    return HabitFrequency(
+      type: _parseFrequencyType(json['type'] as String?),
+      daysOfWeek: (json['days_of_week'] as List?)?.map((e) => e as int).toList(),
+      timesPerWeek: json['times_per_week'] as int?,
+    );
+  }
+
+  static FrequencyType _parseFrequencyType(String? type) {
+    switch (type) {
+      case 'daily': return FrequencyType.daily;
+      case 'weekdays': return FrequencyType.weekdays;
+      case 'custom': return FrequencyType.custom;
+      default: return FrequencyType.daily;
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'type': type.name,
+      'days_of_week': daysOfWeek,
+      'times_per_week': timesPerWeek,
+    };
+  }
+
+  HabitFrequency copyWith({
+    FrequencyType? type,
     List<int>? daysOfWeek,
     int? timesPerWeek,
-  }) = _HabitFrequency;
-
-  factory HabitFrequency.fromJson(Map<String, dynamic> json) =>
-      _$HabitFrequencyFromJson(json);
+  }) {
+    return HabitFrequency(
+      type: type ?? this.type,
+      daysOfWeek: daysOfWeek ?? this.daysOfWeek,
+      timesPerWeek: timesPerWeek ?? this.timesPerWeek,
+    );
+  }
 
   bool isDue(DateTime date, {int completionsThisWeek = 0}) {
     switch (type) {
@@ -36,8 +63,6 @@ class HabitFrequency with _$HabitFrequency {
           return daysOfWeek!.contains(date.weekday);
         }
         if (timesPerWeek != null) {
-          // If we haven't reached the target for the week, it's "due" every day
-          // until the target is met. This is a common pattern for "X times per week".
           return completionsThisWeek < timesPerWeek!;
         }
         return true;

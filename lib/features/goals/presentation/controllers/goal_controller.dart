@@ -162,7 +162,7 @@ class GoalController extends StateNotifier<AsyncValue<void>> {
         await _repository.updateGoalProgress(goalId, newValue);
       } else {
         _ref.read(demoGoalsProvider.notifier).update((state) => 
-          state.map((g) => g.id == goalId ? g.copyWith(currentValue: newValue) : g).toList()
+          state.map<GoalModel>((g) => g.id == goalId ? g.copyWith(currentValue: newValue) : g).toList()
         );
       }
       _ref.invalidate(goalsListProvider);
@@ -214,7 +214,7 @@ class GoalController extends StateNotifier<AsyncValue<void>> {
           await _repository.updateGoal(updatedGoal);
         } else {
           _ref.read(demoGoalsProvider.notifier).update((state) => 
-            state.map((g) => g.id == goal.id ? updatedGoal : g).toList()
+            state.map<GoalModel>((g) => g.id == goal.id ? updatedGoal : g).toList()
           );
         }
       }

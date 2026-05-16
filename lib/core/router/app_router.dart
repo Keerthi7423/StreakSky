@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../features/ai_agent/presentation/screens/ai_chat_screen.dart';
 import '../../features/habits/presentation/screens/home_screen.dart';
 import '../../features/graphs/presentation/screens/stats_screen.dart';
 import '../../features/goals/presentation/screens/goals_screen.dart';
@@ -104,6 +105,14 @@ final routerProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(
             routes: [
               GoRoute(
+                path: '/ai',
+                builder: (context, state) => const AiChatScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
                 path: '/goals',
                 builder: (context, state) => const GoalsScreen(),
               ),
@@ -164,6 +173,11 @@ class MainShell extends StatelessWidget {
               icon: Icon(Icons.bar_chart_outlined),
               selectedIcon: Icon(Icons.bar_chart, color: Color(0xFFB3FF00)),
               label: 'Stats',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.auto_awesome_outlined),
+              selectedIcon: Icon(Icons.auto_awesome, color: Color(0xFFB3FF00)),
+              label: 'Sky AI',
             ),
             NavigationDestination(
               icon: Icon(Icons.flag_outlined),
