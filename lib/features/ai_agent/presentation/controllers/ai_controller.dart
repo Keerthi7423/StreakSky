@@ -72,6 +72,30 @@ class AiController extends StateNotifier<AiState> {
     }
   }
 
+  Future<String> analyzeUserPatterns(String historicalData) async {
+    try {
+      return await _repository.analyzePatterns(historicalData);
+    } catch (e) {
+      return "I need more data to see the patterns in your sky.";
+    }
+  }
+
+  Future<String> generateHabitCommitMessage(String habitName, String context) async {
+    try {
+      return await _repository.generateCommitMessage(habitName, context);
+    } catch (e) {
+      return "feat: completed $habitName";
+    }
+  }
+
+  Future<Map<String, dynamic>> handleVoiceCheckIn(String transcript) async {
+    try {
+      return await _repository.parseVoiceCommand(transcript);
+    } catch (e) {
+      return {'habit': 'unknown'};
+    }
+  }
+
   void clearChat() {
     state = state.copyWith(messages: []);
   }

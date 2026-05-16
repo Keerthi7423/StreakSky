@@ -4,6 +4,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../controllers/ai_controller.dart';
 import '../../domain/models/chat_message.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../widgets/voice_check_in_button.dart';
+import '../widgets/pattern_recognition_card.dart';
 
 class AiChatScreen extends ConsumerStatefulWidget {
   const AiChatScreen({super.key});
@@ -118,6 +120,8 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
           ),
           const SizedBox(height: 32),
           _buildPinnedCommitCard(),
+          const SizedBox(height: 24),
+          const PatternRecognitionCard(),
         ],
       ),
     );
@@ -276,6 +280,8 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
               ),
             ),
           ),
+          const SizedBox(width: 8),
+          const VoiceCheckInButton(),
           const SizedBox(width: 8),
           GestureDetector(
             onTap: _handleSend,
