@@ -41,4 +41,19 @@ class OllamaDataSource {
     final prompt = "Based on yesterday's habit data: $habitDataSummary. Provide a short, 1-2 sentence supportive nudge for today. Keep it weather-themed.";
     return generateResponse(prompt);
   }
+
+  Future<String> generateCommitMessage(String habitName, String context) async {
+    final prompt = "Generate a GitHub-inspired daily one-liner commit message for completing the habit '$habitName'. Context: $context. Examples: 'feat: 14-day reading streak hit. Sunny day.', 'fix: missed gym, used streak shield. Still alive.'. Provide ONLY the message text.";
+    return generateResponse(prompt);
+  }
+
+  Future<String> generatePatternAnalysis(String historicalData) async {
+    final prompt = "Analyze this 30/60 day habit history: $historicalData. Identify 2-3 key patterns (e.g., 'You tend to miss meditation on Tuesdays', 'Reading consistency improves after gym'). Keep it concise and supportive.";
+    return generateResponse(prompt);
+  }
+
+  Future<String> parseVoiceTranscript(String transcript) async {
+    final prompt = "Parse this voice check-in: '$transcript'. Identify the habit name and status (done/missed). Return ONLY a JSON object like {\"habit\": \"reading\", \"status\": \"done\"}. If unknown, return {\"habit\": \"unknown\"}.";
+    return generateResponse(prompt);
+  }
 }
