@@ -5,6 +5,7 @@ import '../controllers/habit_controller.dart';
 import '../widgets/add_habit_bottom_sheet.dart';
 import '../widgets/habit_card.dart';
 import '../../../weather/presentation/widgets/weather_hero_card.dart';
+import '../../../ai_agent/presentation/widgets/ai_nudge_card.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -43,6 +44,7 @@ class HomeScreen extends ConsumerWidget {
         slivers: [
           _buildAppBar(context),
           const SliverToBoxAdapter(child: WeatherHeroCard()),
+          SliverToBoxAdapter(child: const AiNudgeCard()),
           habitsAsync.when(
             data: (habits) => habits.isEmpty
                 ? SliverFillRemaining(child: _buildEmptyState(context))

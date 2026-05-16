@@ -1,0 +1,70 @@
+================================================================
+STREAKSKY DEVELOPMENT LOG: DAY 27
+================================================================
+Focus: AI Agent Integration (Ollama) & Sky Chat Interface
+================================================================
+
+Today's milestone focused on Phase 7: AI Agent & Daily Quotes. We implemented the foundational AI infrastructure and the primary chat interface for "Sky," our supportive habit coach.
+
+----------------------------------------------------------------
+1. ARCHITECTURAL OVERVIEW
+----------------------------------------------------------------
+We followed a clean architecture pattern for the AI feature:
+- Domain Layer: Defined the ChatMessage model and AiRepository interface.
+- Data Layer: Implemented OllamaDataSource (communicating with local Ollama API) and AiRepositoryImpl.
+- Presentation Layer: Built a StateNotifier-based controller (Riverpod) and a futuristic neon chat UI.
+
+----------------------------------------------------------------
+2. KEY IMPLEMENTATIONS
+----------------------------------------------------------------
+
+[Task 79: Ollama Integration]
+- Dependency: Added 'dio' for robust HTTP requests to the local Ollama server.
+- Configuration: Added OLLAMA_BASE_URL and OLLAMA_MODEL to the .env file.
+- DataSource: Created OllamaDataSource to handle '/api/chat' requests. We used a system prompt to define Sky's persona (weather-themed, supportive, cosmic vibe).
+- Model: Used 'freezed' to create a type-safe ChatMessage model with roles (user, assistant, system).
+
+[Task 80: Sky AI Chat Interface]
+- UI Design: Implemented a "Dark & Powerful" aesthetic using #0D0D0D background and #B3FF00 neon accents.
+- Bubbles: Created stylized chat bubbles with neon glow for user messages and dark-grey cards for the assistant.
+- Animations: Integrated 'flutter_animate' for smooth bubble appearances and a custom "pulse" loading indicator for AI thinking states.
+- Pinned Commit Card: Added a "Latest Activity" card in the empty state to provide context for the user's habits (Task 80 requirement).
+- Navigation: Integrated the AI Chat as a new tab in the GoRouter shell navigation.
+
+[Task 81: AI Daily Nudges]
+- Logic: Added a 'fetchDailyNudge' method in the controller that takes a summary of habit data and generates a natural language nudge.
+- Widget: Created 'AiNudgeCard', a specialized widget that appears on the Home screen below the Weather card.
+- persona: Sky provides context-aware, weather-themed motivation (e.g., "Clear skies ahead for your streak!") based on yesterday's completion data.
+
+----------------------------------------------------------------
+3. INTERVIEW PREPARATION (Q&A)
+----------------------------------------------------------------
+
+Q: Why use Ollama for on-device AI instead of OpenAI?
+A: Privacy and cost. By running Llama 3.2 locally via Ollama, user habit data never leaves their device (or local network), which is crucial for personal privacy apps. It also eliminates API costs for the developer and ensures offline functionality.
+
+Q: How do you handle AI response latency in Flutter?
+A: We use a combination of loading states (AsyncValue/isLoading) and optimistic UI updates for the user's message. While the AI is "thinking," we display a pulsing dot animation to keep the interface feeling responsive.
+
+Q: Explain the Riverpod state management for the chat.
+A: We use a StateNotifierProvider with an 'AiState' class. This state holds a list of 'ChatMessage' objects. When a user sends a message, we update the state to include the user's message and set 'isLoading: true'. Once the API returns, we append the AI's response and set 'isLoading: false'.
+
+Q: How did you implement the "neon" effect in the UI?
+A: We used a combination of high-contrast colors (#B3FF00 on #0D0D0D), BoxShadows with spread and blur to create a glow, and subtle gradients in the nudge cards.
+
+----------------------------------------------------------------
+- Challenge: Analyzer Version Mismatch. Encounted a "Missing implementation of visitDotShorthandInvocation" exception in riverpod_generator due to SDK 3.11 vs Analyzer 3.9.
+- Solution: Refactored ProfileController to use standard StateNotifierProvider and removed riverpod_generator to stabilize the build.
+
+- Challenge: Broken Build Runner Environment. Issues with build_runner_core prevented automatic code generation.
+- Solution: Manualized ChatMessage, AiState, and HabitModel to bypass code generation. Manually implemented injection.config.dart for dependency injection to ensure the project remains shippable.
+
+- Challenge: Connecting an Android Emulator to a local Ollama server on the host machine.
+- Solution: Used the special IP '10.0.2.2' instead of 'localhost' in the .env file.
+
+================================================================
+NEXT STEPS: DAY 28
+- Implement Contextual Quote Engine (Weather/Streak matching).
+- Build Quotes Supabase table.
+- Implement Morning Quote Card with bookmark support.
+================================================================
