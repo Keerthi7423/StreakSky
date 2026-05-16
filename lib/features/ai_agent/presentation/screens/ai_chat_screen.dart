@@ -6,6 +6,8 @@ import '../../domain/models/chat_message.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../widgets/voice_check_in_button.dart';
 import '../widgets/pattern_recognition_card.dart';
+import '../../../quotes/presentation/controllers/quote_controller.dart';
+import '../../../quotes/domain/models/quote_model.dart';
 
 class AiChatScreen extends ConsumerStatefulWidget {
   const AiChatScreen({super.key});
@@ -14,9 +16,22 @@ class AiChatScreen extends ConsumerStatefulWidget {
   ConsumerState<AiChatScreen> createState() => _AiChatScreenState();
 }
 
-class _AiChatScreenState extends ConsumerState<AiChatScreen> {
+class _AiChatScreenState extends ConsumerState<AiChatScreen> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
   final TextEditingController _textController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   void _scrollToBottom() {
     if (_scrollController.hasClients) {
@@ -65,6 +80,18 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
             ),
           ],
         ),
+        bottom: TabBar(
+          controller: _tabController,
+          indicatorColor: const Color(0xFFB3FF00),
+          labelColor: const Color(0xFFB3FF00),
+          unselectedLabelColor: Colors.white38,
+          labelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+          tabs: const [
+            Tab(text: 'CHAT', icon: Icon(Icons.chat_bubble_outline, size: 20)),
+            Tab(text: 'HISTORY', icon: Icon(Icons.history, size: 20)),
+            Tab(text: 'SAVED', icon: Icon(Icons.bookmark_border, size: 20)),
+          ],
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.delete_outline, color: Colors.white54),
@@ -72,25 +99,35 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
           ),
         ],
       ),
-      body: Column(
+      body: TabBarView(
+        controller: _tabController,
         children: [
-          Expanded(
-            child: aiState.messages.isEmpty
-                ? _buildEmptyState()
-                : ListView.builder(
-                    controller: _scrollController,
-                    padding: const EdgeInsets.all(16),
-                    itemCount: aiState.messages.length + (aiState.isLoading ? 1 : 0),
-                    itemBuilder: (context, index) {
-                      if (index == aiState.messages.length) {
-                        return _buildLoadingBubble();
-                      }
-                      final message = aiState.messages[index];
-                      return _buildChatBubble(message);
-                    },
-                  ),
+          // Tab 1: Chat
+          Column(
+            children: [
+              Expanded(
+                child: aiState.messages.isEmpty
+                    ? _buildEmptyState()
+                    : ListView.builder(
+                        controller: _scrollController,
+                        padding: const EdgeInsets.all(16),
+                        itemCount: aiState.messages.length + (aiState.isLoading ? 1 : 0),
+                        itemBuilder: (context, index) {
+                          if (index == aiState.messages.length) {
+                            return _buildLoadingBubble();
+                          }
+                          final message = aiState.messages[index];
+                          return _buildChatBubble(message);
+                        },
+                      ),
+              ),
+              _buildInputArea(),
+            ],
           ),
-          _buildInputArea(),
+          // Tab 2: History
+          _buildQuoteList(ref.watch(quoteHistoryProvider), 'No history yet.'),
+          // Tab 3: Saved
+          _buildQuoteList(ref.watch(bookmarkedQuotesProvider), 'No saved quotes.'),
         ],
       ),
     );
@@ -306,7 +343,60 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
       _textController.clear();
     }
   }
+  Widget _buildQuoteList(AsyncValue<List<QuoteModel>> quotesAsync, String emptyMsg) {
+    return quotesAsync.when(
+      data: (quotes) {
+        if (quotes.isEmpty) {
+          return Center(child: Text(emptyMsg, style: const TextStyle(color: Colors.white38)));
+        }
+        return ListView.builder(
+          padding: const EdgeInsets.all(16),
+          itemCount: quotes.length,
+          itemBuilder: (context, index) {
+            final quote = quotes[index];
+            return Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: const Color(0xFF1A1A1A),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.white.withOpacity(0.05)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    quote.text,
+                    style: const TextStyle(color: Colors.white, fontSize: 14, height: 1.4, fontStyle: FontStyle.italic),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '— ${quote.author}',
+                        style: const TextStyle(color: Color(0xFFB3FF00), fontSize: 12, fontWeight: FontWeight.bold),
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          quote.isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                          color: quote.isBookmarked ? const Color(0xFFB3FF00) : Colors.white24,
+                          size: 18,
+                        ),
+                        onPressed: () {
+                          ref.read(quoteControllerProvider.notifier).toggleBookmark(quote.id);
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+      loading: () => const Center(child: CircularProgressIndicator(color: Color(0xFFB3FF00))),
+      error: (err, stack) => Center(child: Text('Error: $err', style: const TextStyle(color: Colors.red))),
+    );
+  }
 }
-
-// Extension for BoxType if not available, but usually it's BoxShape in Flutter
-// Let's use BoxShape.circle instead of BoxType.circle

@@ -1,8 +1,20 @@
 import 'dart:math';
+import 'package:injectable/injectable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../domain/models/quote_model.dart';
 import '../../domain/repositories/quote_repository.dart';
 
+@LazySingleton(as: QuoteRepository)
 class QuoteRepositoryImpl implements QuoteRepository {
+  final SharedPreferences _prefs;
+
+  QuoteRepositoryImpl(this._prefs) {
+    _loadFromPrefs();
+  }
+
+  static const String _bookmarksKey = 'quote_bookmarks';
+  static const String _historyKey = 'quote_history';
+
   final List<QuoteModel> _allQuotes = [
     // DISCIPLINE & CONSISTENCY
     QuoteModel(
@@ -143,8 +155,21 @@ class QuoteRepositoryImpl implements QuoteRepository {
     ),
   ];
 
-  final List<String> _bookmarkedIds = [];
-  final List<QuoteModel> _history = [];
+  List<String> _bookmarkedIds = [];
+  List<String> _historyIds = [];
+
+  void _loadFromPrefs() {
+    _bookmarkedIds = _prefs.getStringList(_bookmarksKey) ?? [];
+    _historyIds = _prefs.getStringList(_historyKey) ?? [];
+  }
+
+  Future<void> _saveBookmarks() async {
+    await _prefs.setStringList(_bookmarksKey, _bookmarkedIds);
+  }
+
+  Future<void> _saveHistory() async {
+    await _prefs.setStringList(_historyKey, _historyIds);
+  }
 
   @override
   Future<QuoteModel> getRandomQuoteByCategory(QuoteCategory category) async {
@@ -156,8 +181,10 @@ class QuoteRepositoryImpl implements QuoteRepository {
     final quote = filtered[Random().nextInt(filtered.length)];
     
     // Add to history if not already there
-    if (!_history.any((h) => h.id == quote.id)) {
-      _history.insert(0, quote);
+    if (!_historyIds.contains(quote.id)) {
+      _historyIds.insert(0, quote.id);
+      if (_historyIds.length > 30) _historyIds.removeLast();
+      await _saveHistory();
     }
     
     return quote.copyWith(isBookmarked: _bookmarkedIds.contains(quote.id));
@@ -178,10 +205,14 @@ class QuoteRepositoryImpl implements QuoteRepository {
     } else {
       _bookmarkedIds.add(quoteId);
     }
+    await _saveBookmarks();
   }
 
   @override
   Future<List<QuoteModel>> getQuoteHistory() async {
-    return _history.map((q) => q.copyWith(isBookmarked: _bookmarkedIds.contains(q.id))).toList();
+    return _historyIds
+        .map((id) => _allQuotes.firstWhere((q) => q.id == id))
+        .map((q) => q.copyWith(isBookmarked: _bookmarkedIds.contains(q.id)))
+        .toList();
   }
 }
