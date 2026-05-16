@@ -1,0 +1,96 @@
+================================================================
+DAY 30: AI CLOUD FALLBACK, PERSISTENT QUOTES & SHARING
+================================================================
+
+Today's focus was on enhancing the AI resilience, making the quote system 
+fully persistent, and adding social sharing capabilities to the app. 
+These tasks finalize the core logic for Phase 7 (AI Agent & Daily Quotes).
+
+----------------------------------------------------------------
+1. TASK 88: AZURE CLOUD FALLBACK FOR AI
+----------------------------------------------------------------
+Goal: Ensure the AI agent works even when the local Ollama instance 
+is unavailable (e.g., non-supported device or local server down).
+
+Implementation:
+- Created 'AzureAiDatasource': A remote datasource that simulates 
+  a cloud-based LLM (like Azure OpenAI). In a production environment, 
+  this would be a secure REST call to a hosted model.
+- Updated 'OllamaDataSource': Implemented a robust 'try-catch' block 
+  and status code check. If the local API call fails, it automatically 
+  routes the request to the Azure fallback.
+- Benefit: This guarantees a "99.9% uptime" feel for the AI feature, 
+  falling back gracefully without crashing the user experience.
+
+----------------------------------------------------------------
+2. TASK 89: QUOTE HISTORY & SAVED COLLECTION (PERSISTENCE)
+----------------------------------------------------------------
+Goal: Allow users to view past quotes and access their "Saved" (liked) 
+collection across app sessions.
+
+Implementation:
+- Repository Upgrade: Refactored 'QuoteRepositoryImpl' to use 
+  'SharedPreferences' for persistent storage of bookmarked IDs 
+  and viewed quote history IDs.
+- State Management: Added 'quoteHistoryProvider' and 'bookmarkedQuotesProvider' 
+  to the 'QuoteController' using Riverpod.
+- UI Integration: Updated 'AiChatScreen' with a 'TabBar' system:
+    - Tab 1: CHAT (The existing Sky AI interface)
+    - Tab 2: HISTORY (Scrollable list of the last 30 quotes viewed)
+    - Tab 3: SAVED (Collection of all bookmarked quotes)
+- Benefit: Transforms quotes from a "one-off" morning message into 
+  a personal library of motivation.
+
+----------------------------------------------------------------
+3. TASK 90: STYLIZED IMAGE SHARE GENERATOR
+----------------------------------------------------------------
+Goal: Build a high-end visual export for quotes to encourage 
+social sharing and app growth.
+
+Implementation:
+- 'QuoteShareSheet' Widget: A custom-designed preview card that 
+  overlays the quote text, author, today's weather emoji, 
+  and the user's current longest streak count.
+- Aesthetics: Used a dark glassmorphism design with neon green 
+  accents to match the 'StreakSky' premium branding.
+- Screenshot Logic: Integrated the 'screenshot' package to capture 
+  the widget as a high-resolution image and 'share_plus' to 
+  trigger the native OS sharing sheet.
+- Interaction: Added a 'Share' icon to the 'MorningQuoteCard' 
+  on the Home Screen.
+
+================================================================
+INTERVIEW PREPARATION: TECHNICAL DEEP DIVE
+================================================================
+
+Q1: Why use a "Cloud Fallback" for an on-device AI feature?
+A: On-device AI (Ollama) is great for privacy and cost, but it's 
+hardware-intensive. Some users might have older phones, or the 
+local background service might be killed by the OS. A cloud fallback 
+ensures the core value proposition (AI coaching) is always available 
+while prioritizing local processing whenever possible.
+
+Q2: How did you handle data persistence for quotes?
+A: I used a hybrid approach. The quotes themselves are static 
+assets (or fetched from Supabase), but the user's relationship with 
+them (History/Bookmarks) is stored locally using 'SharedPreferences'. 
+This is efficient for small ID lists and keeps the app fast.
+
+Q3: Explain the "Screenshot to Share" flow.
+A: We use a 'ScreenshotController' to wrap a "hidden" preview widget 
+that is styled specifically for social media (1:1 or 4:5 aspect ratio). 
+When the user taps 'Export', we capture that widget's pixel data 
+into a ByteData buffer, save it to a temporary file on disk using 
+'path_provider', and then pass that file path to the native 
+'Share' API.
+
+Q4: How does Riverpod handle the invalidation of multiple providers?
+A: In the 'QuoteController', when a bookmark is toggled, we call 
+'ref.invalidate()' on the history and bookmark providers. This 
+tells Riverpod that the data is stale. The next time a UI component 
+watches those providers, they will automatically re-run their 
+fetch logic and update the UI with the latest data.
+
+================================================================
+END OF DAY 30 DOCUMENTATION
+================================================================

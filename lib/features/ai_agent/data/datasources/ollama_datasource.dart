@@ -1,14 +1,17 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:injectable/injectable.dart';
+import 'azure_ai_datasource.dart';
 
 @lazySingleton
 class OllamaDataSource {
   final Dio _dio;
   final String _baseUrl = dotenv.get('OLLAMA_BASE_URL', fallback: 'http://localhost:11434/api');
   final String _model = dotenv.get('OLLAMA_MODEL', fallback: 'llama3.2:3b');
+  final AzureAiDatasource _azureFallback;
 
-  OllamaDataSource(this._dio);
+  OllamaDataSource(this._dio, this._azureFallback);
 
   Future<String> generateResponse(String prompt, {List<Map<String, String>>? history}) async {
     try {
@@ -30,10 +33,11 @@ class OllamaDataSource {
       if (response.statusCode == 200) {
         return response.data['message']['content'] as String;
       } else {
-        throw Exception('Failed to generate response: ${response.statusCode}');
+        return _azureFallback.generateResponse(prompt);
       }
     } catch (e) {
-      rethrow;
+      debugPrint('OllamaDataSource Error: $e. Falling back to Azure...');
+      return _azureFallback.generateResponse(prompt);
     }
   }
 

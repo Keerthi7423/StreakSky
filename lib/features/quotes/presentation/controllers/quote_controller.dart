@@ -23,6 +23,16 @@ final todayQuoteProvider = FutureProvider<QuoteModel>((ref) async {
   );
 });
 
+final quoteHistoryProvider = FutureProvider<List<QuoteModel>>((ref) async {
+  final repo = ref.watch(quoteRepositoryProvider);
+  return repo.getQuoteHistory();
+});
+
+final bookmarkedQuotesProvider = FutureProvider<List<QuoteModel>>((ref) async {
+  final repo = ref.watch(quoteRepositoryProvider);
+  return repo.getBookmarkedQuotes();
+});
+
 QuoteCategory _mapWeatherToCategory(WeatherType type) {
   switch (type) {
     case WeatherType.sunny:
@@ -50,6 +60,8 @@ class QuoteController extends StateNotifier<AsyncValue<void>> {
     state = await AsyncValue.guard(() async {
       await _repository.toggleBookmark(quoteId);
       _ref.invalidate(todayQuoteProvider);
+      _ref.invalidate(quoteHistoryProvider);
+      _ref.invalidate(bookmarkedQuotesProvider);
     });
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../controllers/quote_controller.dart';
 import '../../domain/models/quote_model.dart';
+import 'quote_share_sheet.dart';
 
 class MorningQuoteCard extends ConsumerStatefulWidget {
   const MorningQuoteCard({super.key});
@@ -84,15 +85,27 @@ class _MorningQuoteCardState extends ConsumerState<MorningQuoteCard> {
                         ),
                       ],
                     ),
-                    IconButton(
-                      icon: Icon(
-                        quote.isBookmarked ? Icons.bookmark : Icons.bookmark_border,
-                        color: quote.isBookmarked ? const Color(0xFFB3FF00) : Colors.white24,
-                        size: 20,
-                      ),
-                      onPressed: () {
-                        ref.read(quoteControllerProvider.notifier).toggleBookmark(quote.id);
-                      },
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(
+                            Icons.share_rounded,
+                            color: Colors.white24,
+                            size: 20,
+                          ),
+                          onPressed: () => _showShareSheet(context, quote),
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            quote.isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                            color: quote.isBookmarked ? const Color(0xFFB3FF00) : Colors.white24,
+                            size: 20,
+                          ),
+                          onPressed: () {
+                            ref.read(quoteControllerProvider.notifier).toggleBookmark(quote.id);
+                          },
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -126,6 +139,15 @@ class _MorningQuoteCardState extends ConsumerState<MorningQuoteCard> {
           ),
         ),
       ),
+    );
+  }
+
+  void _showShareSheet(BuildContext context, QuoteModel quote) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => QuoteShareSheet(quote: quote),
     );
   }
 
