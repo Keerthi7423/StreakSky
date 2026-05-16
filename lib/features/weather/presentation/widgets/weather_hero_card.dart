@@ -63,27 +63,30 @@ class WeatherHeroCard extends ConsumerWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'TODAY\'S SKY',
-                          style: AppTypography.sectionLabel.copyWith(
-                            color: Colors.white.withOpacity(0.8),
-                            letterSpacing: 2,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'TODAY\'S SKY',
+                            style: AppTypography.sectionLabel.copyWith(
+                              color: Colors.white.withOpacity(0.8),
+                              letterSpacing: 2,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          weather.type.label.toUpperCase(),
-                          style: AppTypography.display.copyWith(
-                            color: Colors.white,
-                            fontSize: 32,
-                            height: 1.1,
+                          const SizedBox(height: 4),
+                          Text(
+                            weather.type.label.toUpperCase(),
+                            style: AppTypography.display.copyWith(
+                              color: Colors.white,
+                              fontSize: 32,
+                              height: 1.1,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
+                    const SizedBox(width: 16),
                     Text(
                       weather.type.emoji,
                       style: const TextStyle(fontSize: 64),
@@ -110,7 +113,7 @@ class WeatherHeroCard extends ConsumerWidget {
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: forecast.map((f) => _buildForecastItem(f)).toList(),
+                      children: forecast.map((f) => Expanded(child: _buildForecastItem(f))).toList(),
                     ),
                   ),
                 ],

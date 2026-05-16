@@ -28,6 +28,8 @@ import '../../features/profile/data/repositories/supabase_profile_repository.dar
 import '../../features/profile/domain/repositories/profile_repository.dart' as _i112;
 import '../../features/streaks/data/services/streak_service.dart' as _i113;
 import '../../features/streaks/domain/repositories/streak_repository.dart' as _i114;
+import '../../features/quotes/data/repositories/quote_repository_impl.dart' as _i116;
+import '../../features/quotes/domain/repositories/quote_repository.dart' as _i117;
 import 'register_module.dart' as _i115;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -54,6 +56,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i112.ProfileRepository>(() => _i111.SupabaseProfileRepository(gh<_i454.SupabaseClient>()));
     gh.lazySingleton<_i114.StreakRepository>(() => _i113.StreakService(gh<_i454.SupabaseClient>()));
     gh.lazySingleton<_i106.GoalRepository>(() => _i105.GoalRepositoryImpl(gh<_i454.SupabaseClient>()));
+    gh.lazySingleton<_i117.QuoteRepository>(() => _i116.QuoteRepositoryImpl());
     
     gh.lazySingleton<_i109.SyncService>(() => _i109.SyncService(
           gh<_i108.HabitLocalService>(),

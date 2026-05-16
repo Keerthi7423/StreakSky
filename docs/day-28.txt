@@ -1,0 +1,73 @@
+================================================================
+STREAKSKY DEVELOPMENT LOG: DAY 28
+================================================================
+Focus: Contextual Quote Engine & Morning Inspiration
+Tech Stack: Flutter, Riverpod, clean Architecture, Mock Data (Scalable to Supabase)
+
+----------------------------------------------------------------
+1. OVERVIEW
+----------------------------------------------------------------
+Today's mission was to implement the "Morning Quote Card" system, a core emotional feature of StreakSky. Unlike other habit trackers that show random quotes, StreakSky uses a "Contextual Quote Engine" to match the user's current "Habit Weather" (performance state) with the most relevant psychological triggers.
+
+----------------------------------------------------------------
+2. FEATURES IMPLEMENTED
+----------------------------------------------------------------
+
+[Task 82] Contextual Quote Engine
+- Created a logic mapping between 'WeatherType' and 'QuoteCategory'.
+- Mapping Logic:
+    - Sunny (100% completion) -> Discipline & Consistency
+    - Partly Cloudy (60%+) -> Focus & Clarity
+    - Cloudy/Rainy/Storm/Tornado (Misses) -> Resilience & Comeback
+    - Rainbow (Comeback) -> Growth & Learning
+- This ensures that if a user is struggling (Stormy weather), they see quotes about resilience rather than discipline, which might feel discouraging at that moment.
+
+[Task 83] Quotes Infrastructure
+- QuoteModel: Defined with id, text, author, category, and isBookmarked.
+- QuoteRepository: Interface-driven design to allow easy swapping between local mock data and Supabase remote data.
+- Implementation: Populated with 20+ curated quotes from the PRD list (Aristotle, Lao Tzu, Gandhi, etc.).
+
+[Task 84] Morning Quote Card UI
+- Aesthetic: Deep grey card (#1A1A1A) with neon green (#B3FF00) accents.
+- Interactions:
+    - Tap to Expand: Toggle between a summary view and full attribution.
+    - Bookmark: Local state toggle to save favorite quotes.
+    - Animation: Subtle fade-in and slide animations using 'flutter_animate'.
+- Placement: Pinned to the top of the Home Screen for immediate morning impact.
+
+----------------------------------------------------------------
+3. TECHNICAL CHALLENGES & SOLUTIONS
+----------------------------------------------------------------
+
+Challenge: Circular dependency between Weather and Quotes.
+Solution: Quotes watch the Weather provider. Since Weather is a core state derived from habits, the Quote Engine acts as a "consumer" of that state, ensuring a unidirectional data flow.
+
+Challenge: Managing bookmark state without a backend update yet.
+Solution: Implemented a local list in the Repository implementation. This allows the UI to feel "live" while providing a clear hook for future Supabase integration (`update quotes set is_bookmarked = ...`).
+
+----------------------------------------------------------------
+4. INTERVIEW Q&A (PREP MATERIAL)
+----------------------------------------------------------------
+
+Q: Why did you use an interface for the QuoteRepository instead of just a class?
+A: Dependency Inversion Principle (D from SOLID). By defining an abstract QuoteRepository, the UI and Controllers don't care where the data comes from (Local SQL, Supabase, or Mock). This makes testing easier and allows us to switch from the current Mock implementation to Supabase by simply changing one line in the DI configuration.
+
+Q: How does the "Contextual" part of the engine work?
+A: It's a state-driven mapping. We use Riverpod to watch the 'weatherProvider'. When the user completes a habit, the weather state updates. This triggers the 'todayQuoteProvider' to re-evaluate the category. If the weather changed from Rainy to Rainbow, the engine automatically selects a "Growth" quote to celebrate the comeback.
+
+Q: How did you handle the "Tap to Expand" animation?
+A: I used an 'AnimatedContainer' for smooth height transitions and 'flutter_animate' for the text entrance. This provides a "premium" feel (Micro-animations) which is a core requirement of the StreakSky Design PRD.
+
+Q: What is the benefit of using Riverpod's FutureProvider for this?
+A: It handles the loading and error states gracefully. On the Home Screen, we can use 'quoteAsync.when(...)' to show a shimmer/skeleton while the "engine" selects the quote, ensuring the UI never crashes or shows null data.
+
+----------------------------------------------------------------
+5. NEXT STEPS
+----------------------------------------------------------------
+- Day 29: Implement "Habit Commit Messages" (AI-generated one-liners).
+- Day 29: AI Pattern Recognition (Triggered after 30 days of data).
+- Day 29: Voice Check-in integration.
+
+================================================================
+END OF LOG — StreakSky Day 28
+================================================================
