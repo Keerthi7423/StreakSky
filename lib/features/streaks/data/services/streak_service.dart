@@ -1,4 +1,5 @@
 import 'package:injectable/injectable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../domain/models/streak_model.dart';
 import '../../domain/repositories/streak_repository.dart';
@@ -24,7 +25,7 @@ class StreakService implements StreakRepository {
       return null;
     } catch (e) {
       // Local fallback logic would go here, e.g., read from Hive
-      print('Error fetching streak: $e');
+      debugPrint('Error fetching streak: $e');
       return null;
     }
   }
@@ -50,7 +51,7 @@ class StreakService implements StreakRepository {
       await _supabase.from('streaks').upsert(streak.toJson());
     } catch (e) {
       // Offline fallback: save to Hive to sync later
-      print('Error updating streak: $e');
+      debugPrint('Error updating streak: $e');
     }
   }
 
@@ -68,7 +69,7 @@ class StreakService implements StreakRepository {
       );
     } catch (e) {
       // Local recalculation fallback
-      print('Edge function recalculate failed. Doing local calculation fallback.');
+      debugPrint('Edge function recalculate failed. Doing local calculation fallback.');
       final currentStreak = await getStreak(habitId);
       if (currentStreak != null) {
         // Apply basic local calculation here

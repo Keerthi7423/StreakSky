@@ -50,7 +50,7 @@ class GoalProjectionChart extends StatelessWidget {
             LineChartBarData(
               spots: data.idealPoints.asMap().entries.map((e) => FlSpot(e.key.toDouble(), e.value)).toList(),
               isCurved: false,
-              color: AppColors.textTertiary.withOpacity(0.3),
+              color: AppColors.textTertiary.withValues(alpha: 0.3),
               barWidth: 1,
               dotData: const FlDotData(show: false),
               dashArray: [5, 5],
@@ -67,8 +67,8 @@ class GoalProjectionChart extends StatelessWidget {
                 show: true,
                 gradient: LinearGradient(
                   colors: [
-                    AppColors.primaryAccent.withOpacity(0.2),
-                    AppColors.primaryAccent.withOpacity(0.0),
+                    AppColors.primaryAccent.withValues(alpha: 0.2),
+                    AppColors.primaryAccent.withValues(alpha: 0.0),
                   ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,

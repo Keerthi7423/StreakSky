@@ -33,7 +33,7 @@ class WeatherHeroCard extends ConsumerWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: weather.type.gradientColors.first.withOpacity(0.3),
+            color: weather.type.gradientColors.first.withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -50,7 +50,7 @@ class WeatherHeroCard extends ConsumerWidget {
               height: 120,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withOpacity(0.1),
+                color: Colors.white.withValues(alpha: 0.1),
               ),
             ),
           ),
@@ -70,7 +70,7 @@ class WeatherHeroCard extends ConsumerWidget {
                           Text(
                             'TODAY\'S SKY',
                             style: AppTypography.sectionLabel.copyWith(
-                              color: Colors.white.withOpacity(0.8),
+                              color: Colors.white.withValues(alpha: 0.8),
                               letterSpacing: 2,
                             ),
                           ),
@@ -97,7 +97,7 @@ class WeatherHeroCard extends ConsumerWidget {
                 Text(
                   weather.message ?? weather.type.description,
                   style: AppTypography.body.copyWith(
-                    color: Colors.white.withOpacity(0.9),
+                    color: Colors.white.withValues(alpha: 0.9),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -108,7 +108,7 @@ class WeatherHeroCard extends ConsumerWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                     decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.15),
+                      color: Colors.black.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Row(
@@ -133,7 +133,7 @@ class WeatherHeroCard extends ConsumerWidget {
         Text(
           _getDayName(weather.date),
           style: AppTypography.micro.copyWith(
-            color: isToday ? Colors.white : Colors.white.withOpacity(0.6),
+            color: isToday ? Colors.white : Colors.white.withValues(alpha: 0.6),
             fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
           ),
         ),

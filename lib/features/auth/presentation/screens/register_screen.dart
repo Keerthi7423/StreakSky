@@ -120,7 +120,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       elevation: 8,
-                      shadowColor: AppTheme.neonAccent.withOpacity(0.5),
+                      shadowColor: AppTheme.neonAccent.withValues(alpha: 0.5),
                     ),
                     child: authState.isLoading
                         ? const CircularProgressIndicator(color: Colors.black)
@@ -164,7 +164,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       labelStyle: const TextStyle(color: Colors.white60),
       prefixIcon: Icon(icon, color: Colors.white60),
       filled: true,
-      fillColor: Colors.white.withOpacity(0.05),
+      fillColor: Colors.white.withValues(alpha: 0.05),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide.none,

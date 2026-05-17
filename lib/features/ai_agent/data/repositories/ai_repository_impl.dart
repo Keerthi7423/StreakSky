@@ -56,4 +56,10 @@ class AiRepositoryImpl implements AiRepository {
   Future<String> getMidYearPaceCheck(String yearDataSummary) async {
     return _remoteDataSource.generateMidYearPaceCheck(yearDataSummary);
   }
+
+  @override
+  Future<String> generateYearReviewNarrative(String yearDataSummary) async {
+    final prompt = "It's December 31st, time for a Year in Review. Based on this 1-year habit and completion summary: $yearDataSummary. Provide a short, highly motivating, weather-themed personal narrative paragraph summarizing their year. Use metaphors: sunny days (perfect days), stormy patches (missed days), comebacks (rainbows), streaks. Keep it under 4 sentences and end with advice for the new year.";
+    return _remoteDataSource.generateResponse(prompt);
+  }
 }

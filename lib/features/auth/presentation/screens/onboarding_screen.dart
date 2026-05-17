@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -79,7 +78,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   child: Text(
                     'SKIP',
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.5),
+                      color: Colors.white.withValues(alpha: 0.5),
                       fontWeight: FontWeight.w600,
                       letterSpacing: 1.2,
                     ),
@@ -98,7 +97,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       decoration: BoxDecoration(
                         color: _currentPage == index 
                             ? const Color(0xFFB3FF00) 
-                            : Colors.white.withOpacity(0.2),
+                            : Colors.white.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),
@@ -172,7 +171,7 @@ class OnboardingPage extends StatelessWidget {
             height: 300,
             width: double.infinity,
             decoration: BoxDecoration(
-              color: data.color.withOpacity(0.05),
+              color: data.color.withValues(alpha: 0.05),
               shape: BoxShape.circle,
             ),
             child: Center(
@@ -205,7 +204,7 @@ class OnboardingPage extends StatelessWidget {
             data.description,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Colors.white.withOpacity(0.7),
+              color: Colors.white.withValues(alpha: 0.7),
               fontSize: 16,
               height: 1.5,
             ),

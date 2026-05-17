@@ -84,7 +84,7 @@ class StreakLeaderboard extends ConsumerWidget {
                               width: 32,
                               height: 32,
                               decoration: BoxDecoration(
-                                color: _getRankColor(index).withOpacity(0.1),
+                                color: _getRankColor(index).withValues(alpha: 0.1),
                                 shape: BoxShape.circle,
                                 border: Border.all(
                                   color: _getRankColor(index),
@@ -142,7 +142,7 @@ class StreakLeaderboard extends ConsumerWidget {
                       );
                     },
                     loading: () => const SizedBox.shrink(),
-                    error: (_, __) => const SizedBox.shrink(),
+                    error: (_, _) => const SizedBox.shrink(),
                   );
                 }).toList(),
               );

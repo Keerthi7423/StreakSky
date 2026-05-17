@@ -11,12 +11,11 @@ import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/auth/presentation/screens/onboarding_screen.dart';
 import '../../features/graphs/presentation/screens/graphs_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../features/auth/presentation/controllers/auth_controller.dart';
 import '../../features/streaks/presentation/widgets/milestone_celebration_overlay.dart';
+import '../../features/year_review/presentation/screens/year_review_screen.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
-final GlobalKey<NavigatorState> _shellNavigatorKey = GlobalKey<NavigatorState>();
 
 final onboardingCompletedProvider = StateProvider<bool>((ref) => false);
 
@@ -74,6 +73,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/register',
         builder: (context, state) => const RegisterScreen(),
+      ),
+      GoRoute(
+        path: '/year-review',
+        builder: (context, state) {
+          final year = int.tryParse(state.uri.queryParameters['year'] ?? '') ?? DateTime.now().year;
+          return YearReviewScreen(year: year);
+        },
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
@@ -153,7 +159,7 @@ class MainShell extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border(
             top: BorderSide(
-              color: Colors.white.withOpacity(0.05),
+              color: Colors.white.withValues(alpha: 0.05),
               width: 1,
             ),
           ),
@@ -162,7 +168,7 @@ class MainShell extends StatelessWidget {
           selectedIndex: navigationShell.currentIndex,
           onDestinationSelected: (index) => navigationShell.goBranch(index),
           backgroundColor: const Color(0xFF0D0D0D),
-          indicatorColor: const Color(0xFFB3FF00).withOpacity(0.1),
+          indicatorColor: const Color(0xFFB3FF00).withValues(alpha: 0.1),
           destinations: const [
             NavigationDestination(
               icon: Icon(Icons.home_outlined),

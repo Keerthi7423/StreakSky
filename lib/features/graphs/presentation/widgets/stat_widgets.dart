@@ -24,10 +24,10 @@ class StatCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.divider.withOpacity(0.1)),
+        border: Border.all(color: AppColors.divider.withValues(alpha: 0.1)),
         boxShadow: [
           BoxShadow(
-            color: accentColor.withOpacity(0.05),
+            color: accentColor.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -70,7 +70,7 @@ class StatCard extends StatelessWidget {
                     dotData: const FlDotData(show: false),
                     belowBarData: BarAreaData(
                       show: true,
-                      color: accentColor.withOpacity(0.1),
+                      color: accentColor.withValues(alpha: 0.1),
                     ),
                   ),
                 ],
@@ -96,7 +96,7 @@ class WeeklyTrendChart extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.divider.withOpacity(0.1)),
+        border: Border.all(color: AppColors.divider.withValues(alpha: 0.1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -161,7 +161,7 @@ class WeeklyTrendChart extends StatelessWidget {
                         backDrawRodData: BackgroundBarChartRodData(
                           show: true,
                           toY: (data.reduce((a, b) => a > b ? a : b) + 1).toDouble(),
-                          color: AppColors.divider.withOpacity(0.05),
+                          color: AppColors.divider.withValues(alpha: 0.05),
                         ),
                       ),
                     ],
@@ -198,7 +198,7 @@ class DetailedLineChart extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: AppColors.divider.withOpacity(0.1)),
+        border: Border.all(color: AppColors.divider.withValues(alpha: 0.1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -256,7 +256,7 @@ class DetailedLineChart extends StatelessWidget {
         show: true,
         drawVerticalLine: false,
         getDrawingHorizontalLine: (value) => FlLine(
-          color: AppColors.divider.withOpacity(0.05),
+          color: AppColors.divider.withValues(alpha: 0.05),
           strokeWidth: 1,
         ),
       ),
@@ -329,8 +329,8 @@ class DetailedLineChart extends StatelessWidget {
             show: true,
             gradient: LinearGradient(
               colors: [
-                accentColor.withOpacity(0.3),
-                accentColor.withOpacity(0.0),
+                accentColor.withValues(alpha: 0.3),
+                accentColor.withValues(alpha: 0.0),
               ],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
@@ -359,14 +359,14 @@ class KeystoneHabitCard extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            AppColors.primaryAccent.withOpacity(0.15),
+            AppColors.primaryAccent.withValues(alpha: 0.15),
             Colors.transparent,
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: AppColors.primaryAccent.withOpacity(0.2)),
+        border: Border.all(color: AppColors.primaryAccent.withValues(alpha: 0.2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -376,7 +376,7 @@ class KeystoneHabitCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: AppColors.primaryAccent.withOpacity(0.2),
+                  color: AppColors.primaryAccent.withValues(alpha: 0.2),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(Icons.auto_awesome, color: AppColors.primaryAccent, size: 20),
@@ -408,7 +408,7 @@ class KeystoneHabitCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(4),
                       child: LinearProgressIndicator(
                         value: correlation,
-                        backgroundColor: AppColors.divider.withOpacity(0.1),
+                        backgroundColor: AppColors.divider.withValues(alpha: 0.1),
                         valueColor: const AlwaysStoppedAnimation(AppColors.primaryAccent),
                         minHeight: 8,
                       ),
@@ -481,7 +481,7 @@ class ActivityCalendarStrip extends StatelessWidget {
                     color: isToday ? AppColors.primaryAccent : AppColors.surface,
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: isToday ? AppColors.primaryAccent : AppColors.divider.withOpacity(0.1),
+                      color: isToday ? AppColors.primaryAccent : AppColors.divider.withValues(alpha: 0.1),
                     ),
                   ),
                   child: Center(
@@ -526,7 +526,7 @@ class RecentHabitCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.divider.withOpacity(0.1)),
+        border: Border.all(color: AppColors.divider.withValues(alpha: 0.1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -534,7 +534,7 @@ class RecentHabitCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(emoji, style: const TextStyle(fontSize: 20)),

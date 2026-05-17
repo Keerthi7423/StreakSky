@@ -70,7 +70,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFFB3FF00).withOpacity(0.2),
+                    color: const Color(0xFFB3FF00).withValues(alpha: 0.2),
                     blurRadius: 40,
                     spreadRadius: 10,
                   ),
@@ -91,7 +91,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
                 )
                 .shimmer(
                   duration: 3.seconds,
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withValues(alpha: 0.2),
                 ),
             const SizedBox(height: 40),
             // Title with neon glow

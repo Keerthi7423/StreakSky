@@ -2,7 +2,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:streaksky/core/di/injection.dart';
 import 'package:streaksky/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:streaksky/features/habits/data/services/habit_local_service.dart';
-import 'package:streaksky/features/habits/domain/repositories/habit_repository.dart';
 import 'package:streaksky/features/habits/presentation/controllers/habit_controller.dart';
 import 'package:streaksky/features/streaks/presentation/controllers/streak_controller.dart';
 import '../../domain/models/weather_model.dart';
@@ -94,7 +93,6 @@ final weatherForecastProvider = FutureProvider<List<WeatherModel>>((ref) async {
   final habits = await ref.watch(habitsListProvider.future);
   if (habits.isEmpty) return [];
 
-  final repository = ref.watch(habitRepositoryProvider);
   final localService = getIt<HabitLocalService>();
   
   final now = DateTime.now();

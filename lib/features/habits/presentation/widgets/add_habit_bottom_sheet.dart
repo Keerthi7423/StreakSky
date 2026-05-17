@@ -14,7 +14,7 @@ class _AddHabitBottomSheetState extends ConsumerState<AddHabitBottomSheet> {
   final _nameController = TextEditingController();
   String _selectedEmoji = '🎯';
   String _selectedColor = 'B3FF00'; // Default Neon Green
-  String _selectedCategory = 'Health';
+  final String _selectedCategory = 'Health';
   
   final List<String> _emojis = ['🎯', '🧘', '📚', '💪', '💧', '🍎', '🏃', '🎸', '💻', '🌅'];
   final List<Map<String, String>> _colors = [
@@ -24,8 +24,7 @@ class _AddHabitBottomSheetState extends ConsumerState<AddHabitBottomSheet> {
     {'name': 'Neon Purple', 'hex': 'BC00FF'},
     {'name': 'Neon Orange', 'hex': 'FF9900'},
   ];
-  
-  final List<String> _categories = ['Health', 'Learning', 'Work', 'Finance', 'Social'];
+
 
   @override
   void dispose() {
@@ -95,7 +94,7 @@ class _AddHabitBottomSheetState extends ConsumerState<AddHabitBottomSheet> {
               hintText: 'What is your new habit?',
               hintStyle: const TextStyle(color: Colors.white24),
               filled: true,
-              fillColor: Colors.white.withOpacity(0.05),
+              fillColor: Colors.white.withValues(alpha: 0.05),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
                 borderSide: BorderSide.none,
@@ -116,7 +115,7 @@ class _AddHabitBottomSheetState extends ConsumerState<AddHabitBottomSheet> {
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: _emojis.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 12),
+              separatorBuilder: (_, _) => const SizedBox(width: 12),
               itemBuilder: (context, index) {
                 final emoji = _emojis[index];
                 final isSelected = _selectedEmoji == emoji;
@@ -126,7 +125,7 @@ class _AddHabitBottomSheetState extends ConsumerState<AddHabitBottomSheet> {
                     width: 50,
                     height: 50,
                     decoration: BoxDecoration(
-                      color: isSelected ? Color(int.parse('0xFF$_selectedColor')).withOpacity(0.2) : Colors.white.withOpacity(0.05),
+                      color: isSelected ? Color(int.parse('0xFF$_selectedColor')).withValues(alpha: 0.2) : Colors.white.withValues(alpha: 0.05),
                       borderRadius: BorderRadius.circular(12),
                       border: isSelected ? Border.all(color: Color(int.parse('0xFF$_selectedColor'))) : null,
                     ),
@@ -157,7 +156,7 @@ class _AddHabitBottomSheetState extends ConsumerState<AddHabitBottomSheet> {
                     border: isSelected ? Border.all(color: Colors.white, width: 3) : null,
                     boxShadow: isSelected ? [
                       BoxShadow(
-                        color: Color(int.parse('0xFF${color['hex']}')).withOpacity(0.5),
+                        color: Color(int.parse('0xFF${color['hex']}')).withValues(alpha: 0.5),
                         blurRadius: 10,
                         spreadRadius: 2,
                       )

@@ -40,10 +40,10 @@ class _PatternRecognitionCardState extends ConsumerState<PatternRecognitionCard>
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xFFB3FF00).withOpacity(0.1)),
+        border: Border.all(color: const Color(0xFFB3FF00).withValues(alpha: 0.1)),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFB3FF00).withOpacity(0.05),
+            color: const Color(0xFFB3FF00).withValues(alpha: 0.05),
             blurRadius: 20,
             spreadRadius: -10,
           ),
@@ -57,7 +57,7 @@ class _PatternRecognitionCardState extends ConsumerState<PatternRecognitionCard>
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFB3FF00).withOpacity(0.1),
+                  color: const Color(0xFFB3FF00).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(Icons.analytics_outlined, color: Color(0xFFB3FF00), size: 20),

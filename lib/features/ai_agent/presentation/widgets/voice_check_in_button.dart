@@ -25,8 +25,8 @@ class _VoiceCheckInButtonState extends ConsumerState<VoiceCheckInButton> {
   void _listen() async {
     if (!_isListening) {
       bool available = await _speech.initialize(
-        onStatus: (val) => print('onStatus: $val'),
-        onError: (val) => print('onError: $val'),
+        onStatus: (val) => debugPrint('onStatus: $val'),
+        onError: (val) => debugPrint('onError: $val'),
       );
       if (available) {
         setState(() => _isListening = true);

@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../core/utils/streak_date_utils.dart';
+import 'package:flutter/foundation.dart';
 import '../../../heatmap/presentation/controllers/heatmap_controller.dart';
 import '../../../streaks/presentation/controllers/streak_controller.dart';
 import 'package:intl/intl.dart';
@@ -110,8 +110,8 @@ final statsProvider = Provider<StatsSummary>((ref) {
   final List<HabitCompletionModel> recentCompletions = localService.getRecentCompletions(3);
   final allHabits = ref.watch(habitsListProvider).asData?.value ?? [];
   
-  print('StatsProvider: recentCompletions count: ${recentCompletions.length}');
-  print('StatsProvider: allHabits count: ${allHabits.length}');
+  debugPrint('StatsProvider: recentCompletions count: ${recentCompletions.length}');
+  debugPrint('StatsProvider: allHabits count: ${allHabits.length}');
   
   try {
     final List<RecentHabitLog> recentHabits = recentCompletions.map<RecentHabitLog>((c) {
@@ -130,7 +130,7 @@ final statsProvider = Provider<StatsSummary>((ref) {
       );
     }).toList();
 
-    print('StatsProvider: recentHabits processed, count: ${recentHabits.length}');
+    debugPrint('StatsProvider: recentHabits processed, count: ${recentHabits.length}');
 
     final summary = StatsSummary(
       totalHabitsDone: totalDone,
@@ -145,11 +145,11 @@ final statsProvider = Provider<StatsSummary>((ref) {
       miniWaveforms: miniWaveforms,
       recentHabits: recentHabits,
     );
-    print('StatsProvider: Successfully created StatsSummary');
+    debugPrint('StatsProvider: Successfully created StatsSummary');
     return summary;
   } catch (e, stack) {
-    print('StatsProvider ERROR: $e');
-    print('StatsProvider STACK: $stack');
+    debugPrint('StatsProvider ERROR: $e');
+    debugPrint('StatsProvider STACK: $stack');
     // Return a default summary to avoid red screen
     return StatsSummary(
       totalHabitsDone: 0,
