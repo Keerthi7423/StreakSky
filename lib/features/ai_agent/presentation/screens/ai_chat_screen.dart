@@ -8,6 +8,7 @@ import '../widgets/voice_check_in_button.dart';
 import '../widgets/pattern_recognition_card.dart';
 import '../../../quotes/presentation/controllers/quote_controller.dart';
 import '../../../quotes/domain/models/quote_model.dart';
+import '../widgets/suggested_prompt_chips.dart';
 
 class AiChatScreen extends ConsumerStatefulWidget {
   const AiChatScreen({super.key});
@@ -121,6 +122,13 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> with SingleTickerPr
                         },
                       ),
               ),
+              const SizedBox(height: 8),
+              SuggestedPromptChips(
+                onPromptSelected: (prompt) {
+                  ref.read(aiControllerProvider.notifier).sendMessage(prompt);
+                },
+              ),
+              const SizedBox(height: 8),
               _buildInputArea(),
             ],
           ),
@@ -159,6 +167,25 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> with SingleTickerPr
           _buildPinnedCommitCard(),
           const SizedBox(height: 24),
           const PatternRecognitionCard(),
+          const SizedBox(height: 24),
+          ElevatedButton.icon(
+            onPressed: () {
+              // Mock year summary data for the Pace Check
+              ref.read(aiControllerProvider.notifier).fetchMidYearPaceCheck(
+                  "Completed 140 habits, missed mostly on weekends. Kept a 20-day streak in March.");
+            },
+            icon: const Icon(Icons.calendar_today, color: Colors.black, size: 16),
+            label: const Text(
+              "Run Mid-Year Pace Check",
+              style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFB3FF00),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+          ),
         ],
       ),
     );

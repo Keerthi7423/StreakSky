@@ -16,7 +16,7 @@ class OllamaDataSource {
   Future<String> generateResponse(String prompt, {List<Map<String, String>>? history}) async {
     try {
       final messages = [
-        {'role': 'system', 'content': 'You are Sky, a supportive and weather-themed habit coaching AI agent. Your goal is to provide encouraging nudges and answer habit-related questions with a positive, cosmic vibe.'},
+        {'role': 'system', 'content': 'You are Sky, a supportive, weather-themed habit coach. You guide users through their habit journey using weather metaphors (sunny days, stormy patches, clear skies) to provide encouraging nudges and answers.'},
         if (history != null) ...history,
         {'role': 'user', 'content': prompt},
       ];
@@ -58,6 +58,11 @@ class OllamaDataSource {
 
   Future<String> parseVoiceTranscript(String transcript) async {
     final prompt = "Parse this voice check-in: '$transcript'. Identify the habit name and status (done/missed). Return ONLY a JSON object like {\"habit\": \"reading\", \"status\": \"done\"}. If unknown, return {\"habit\": \"unknown\"}.";
+    return generateResponse(prompt);
+  }
+
+  Future<String> generateMidYearPaceCheck(String yearDataSummary) async {
+    final prompt = "It's July 1st, time for a Mid-Year Pace Check. Based on this 6-month summary: $yearDataSummary. Provide a concise, weather-themed review of their progress. Celebrate the sunny streaks and offer a gentle course correction for any stormy patches. Keep it under 3 sentences.";
     return generateResponse(prompt);
   }
 }

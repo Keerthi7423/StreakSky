@@ -99,6 +99,28 @@ class AiController extends StateNotifier<AiState> {
   void clearChat() {
     state = state.copyWith(messages: []);
   }
+
+  Future<void> fetchMidYearPaceCheck(String yearDataSummary) async {
+    state = state.copyWith(isLoading: true, error: null);
+    try {
+      final responseText = await _repository.getMidYearPaceCheck(yearDataSummary);
+      final message = ChatMessage(
+        id: _uuid.v4(),
+        text: responseText,
+        role: MessageRole.assistant,
+        timestamp: DateTime.now(),
+      );
+      state = state.copyWith(
+        messages: [...state.messages, message],
+        isLoading: false,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        error: "Failed to load mid-year pace check.",
+      );
+    }
+  }
 }
 
 final aiControllerProvider = StateNotifierProvider<AiController, AiState>((ref) {

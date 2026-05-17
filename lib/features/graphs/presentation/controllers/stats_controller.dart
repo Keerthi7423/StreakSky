@@ -57,7 +57,7 @@ final statsProvider = Provider<StatsSummary>((ref) {
   
   // Calculate total habits done
   int totalDone = 0;
-  heatmapState.dailyCompletionCounts.forEach((_, count) => totalDone += count);
+  heatmapState.dailyCompletionCounts.forEach((_, count) => totalDone += count.toInt());
 
   // Best streak from leaderboard
   int bestStreak = 0;
