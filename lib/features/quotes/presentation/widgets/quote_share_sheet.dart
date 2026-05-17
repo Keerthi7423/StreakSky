@@ -90,7 +90,7 @@ class _QuoteShareSheetState extends ConsumerState<QuoteShareSheet> {
           colors: [Color(0xFF1A1A1A), Color(0xFF0D0D0D)],
         ),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFB3FF00).withOpacity(0.3), width: 1),
+        border: Border.all(color: const Color(0xFFB3FF00).withValues(alpha: 0.3), width: 1),
       ),
       child: Column(
         children: [
@@ -113,7 +113,7 @@ class _QuoteShareSheetState extends ConsumerState<QuoteShareSheet> {
                   Text(
                     '${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}',
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.3),
+                      color: Colors.white.withValues(alpha: 0.3),
                       fontSize: 10,
                     ),
                   ),
@@ -175,7 +175,12 @@ class _QuoteShareSheetState extends ConsumerState<QuoteShareSheet> {
       final imagePath = await File('${directory.path}/streaksky_quote.png').create();
       await imagePath.writeAsBytes(image);
 
-      await Share.shareXFiles([XFile(imagePath.path)], text: 'Check out this quote from StreakSky! 🚀');
+      await SharePlus.instance.share(
+        ShareParams(
+          text: 'Check out this quote from StreakSky! 🚀',
+          files: [XFile(imagePath.path)],
+        ),
+      );
     }
   }
 }

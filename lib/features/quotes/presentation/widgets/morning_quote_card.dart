@@ -35,12 +35,12 @@ class _MorningQuoteCardState extends ConsumerState<MorningQuoteCard> {
         color: const Color(0xFF1A1A1A),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: const Color(0xFFB3FF00).withOpacity(0.2),
+          color: const Color(0xFFB3FF00).withValues(alpha: 0.2),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFB3FF00).withOpacity(0.05),
+            color: const Color(0xFFB3FF00).withValues(alpha: 0.05),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -64,7 +64,7 @@ class _MorningQuoteCardState extends ConsumerState<MorningQuoteCard> {
                         Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFB3FF00).withOpacity(0.1),
+                            color: const Color(0xFFB3FF00).withValues(alpha: 0.1),
                             shape: BoxShape.circle,
                           ),
                           child: const Icon(
@@ -77,7 +77,7 @@ class _MorningQuoteCardState extends ConsumerState<MorningQuoteCard> {
                         Text(
                           'DAILY WISDOM',
                           style: TextStyle(
-                            color: Colors.white.withOpacity(0.5),
+                            color: Colors.white.withValues(alpha: 0.5),
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 2,
@@ -161,7 +161,7 @@ class _MorningQuoteCardState extends ConsumerState<MorningQuoteCard> {
       ),
       child: Center(
         child: CircularProgressIndicator(
-          color: const Color(0xFFB3FF00).withOpacity(0.2),
+          color: const Color(0xFFB3FF00).withValues(alpha: 0.2),
         ),
       ),
     );

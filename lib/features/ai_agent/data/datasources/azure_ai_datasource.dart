@@ -11,6 +11,8 @@ class AzureAiDatasource {
   // In a real app, this would call Azure OpenAI or similar.
   // For this task, we'll simulate a cloud fallback API.
   Future<String> generateResponse(String prompt) async {
+    // Reference _dio to keep dependency injection constructor intact
+    final _ = _dio;
     debugPrint('AzureAiDatasource: Falling back to Cloud AI...');
     
     // Simulate API delay

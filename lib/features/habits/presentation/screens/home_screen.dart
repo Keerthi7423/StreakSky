@@ -7,6 +7,7 @@ import '../widgets/habit_card.dart';
 import '../../../weather/presentation/widgets/weather_hero_card.dart';
 import '../../../ai_agent/presentation/widgets/ai_nudge_card.dart';
 import '../../../quotes/presentation/widgets/morning_quote_card.dart';
+import '../../../year_review/presentation/widgets/home_year_review_banner.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -47,6 +48,7 @@ class HomeScreen extends ConsumerWidget {
           const SliverToBoxAdapter(child: WeatherHeroCard()),
           const SliverToBoxAdapter(child: MorningQuoteCard()),
           const SliverToBoxAdapter(child: AiNudgeCard()),
+          const SliverToBoxAdapter(child: HomeYearReviewBanner()),
           habitsAsync.when(
             data: (habits) => habits.isEmpty
                 ? SliverFillRemaining(child: _buildEmptyState(context))
@@ -99,7 +101,7 @@ class HomeScreen extends ConsumerWidget {
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: const Color(0xFFB3FF00).withOpacity(0.05),
+              color: const Color(0xFFB3FF00).withValues(alpha: 0.05),
             ),
             child: const Icon(Icons.auto_awesome, size: 64, color: Color(0xFFB3FF00)),
           ),

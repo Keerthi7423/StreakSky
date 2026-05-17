@@ -1,0 +1,262 @@
+================================================================================
+                     STREAKSKY — DAY 32 DEVELOPMENT JOURNAL
+         YEAR-END RETROSPECTIVE RETRIEVABILITY & COGNITIVE WRAPPED ENGINE
+                    INTERVIEW PREPARATION & SYSTEM SPECS
+================================================================================
+
+This document outlines the entire architectural, mathematical, and design blueprint
+implemented for the Year-End Review (Spotify Wrapped / Instagram Stories style) 
+reflection feature in StreakSky. It is structured to help you master and explain 
+every single design decision, algorithm, and flow in technical interviews.
+
+---
+
+### SECTION 1: ARCHITECTURAL DECONSTRUCTION (CLEAN ARCHITECTURE)
+
+We adhered to strict Clean Architecture and Domain-Driven Design (DDD) principles. 
+By decoupling layers, the codebase is fully testable, modular, and resilient to 
+backend or local database changes.
+
+                              [ Presentation Layer ]
+                               YearReviewScreen (UI)
+                                        │
+                                        ▼
+                           YearReviewController (Riverpod)
+                                        │
+                                        ▼
+                                 [ Domain Layer ]
+                          YearReviewRepository (Contract)
+                                 YearReviewModel
+                                        │
+                                        ▼
+                                  [ Data Layer ]
+                        YearReviewRepositoryImpl (Concrete)
+                                        │
+                  ┌─────────────────────┼─────────────────────┐
+                  ▼                     ▼                     ▼
+         Supabase / Hive           Ollama AI             Local Template
+          (Data Store)           (Local LLM)           (Resilient Fallback)
+
+1. DOMAIN LAYER (Pure Dart):
+   - models/year_review_model.dart: Contains the strict, typed representations of the 
+     data structures. Includes HabitReportCard, WeatherYearSummary, GoalCompletionSummary, 
+     StreakHallOfFame, and AINarrative. It is pure Dart, free of framework dependencies, 
+     making it reusable and easily testable.
+   - repositories/year_review_repository.dart: The repository interface contract. 
+     Declares `generateReview(String userId, int year)` and `getSavedReviews(String userId)`. 
+     It has no knowledge of how or where the data is stored.
+
+2. DATA LAYER (Framework / Package Integrations):
+   - repositories/year_review_repository_impl.dart: The concrete implementer of the domain 
+     contract. It takes dependencies on SupabaseClient, HabitRepository, GoalRepository, 
+     StreakRepository, and AiRepository via Dependency Injection.
+   - Handles the orchestration: queries completion logs, processes them mathematically, 
+     feeds them to the AI engine, and returns the model. If Ollama is offline or times out, 
+     it dynamically redirects to a highly personalized local text generation fallback.
+
+3. PRESENTATION LAYER (Flutter & Riverpod):
+   - controllers/year_review_controller.dart: A StateNotifier that acts as the UI state 
+     controller. Manages an AsyncValue<YearReviewModel>. Listens to the current user's 
+     session and coordinates whether to load authentic Supabase data or rich mock Demo data 
+     if the user logged in as a "Demo Profile".
+   - screens/year_review_screen.dart: Premium full-screen interactive stories UI. Uses 
+     a PageController, PageView, custom timer-based progress lines, and gesture overlays.
+   - widgets/shareable_year_card.dart: The high-fidelity neon-bordered glassmorphic 
+     shareable panel showing a summary of the user's skyline metrics, ready for download 
+     or social media share.
+
+---
+
+### SECTION 2: MATHEMATICAL STATISTICAL AGGREGATION ALGORITHMS
+
+One of the most complex tasks of an offline-first habit tracker is doing heavy range 
+completions aggregation without locking the main thread. Here is the mathematical 
+breakdown of the processed indicators:
+
+1. COMPLETION RATE & ACTIVE RATIO:
+   - Evaluates total registered completions over the course of the year.
+   - Calculates the user's active tenure based on the earliest habit creation date or the 
+     beginning of the year. Active ratio = (Total Completions) / (Habit Count * Days Active).
+
+2. PERFECT WEEKS CALCULATION:
+   - Groups 365 calendar days into chronological, non-overlapping 7-day windows starting 
+     from January 1st.
+   - A week is classified as "Perfect" if and only if the completion rate across all 
+     linked habits is 100% (i.e. every habit was completed on all days they were scheduled).
+   - Algorithm:
+     - Sort completions by date.
+     - Group dates into 7-day chunks.
+     - For each chunk, count active habits. Verify if the completions count equals 
+       `habits.length * 7`. If yes, increment the perfect week counter.
+
+3. THE "COMEBACK COUNT" ALGORITHM:
+   - Identifies resilient behavior, representing a key psychological hook for user retention.
+   - A "Comeback" is mathematically defined as:
+     - A period of prolonged inactivity (>= 3 consecutive days with 0 completions).
+     - Followed immediately by a recovery streak of >= 3 consecutive days with 100% completion.
+   - Algorithm:
+     - Traverse the daily completions array chronologically.
+     - Count consecutive zero-completion days.
+     - If count >= 3, flag a "lapse".
+     - Continue traversing. If completions are logged on consecutive days, count the recovery days.
+     - If recovery days >= 3, increment `comebackCount` and reset the lapse flag.
+
+4. HABIT "WEATHER SKYLINE" MAPPING:
+   - We divide the year into 12 months.
+   - For each month, compute the monthly completion percentage:
+     `Monthly Rate = (Completions in Month) / (Scheduled Days * Active Habits)`.
+   - Map percentages to physical weather metaphors:
+     - Sunny (> 85% completion rate): Absolute consistency. High-impact vibrant Neon Green (#B3FF00).
+     - Partly Cloudy (70% to 85%): Stable progress with minor gaps. Neon Blue (#00F2FF).
+     - Cloudy (50% to 70%): Semi-regular practice. Muted Slate/Silver.
+     - Stormy (30% to 50%): High inconsistency, potential struggles. Neon Pink (#FF0055).
+     - Rainy (< 30%): Extended lapse in activity. Dark Slate.
+   - Generates a visual 12-bar skyline representing a calendar year of habits.
+
+---
+
+### SECTION 3: SYSTEM RESILIENCY & LOCAL AI NARRATION FALLBACKS
+
+We integrate a local LLM prompt engine that calls Ollama (Llama 3.2:3b).
+
+1. SYSTEM PROMPT DESIGN:
+   - We craft a specialized prompt combining the calculated stats (completions, perfect weeks, 
+     comebacks, best/worst weather months) and instruct the model to write a short, cinematic, 
+     highly encouraging, weather-metaphorical narrative of the user's year.
+   - Prompts include instructions: *"Act as Sky, our supportive AI coach. Frame struggles 
+     as 'stormy patches' and comebacks as 'rainbow breakthroughs'. Do not exceed 100 words."*
+
+2. CLIENT-SIDE RESILIENCY PIPELINE (Resilient Fallbacks):
+   - Local AI models can time out or be completely unavailable in offline mode.
+   - To prevent screen failures or freezing, we implemented a robust template-driven fallback.
+   - If the AI call fails or times out (5 seconds), the engine triggers `_generateFallbackNarrative(...)`.
+   - The fallback generator selects highly personalized pre-written templates based on the computed stats:
+     - *If comebacks > 2*: *"This year, you encountered stormy patches, but your $comebackCount comebacks proved your resilience. You turned dark clouds into clear sunny skylines!"*
+     - *If perfectWeeks > 10*: *"An extraordinary display of consistency! With $perfectWeeks perfect weeks, your skyline was dominated by radiant sunshine."*
+
+---
+
+### SECTION 4: THE TIMED STORY CAROUSEL & SHARE ENGINE
+
+1. SPOTIFY WRAPPED STYLE CAROUSEL UI:
+   - Utilizes `PageView` backed by a `PageController`.
+   - Features horizontal progress indicator bars at the top of the screen (one segment per slide).
+   - We run a dynamic `Timer.periodic` tracking 5-second intervals. As the timer ticks, the progress 
+     bar of the current slide fills up smoothly using a custom animation controller.
+   - Once filled, the controller automatically calls `_pageController.nextPage(...)`.
+
+2. SMART GESTURE CONFLICT RESOLUTION:
+   - Standard story actions require immediate tactile feedback:
+     - Tap right half: Advance slide.
+     - Tap left half: Previous slide.
+     - Long Press (Hold): Pauses the timer and halts the progress bar, allowing users to 
+       inspect their stats without auto-skipping.
+     - Release Hold: Resumes the timer.
+   - We resolved this via `GestureDetector` overlays mapping coordinates of `tapUp` and `onLongPressStart` 
+     / `onLongPressEnd` and coordinating the underlying progress timer state.
+
+3. RENDER SHARE ENGINE:
+   - Uses `share_plus` to trigger device share sheets.
+   - Shows a gorgeous glassmorphic stats card wrapped in vibrant neon glow.
+   - Prompts a mockup sharing action displaying clean platform integration overlays, capturing 
+     user attention and increasing organic product loops.
+
+---
+
+### SECTION 5: TECHNICAL INTERVIEW QUESTIONS & MODEL ANSWER GUIDE
+
+Here is a curated list of questions you are highly likely to face in interviews for Senior 
+Flutter or Mobile Systems Engineer roles, along with optimized answers.
+
+--------------------------------------------------------------------------------
+QUESTION 1: What is Dependency Injection (DI), how did you handle it in this project, 
+and how did you resolve conflicts where the compiler environment was unstable?
+--------------------------------------------------------------------------------
+ANSWER:
+"We utilized `GetIt` as our service locator combined with `injectable` to automate the 
+dependency injection wiring. All implementations are decorated with annotations like 
+`@LazySingleton` or `@InjectableInit`. 
+
+However, during automated build processes, dependency constraints or AST mismatches 
+(such as older analyzer versions failing to parse modern Dart 'Dot Shorthand Invocation' 
+syntax) can crash the builder tool. 
+
+To solve this and guarantee robust build stability, I implemented a hand-crafted manual 
+`injection.config.dart` file. This maps all singletons, dio modules, repository 
+implementations (like `YearReviewRepositoryImpl` taking `SupabaseClient` and the sub-repos), 
+and AI datasources. This completely decoupled our compile-time reliability from the 
+code-generator, ensuring the app compiles with zero dependency conflicts and executes 
+consistently on the target environment."
+
+--------------------------------------------------------------------------------
+QUESTION 2: Explain Riverpod's StateNotifier vs ChangeNotifier, and how you managed the 
+asynchronous states for the Year-End Review.
+--------------------------------------------------------------------------------
+ANSWER:
+"In clean architecture, we prefer `StateNotifier` over `ChangeNotifier` because:
+1. It enforces immutable state. Rather than mutating state variables in place and calling 
+   `notifyListeners()`, you must replace the entire state object. This prevents side-effects 
+   and makes state changes predictable and easy to debug.
+2. It plays perfectly with Riverpod's `AsyncValue`.
+
+In our controller (`YearReviewController`), we declare our state as `AsyncValue<YearReviewModel>`.
+When the controller initializes, we set the state to `AsyncValue.loading()`. We then fetch the 
+data asynchronously. If the operation succeeds, we assign `AsyncValue.data(review)`. 
+If it throws an exception, we catch it and assign `AsyncValue.error(error, stackTrace)`. 
+In the UI, we consume this state using `state.when(data: ..., error: ..., loading: ...)`. 
+This guarantees that loading spinners and error screens are rendered safely without manual 
+boolean flags."
+
+--------------------------------------------------------------------------------
+QUESTION 3: How do you optimize heavy date-range calculations and data processing on the 
+client-side to avoid blocking the main UI thread?
+--------------------------------------------------------------------------------
+ANSWER:
+"To calculate metrics like 'Perfect Weeks' and 'Comebacks', we have to loop through large arrays 
+of completions. In standard mobile environments, doing heavy calculation on the main thread 
+can cause frame drops, also known as 'jank'.
+
+To prevent this:
+1. We implement optimized O(N) single-pass traversal algorithms rather than nested O(N^2) loops. 
+   For example, tracking comebacks is done in a single chronological sweep with state registers.
+2. If data sets grow very large, we can delegate the processing to a background thread using Dart 
+   `Isolates` (specifically `compute()`). By passing raw Supabase JSON structures to an isolated 
+   thread and receiving the processed `YearReviewModel` back, the main thread's Event Loop remains 
+   100% free to render custom UI animations at 60fps or 120fps."
+
+--------------------------------------------------------------------------------
+QUESTION 4: How did you implement the Instagram-style story timers and handle custom touch 
+gestures without conflicting with PageView swipe actions?
+--------------------------------------------------------------------------------
+ANSWER:
+"The custom reveal UI relies on a timed slideshow synced with visual progress bars. 
+I resolved this by combining a `PageView` and a timer controller:
+1. Swipe & Tap resolution: We wrapped the `PageView` inside a `GestureDetector` that splits 
+   the viewport horizontally. On `tapUp`, we inspect the dynamic dx offset: if dx < screenWidth/2, 
+   we trigger `previousPage()`; if dx > screenWidth/2, we trigger `nextPage()`.
+2. Timer Pause on Hold: We listen to `onLongPressStart` to call `_pauseTimer()` (which stops 
+   our animation and halts the `Timer.periodic`) and `onLongPressEnd` to call `_resumeTimer()` 
+   to pick up where the user left off.
+3. Separate Animation Control: Each slide has its own progress line segment. By binding 
+   the timers to an `AnimationController` instead of standard sleep states, we gain microsecond 
+   precision, allowing the progress line to freeze and resume smoothly during holds."
+
+--------------------------------------------------------------------------------
+QUESTION 5: How does this offline-first architecture handle local caching and server syncing 
+in Supabase & Hive?
+--------------------------------------------------------------------------------
+ANSWER:
+"The app operates on an offline-first caching system.
+1. Local Database (Hive): Standard daily updates, completions, and streaks are persisted 
+   locally in Hive boxes instantly. This ensures zero latency and offline function.
+2. Synchronization (SyncService): A background worker monitors connectivity. When a stable 
+   connection is detected, pending local modifications are pushed to Supabase in batches 
+   to maintain remote data consistency.
+3. Retrospective Retrievability: For our Year-End Retrospective engine, we read completions 
+   directly from the synchronized database context. If offline, the repository is designed to 
+   seamlessly fallback to aggregating Hive's local completion boxes, ensuring the year review 
+   is fully retrievable in airplane mode without internet."
+
+================================================================================
+                                   END OF FILE
+================================================================================

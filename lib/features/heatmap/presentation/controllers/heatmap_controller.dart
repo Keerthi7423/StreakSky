@@ -1,11 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import '../../../habits/domain/repositories/habit_repository.dart';
-import '../../../habits/domain/models/habit_completion_model.dart';
 import '../../../habits/domain/models/habit_model.dart';
-import '../../../../core/services/analytics_service.dart';
-import 'package:streaksky/core/di/injection.dart';
 import 'package:streaksky/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:streaksky/features/habits/presentation/controllers/habit_controller.dart';
 import '../../../../core/utils/streak_date_utils.dart';

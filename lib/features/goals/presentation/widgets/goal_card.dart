@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../../../../core/constants/app_spacing.dart';
-import 'package:intl/intl.dart';
 import '../../domain/models/goal_model.dart';
 import './goal_projection_chart.dart';
 
@@ -27,13 +26,13 @@ class GoalCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
         border: Border.all(
           color: goal.isCompleted 
-              ? AppColors.primaryAccent.withOpacity(0.5) 
+              ? AppColors.primaryAccent.withValues(alpha: 0.5) 
               : AppColors.divider,
           width: goal.isCompleted ? 1.5 : 1.0,
         ),
         boxShadow: goal.isCompleted ? [
           BoxShadow(
-            color: AppColors.primaryAccent.withOpacity(0.1),
+            color: AppColors.primaryAccent.withValues(alpha: 0.1),
             blurRadius: 15,
             spreadRadius: 1,
           )
@@ -138,7 +137,7 @@ class GoalCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(4),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.primaryAccent.withOpacity(0.3),
+                            color: AppColors.primaryAccent.withValues(alpha: 0.3),
                             blurRadius: 8,
                             spreadRadius: 1,
                           ),
@@ -210,7 +209,7 @@ class GoalCard extends StatelessWidget {
     return Text(
       resetText,
       style: AppTypography.micro.copyWith(
-        color: AppColors.primaryAccent.withOpacity(0.7),
+        color: AppColors.primaryAccent.withValues(alpha: 0.7),
         fontWeight: FontWeight.bold,
       ),
     );

@@ -11,10 +11,9 @@ final aiRepositoryProvider = Provider<AiRepository>((ref) {
 
 class AiController extends StateNotifier<AiState> {
   final AiRepository _repository;
-  final Ref _ref;
   final _uuid = const Uuid();
 
-  AiController(this._repository, this._ref) : super(const AiState());
+  AiController(this._repository) : super(const AiState());
 
   Future<void> sendMessage(String text) async {
     if (text.trim().isEmpty) return;
@@ -125,5 +124,5 @@ class AiController extends StateNotifier<AiState> {
 
 final aiControllerProvider = StateNotifierProvider<AiController, AiState>((ref) {
   final repo = ref.watch(aiRepositoryProvider);
-  return AiController(repo, ref);
+  return AiController(repo);
 });

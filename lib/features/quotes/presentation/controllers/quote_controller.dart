@@ -19,7 +19,7 @@ final todayQuoteProvider = FutureProvider<QuoteModel>((ref) async {
       return repo.getRandomQuoteByCategory(category);
     },
     loading: () => repo.getRandomQuoteByCategory(QuoteCategory.discipline),
-    error: (_, __) => repo.getRandomQuoteByCategory(QuoteCategory.discipline),
+    error: (_, _) => repo.getRandomQuoteByCategory(QuoteCategory.discipline),
   );
 });
 

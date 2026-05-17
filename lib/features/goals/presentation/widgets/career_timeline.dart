@@ -57,7 +57,7 @@ class CareerTimeline extends StatelessWidget {
                         ),
                         boxShadow: goal.isCompleted ? [
                           BoxShadow(
-                            color: AppColors.primaryAccent.withOpacity(0.5),
+                            color: AppColors.primaryAccent.withValues(alpha: 0.5),
                             blurRadius: 8,
                             spreadRadius: 1,
                           )
@@ -89,12 +89,12 @@ class CareerTimeline extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
                               color: goal.isMilestone 
-                                  ? AppColors.primaryAccent.withOpacity(0.1)
+                                  ? AppColors.primaryAccent.withValues(alpha: 0.1)
                                   : AppColors.elevatedSurface,
                               borderRadius: BorderRadius.circular(4),
                               border: Border.all(
                                 color: goal.isMilestone 
-                                    ? AppColors.primaryAccent.withOpacity(0.3)
+                                    ? AppColors.primaryAccent.withValues(alpha: 0.3)
                                     : AppColors.divider,
                               ),
                             ),
@@ -112,9 +112,9 @@ class CareerTimeline extends StatelessWidget {
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                               decoration: BoxDecoration(
-                                color: AppColors.partlyCloudy.withOpacity(0.1),
+                                color: AppColors.partlyCloudy.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(4),
-                                border: Border.all(color: AppColors.partlyCloudy.withOpacity(0.3)),
+                                border: Border.all(color: AppColors.partlyCloudy.withValues(alpha: 0.3)),
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,

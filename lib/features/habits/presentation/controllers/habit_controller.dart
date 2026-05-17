@@ -9,7 +9,6 @@ import '../../domain/models/habit_completion_model.dart';
 import '../../domain/models/habit_frequency.dart';
 import '../../domain/repositories/habit_repository.dart';
 import '../../data/services/habit_local_service.dart';
-import '../../data/services/sync_service.dart';
 import '../../../streaks/presentation/controllers/streak_controller.dart';
 import '../../../goals/presentation/controllers/goal_controller.dart';
 import '../../../../core/utils/streak_date_utils.dart';

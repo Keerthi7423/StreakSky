@@ -26,26 +26,26 @@ class AiNudgeCard extends ConsumerWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            const Color(0xFFB3FF00).withOpacity(0.15),
-            const Color(0xFFB3FF00).withOpacity(0.05),
+            const Color(0xFFB3FF00).withValues(alpha: 0.15),
+            const Color(0xFFB3FF00).withValues(alpha: 0.05),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFB3FF00).withOpacity(0.2)),
+        border: Border.all(color: const Color(0xFFB3FF00).withValues(alpha: 0.2)),
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: const Color(0xFFB3FF00).withOpacity(0.1),
+              color: const Color(0xFFB3FF00).withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: const Icon(Icons.auto_awesome, color: Color(0xFFB3FF00), size: 18),
           ).animate(onPlay: (c) => c.repeat())
-            .shimmer(duration: 2.seconds, color: const Color(0xFFB3FF00).withOpacity(0.4)),
+            .shimmer(duration: 2.seconds, color: const Color(0xFFB3FF00).withValues(alpha: 0.4)),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
@@ -54,7 +54,7 @@ class AiNudgeCard extends ConsumerWidget {
                 Text(
                   'SKY COACH',
                   style: TextStyle(
-                    color: const Color(0xFFB3FF00).withOpacity(0.7),
+                    color: const Color(0xFFB3FF00).withValues(alpha: 0.7),
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1.5,

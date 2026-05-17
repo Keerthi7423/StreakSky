@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:streaksky/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:streaksky/core/theme/app_theme.dart';
 import '../controllers/profile_controller.dart';
@@ -55,7 +56,7 @@ class ProfileScreen extends ConsumerWidget {
                     border: Border.all(color: AppTheme.neonAccent, width: 2),
                     boxShadow: [
                       BoxShadow(
-                        color: AppTheme.neonAccent.withOpacity(0.3),
+                        color: AppTheme.neonAccent.withValues(alpha: 0.3),
                         blurRadius: 20,
                         spreadRadius: 2,
                       ),
@@ -113,6 +114,13 @@ class ProfileScreen extends ConsumerWidget {
           const SizedBox(height: 40),
           _buildProfileMenuItem(context, Icons.history, 'History', 'View your past streaks'),
           _buildProfileMenuItem(context, Icons.badge_outlined, 'Badges', '12 earned'),
+          _buildProfileMenuItem(
+            context,
+            Icons.auto_awesome,
+            'Year in Review',
+            'Your annual habit report card',
+            onTap: () => GoRouter.of(context).push('/year-review?year=${DateTime.now().year}'),
+          ),
           _buildProfileMenuItem(context, Icons.notifications_outlined, 'Notifications', 'On'),
           _buildProfileMenuItem(context, Icons.security, 'Privacy', 'Manage your data'),
           const SizedBox(height: 40),
@@ -122,7 +130,7 @@ class ProfileScreen extends ConsumerWidget {
             child: OutlinedButton(
               onPressed: () => ref.read(authControllerProvider.notifier).signOut(),
               style: OutlinedButton.styleFrom(
-                side: BorderSide(color: Colors.white.withOpacity(0.2), width: 1),
+                side: BorderSide(color: Colors.white.withValues(alpha: 0.2), width: 1),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
               child: const Text(
@@ -175,11 +183,11 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildProfileMenuItem(BuildContext context, IconData icon, String title, String subtitle) {
+  Widget _buildProfileMenuItem(BuildContext context, IconData icon, String title, String subtitle, {VoidCallback? onTap}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(16),
       ),
       child: ListTile(
@@ -187,7 +195,7 @@ class ProfileScreen extends ConsumerWidget {
         title: Text(title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         subtitle: Text(subtitle, style: const TextStyle(color: Colors.white60, fontSize: 12)),
         trailing: const Icon(Icons.chevron_right, color: Colors.white24),
-        onTap: () {},
+        onTap: onTap ?? () {},
       ),
     );
   }

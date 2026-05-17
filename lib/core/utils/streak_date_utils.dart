@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 
 class StreakDateUtils {
   /// Returns the "effective" date for streak calculation.

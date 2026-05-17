@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../controllers/streak_controller.dart';
-import '../../domain/models/streak_milestone.dart';
 
 class MilestoneCelebrationOverlay extends ConsumerWidget {
   const MilestoneCelebrationOverlay({super.key});
@@ -19,7 +18,7 @@ class MilestoneCelebrationOverlay extends ConsumerWidget {
         GestureDetector(
           onTap: () => ref.read(milestoneCelebrationProvider.notifier).state = null,
           child: Container(
-            color: Colors.black.withOpacity(0.8),
+            color: Colors.black.withValues(alpha: 0.8),
           ).animate().fadeIn(duration: 400.ms),
         ),
         
@@ -41,7 +40,7 @@ class MilestoneCelebrationOverlay extends ConsumerWidget {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFFB3FF00).withOpacity(0.5),
+                      color: const Color(0xFFB3FF00).withValues(alpha: 0.5),
                       blurRadius: 30,
                       spreadRadius: 5,
                     ),
@@ -75,7 +74,7 @@ class MilestoneCelebrationOverlay extends ConsumerWidget {
                   letterSpacing: 4,
                   shadows: [
                     Shadow(
-                      color: const Color(0xFFB3FF00).withOpacity(0.8),
+                      color: const Color(0xFFB3FF00).withValues(alpha: 0.8),
                       blurRadius: 10,
                     ),
                   ],
@@ -106,7 +105,7 @@ class MilestoneCelebrationOverlay extends ConsumerWidget {
               Text(
                 '${milestone.days} DAY STREAK',
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.7),
+                  color: Colors.white.withValues(alpha: 0.7),
                   fontSize: 18,
                   letterSpacing: 2,
                 ),

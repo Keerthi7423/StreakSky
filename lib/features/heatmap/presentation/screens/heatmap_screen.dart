@@ -96,7 +96,7 @@ class _HeatmapScreenState extends ConsumerState<HeatmapScreen> {
             Switch(
               value: state.isMultiYearView,
               onChanged: (_) => ref.read(heatmapControllerProvider.notifier).toggleMultiYearView(),
-              activeColor: AppColors.primaryAccent,
+              activeThumbColor: AppColors.primaryAccent,
             ),
           ],
         ),
@@ -279,9 +279,14 @@ class _HeatmapScreenState extends ConsumerState<HeatmapScreen> {
       final imageFile = File(imagePath);
       await imageFile.writeAsBytes(image);
 
-      await Share.shareXFiles([XFile(imagePath)], text: 'Check out my Habit Heatmap on StreakSky! 🚀 #StreakSky #HabitTracker');
+      await SharePlus.instance.share(
+        ShareParams(
+          text: 'Check out my Habit Heatmap on StreakSky! 🚀 #StreakSky #HabitTracker',
+          files: [XFile(imagePath)],
+        ),
+      );
     } catch (e) {
-      if (mounted) {
+      if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to export heatmap: $e')),
         );
@@ -324,7 +329,7 @@ class _HeatmapScreenState extends ConsumerState<HeatmapScreen> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppColors.rainbow.withOpacity(0.2),
+                      color: AppColors.rainbow.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: AppColors.rainbow),
                     ),

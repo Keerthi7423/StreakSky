@@ -64,14 +64,14 @@ class _HabitCardState extends ConsumerState<HabitCard> with SingleTickerProvider
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       decoration: BoxDecoration(
-        color: isCompleted ? themeColor.withOpacity(0.15) : Colors.white.withOpacity(0.05),
+        color: isCompleted ? themeColor.withValues(alpha: 0.15) : Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(20),
         border: Border(
           left: BorderSide(color: themeColor, width: 4),
         ),
         boxShadow: isCompleted ? [
           BoxShadow(
-            color: themeColor.withOpacity(0.2),
+            color: themeColor.withValues(alpha: 0.2),
             blurRadius: 15,
             spreadRadius: 1,
           )
@@ -98,7 +98,7 @@ class _HabitCardState extends ConsumerState<HabitCard> with SingleTickerProvider
                   width: 48,
                   height: 48,
                   decoration: BoxDecoration(
-                    color: themeColor.withOpacity(0.1),
+                    color: themeColor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   alignment: Alignment.center,
@@ -117,7 +117,7 @@ class _HabitCardState extends ConsumerState<HabitCard> with SingleTickerProvider
                       Text(
                         widget.habit.name,
                         style: TextStyle(
-                          color: isCompleted ? Colors.white : Colors.white.withOpacity(0.9),
+                          color: isCompleted ? Colors.white : Colors.white.withValues(alpha: 0.9),
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           decoration: isCompleted ? TextDecoration.lineThrough : null,
@@ -127,7 +127,7 @@ class _HabitCardState extends ConsumerState<HabitCard> with SingleTickerProvider
                         Text(
                           widget.habit.category!.toUpperCase(),
                           style: TextStyle(
-                            color: themeColor.withOpacity(0.7),
+                            color: themeColor.withValues(alpha: 0.7),
                             fontSize: 10,
                             fontWeight: FontWeight.w800,
                             letterSpacing: 1.2,
@@ -166,7 +166,7 @@ class _HabitCardState extends ConsumerState<HabitCard> with SingleTickerProvider
                                         child: Icon(
                                           Icons.shield,
                                           size: 12,
-                                          color: themeColor.withOpacity(0.8),
+                                          color: themeColor.withValues(alpha: 0.8),
                                         ),
                                       ),
                                     ),
@@ -176,7 +176,7 @@ class _HabitCardState extends ConsumerState<HabitCard> with SingleTickerProvider
                           );
                         },
                         loading: () => const SizedBox.shrink(),
-                        error: (_, __) => const SizedBox.shrink(),
+                        error: (_, _) => const SizedBox.shrink(),
                       ),
                     ],
                   ),

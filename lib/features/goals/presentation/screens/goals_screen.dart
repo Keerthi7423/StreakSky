@@ -75,7 +75,7 @@ class _GoalsScreenState extends ConsumerState<GoalsScreen> with SingleTickerProv
         curve: Curves.easeInOut,
       ).shimmer(
         duration: 3.seconds,
-        color: Colors.white.withOpacity(0.3),
+        color: Colors.white.withValues(alpha: 0.3),
       ),
     );
   }
@@ -111,7 +111,7 @@ class _GoalsList extends ConsumerWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.flag_outlined, size: 64, color: AppColors.textTertiary.withOpacity(0.5)),
+                  Icon(Icons.flag_outlined, size: 64, color: AppColors.textTertiary.withValues(alpha: 0.5)),
                   const SizedBox(height: 16),
                   Text(
                     'NO ${type.name.toUpperCase()} GOALS YET',
@@ -256,7 +256,7 @@ class _AddGoalBottomSheetState extends ConsumerState<_AddGoalBottomSheet> {
                     Switch(
                       value: _isMilestone,
                       onChanged: (val) => setState(() => _isMilestone = val),
-                      activeColor: AppColors.primaryAccent,
+                      activeThumbColor: AppColors.primaryAccent,
                     ),
                   ],
                 ),
@@ -276,7 +276,7 @@ class _AddGoalBottomSheetState extends ConsumerState<_AddGoalBottomSheet> {
                   phase: int.tryParse(_phaseController.text),
                   isMilestone: _isMilestone,
                 );
-                if (mounted) Navigator.pop(context);
+                if (context.mounted) Navigator.pop(context);
               }
             },
             child: const Text('CREATE GOAL'),

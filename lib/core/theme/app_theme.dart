@@ -17,7 +17,6 @@ class AppTheme {
         primary: AppColors.primaryAccent,
         secondary: AppColors.primaryAccent,
         surface: AppColors.surface,
-        background: AppColors.background,
         error: AppColors.storm,
       ),
       appBarTheme: const AppBarTheme(
@@ -75,7 +74,6 @@ class AppTheme {
         primary: Color(0xFF7AB800),
         secondary: Color(0xFF7AB800),
         surface: Colors.white,
-        background: Color(0xFFF5F5F5),
         error: AppColors.storm,
       ),
       // Add other adaptations as needed for light mode

@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../controllers/ai_controller.dart';
 import '../../domain/models/chat_message.dart';
-import '../../../../core/constants/app_colors.dart';
 import '../widgets/voice_check_in_button.dart';
 import '../widgets/pattern_recognition_card.dart';
 import '../../../quotes/presentation/controllers/quote_controller.dart';
@@ -64,9 +63,9 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> with SingleTickerPr
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: const Color(0xFFB3FF00).withOpacity(0.1),
+                color: const Color(0xFFB3FF00).withValues(alpha: 0.1),
                 shape: BoxShape.circle,
-                border: Border.all(color: const Color(0xFFB3FF00).withOpacity(0.3)),
+                border: Border.all(color: const Color(0xFFB3FF00).withValues(alpha: 0.3)),
               ),
               child: const Icon(Icons.auto_awesome, color: Color(0xFFB3FF00), size: 20),
             ),
@@ -149,9 +148,9 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> with SingleTickerPr
           Icon(
             Icons.cloud_queue,
             size: 80,
-            color: const Color(0xFFB3FF00).withOpacity(0.2),
+            color: const Color(0xFFB3FF00).withValues(alpha: 0.2),
           ).animate(onPlay: (controller) => controller.repeat())
-            .shimmer(duration: 2.seconds, color: const Color(0xFFB3FF00).withOpacity(0.3))
+            .shimmer(duration: 2.seconds, color: const Color(0xFFB3FF00).withValues(alpha: 0.3))
             .moveY(begin: -10, end: 10, duration: 2.seconds, curve: Curves.easeInOut),
           const SizedBox(height: 24),
           const Text(
@@ -198,7 +197,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> with SingleTickerPr
       decoration: BoxDecoration(
         color: const Color(0xFF1A1A1A),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -210,7 +209,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> with SingleTickerPr
               Text(
                 'LATEST ACTIVITY',
                 style: TextStyle(
-                  color: const Color(0xFFB3FF00).withOpacity(0.7),
+                  color: const Color(0xFFB3FF00).withValues(alpha: 0.7),
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 1.2,
@@ -250,7 +249,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> with SingleTickerPr
             bottomRight: Radius.circular(isUser ? 4 : 20),
           ),
           boxShadow: isUser 
-            ? [BoxShadow(color: const Color(0xFFB3FF00).withOpacity(0.2), blurRadius: 10, spreadRadius: 1)]
+            ? [BoxShadow(color: const Color(0xFFB3FF00).withValues(alpha: 0.2), blurRadius: 10, spreadRadius: 1)]
             : [],
         ),
         child: Text(
@@ -320,7 +319,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> with SingleTickerPr
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: const Color(0xFF0D0D0D),
-        border: Border(top: BorderSide(color: Colors.white.withOpacity(0.05))),
+        border: Border(top: BorderSide(color: Colors.white.withValues(alpha: 0.05))),
       ),
       child: Row(
         children: [
@@ -330,7 +329,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> with SingleTickerPr
               decoration: BoxDecoration(
                 color: const Color(0xFF1A1A1A),
                 borderRadius: BorderRadius.circular(24),
-                border: Border.all(color: Colors.white.withOpacity(0.05)),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
               ),
               child: TextField(
                 controller: _textController,
@@ -387,7 +386,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> with SingleTickerPr
               decoration: BoxDecoration(
                 color: const Color(0xFF1A1A1A),
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.white.withOpacity(0.05)),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/foundation.dart';
 import 'package:streaksky/core/di/injection.dart';
 import 'package:streaksky/core/utils/streak_date_utils.dart';
 import 'package:streaksky/features/auth/presentation/controllers/auth_controller.dart';
@@ -91,7 +92,7 @@ class StreakController extends StateNotifier<AsyncValue<void>> {
         if (milestone != StreakMilestone.none && newStreakCount == milestone.days) {
           // Trigger milestone celebration event
           _ref.read(milestoneCelebrationProvider.notifier).state = milestone;
-          print('Milestone reached: ${milestone.label} ${milestone.emoji}');
+          debugPrint('Milestone reached: ${milestone.label} ${milestone.emoji}');
         }
       }
       

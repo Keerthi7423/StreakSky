@@ -93,7 +93,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                   hintText: 'Enter your name',
                   hintStyle: const TextStyle(color: Colors.white24),
                   filled: true,
-                  fillColor: Colors.white.withOpacity(0.05),
+                  fillColor: Colors.white.withValues(alpha: 0.05),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide.none,
@@ -120,7 +120,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.02),
+                  color: Colors.white.withValues(alpha: 0.02),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
@@ -147,7 +147,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                     foregroundColor: Colors.black,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     elevation: 8,
-                    shadowColor: AppTheme.neonAccent.withOpacity(0.5),
+                    shadowColor: AppTheme.neonAccent.withValues(alpha: 0.5),
                   ),
                   child: const Text(
                     'SAVE CHANGES',

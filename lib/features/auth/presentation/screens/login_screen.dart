@@ -111,7 +111,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       elevation: 8,
-                      shadowColor: AppTheme.neonAccent.withOpacity(0.5),
+                      shadowColor: AppTheme.neonAccent.withValues(alpha: 0.5),
                     ),
                     child: authState.isLoading
                         ? const CircularProgressIndicator(color: Colors.black)
@@ -144,7 +144,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     child: Text(
                       'CONTINUE AS GUEST',
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.5),
+                        color: Colors.white.withValues(alpha: 0.5),
                         fontWeight: FontWeight.bold,
                         letterSpacing: 1.1,
                       ),
@@ -185,7 +185,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       labelStyle: const TextStyle(color: Colors.white60),
       prefixIcon: Icon(icon, color: Colors.white60),
       filled: true,
-      fillColor: Colors.white.withOpacity(0.05),
+      fillColor: Colors.white.withValues(alpha: 0.05),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide.none,
@@ -200,12 +200,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget _buildDivider() {
     return Row(
       children: [
-        Expanded(child: Divider(color: Colors.white.withOpacity(0.1))),
+        Expanded(child: Divider(color: Colors.white.withValues(alpha: 0.1))),
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 16),
           child: Text('OR', style: TextStyle(color: Colors.white30, fontSize: 12)),
         ),
-        Expanded(child: Divider(color: Colors.white.withOpacity(0.1))),
+        Expanded(child: Divider(color: Colors.white.withValues(alpha: 0.1))),
       ],
     );
   }
@@ -217,7 +217,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       child: OutlinedButton(
         onPressed: onTap,
         style: OutlinedButton.styleFrom(
-          side: BorderSide(color: Colors.white.withOpacity(0.1)),
+          side: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
         child: Row(
