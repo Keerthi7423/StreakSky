@@ -1,0 +1,57 @@
+================================================================
+DAY 31: AI Mid-Year Pace Check, Suggested Prompts & Persona
+================================================================
+
+Task Objective:
+The Day 31 task focused on finalizing the AI Agent features within the StreakSky application. Specifically, the goals were to:
+1. Implement the AI Mid-Year Pace Check logic (Task 91).
+2. Build Suggested Prompt Chips for easier AI interaction (Task 92).
+3. Finalize the AI agent persona as "Sky — supportive, weather-themed coach" (Task 93).
+
+This document outlines the technical implementation, architectural decisions, and steps taken, serving as a comprehensive guide for interview preparation.
+
+----------------------------------------------------------------
+1. Finalizing the AI Persona (Task 93)
+----------------------------------------------------------------
+Objective: Give the AI agent a distinct identity ("Sky") that uses weather metaphors to coach the user.
+
+Implementation:
+- File Modified: `lib/features/ai_agent/data/datasources/ollama_datasource.dart`
+- In the `generateResponse` method, the first message passed to the LLM defines its system prompt.
+- We updated this system prompt to: "You are Sky, a supportive, weather-themed habit coach. You guide users through their habit journey using weather metaphors (sunny days, stormy patches, clear skies) to provide encouraging nudges and answers."
+- Why?: By injecting this context at the top of every conversation array, we force the underlying Llama 3.2 model to consistently adopt this persona across all generation types (chat, nudges, commit messages, etc.). This ensures the app's thematic consistency ("StreakSky") is felt deeply in the AI interactions.
+
+----------------------------------------------------------------
+2. AI Mid-Year Pace Check Logic (Task 91)
+----------------------------------------------------------------
+Objective: Create a specialized AI function that evaluates 6 months of habit data and provides a weather-themed summary.
+
+Implementation:
+- Repository Contract Update (`ai_repository.dart`): Added `Future<String> getMidYearPaceCheck(String yearDataSummary);`. This defines the abstraction so the UI doesn't know about Ollama or Azure directly.
+- DataSource Update (`ollama_datasource.dart`): Added `generateMidYearPaceCheck(String yearDataSummary)`. This method crafts a specific prompt telling the AI that it's July 1st, hands it the data, and asks for a concise, weather-themed review (celebrating sunny streaks, correcting stormy patches).
+- Repository Implementation (`ai_repository_impl.dart`): Implemented the contract to route to the data source.
+- Controller Update (`ai_controller.dart`): Added `fetchMidYearPaceCheck(String yearDataSummary)`. This function updates the Riverpod state `isLoading: true`, fetches the response, creates a new `ChatMessage` with `role: MessageRole.assistant`, and appends it to the chat history.
+- UI Integration (`ai_chat_screen.dart`): Added an action button labeled "Run Mid-Year Pace Check" to the empty state of the chat screen, making it discoverable for users to tap and trigger the analysis.
+
+Why?: This demonstrates a full vertical slice in Clean Architecture. We touched the Domain layer (contract), Data layer (implementation & API prompting), Presentation Controller (state management), and Presentation UI.
+
+----------------------------------------------------------------
+3. Suggested Prompt Chips (Task 92)
+----------------------------------------------------------------
+Objective: Build horizontal scrollable ghost buttons to give users one-tap prompts (e.g., "Give me a daily nudge.", "How's my streak?").
+
+Implementation:
+- New File (`lib/features/ai_agent/presentation/widgets/suggested_prompt_chips.dart`): Created a stateless widget containing a `ListView.separated` with `scrollDirection: Axis.horizontal`.
+- The items are built using Flutter's `ActionChip`. We styled them as "ghost buttons" by setting `backgroundColor: Colors.transparent` and using a subtle white border `side: BorderSide(color: Colors.white.withOpacity(0.2))`.
+- The widget accepts a callback `onPromptSelected` so it can remain stateless and decoupled from Riverpod logic.
+- UI Integration (`ai_chat_screen.dart`): Placed the `SuggestedPromptChips` widget just above the input text field. When a chip is tapped, it fires `ref.read(aiControllerProvider.notifier).sendMessage(prompt);`, seamlessly feeding the text into the existing chat flow.
+
+Why?: Ghost buttons reduce visual clutter while remaining accessible. Using a callback `onPromptSelected` adheres to the "Data down, Actions up" pattern, keeping the widget reusable and easily testable without needing a Riverpod provider context inside it.
+
+----------------------------------------------------------------
+Interview Talking Points
+----------------------------------------------------------------
+- Clean Architecture Compliance: Discuss how the Mid-Year Pace check feature was added by modifying the domain contract first, ensuring loose coupling.
+- Prompt Engineering: Explain how injecting persona traits ("weather-themed", "Sky") at the system level influences all subsequent context window generations, providing a unified UX.
+- State Management (Riverpod 2.0): Emphasize how `StateNotifier` cleanly manages the asynchronous loading state of the AI responses and updates the `aiState.messages` immutably.
+- UX Patterns: Mention that the Suggested Prompts are implemented as horizontal scrolling chips right above the keyboard area—this is a modern, mobile-first pattern to reduce friction in LLM chat interfaces.

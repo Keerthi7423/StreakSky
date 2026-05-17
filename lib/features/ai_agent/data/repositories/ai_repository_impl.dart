@@ -51,4 +51,9 @@ class AiRepositoryImpl implements AiRepository {
       return {'habit': 'unknown'};
     }
   }
+
+  @override
+  Future<String> getMidYearPaceCheck(String yearDataSummary) async {
+    return _remoteDataSource.generateMidYearPaceCheck(yearDataSummary);
+  }
 }

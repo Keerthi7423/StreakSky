@@ -6,4 +6,5 @@ abstract class AiRepository {
   Future<String> generateCommitMessage(String habitName, String context);
   Future<String> analyzePatterns(String historicalData);
   Future<Map<String, dynamic>> parseVoiceCommand(String transcript);
+  Future<String> getMidYearPaceCheck(String yearDataSummary);
 }
