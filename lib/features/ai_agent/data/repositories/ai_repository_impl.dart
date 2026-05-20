@@ -62,4 +62,23 @@ class AiRepositoryImpl implements AiRepository {
     final prompt = "It's December 31st, time for a Year in Review. Based on this 1-year habit and completion summary: $yearDataSummary. Provide a short, highly motivating, weather-themed personal narrative paragraph summarizing their year. Use metaphors: sunny days (perfect days), stormy patches (missed days), comebacks (rainbows), streaks. Keep it under 4 sentences and end with advice for the new year.";
     return _remoteDataSource.generateResponse(prompt);
   }
+
+  @override
+  Future<List<String>> generateNewYearIntentions(String pastYearSummary) async {
+    final prompt = "It's January 1st. Based on the user's past year data: $pastYearSummary. Suggest exactly 3 concrete, inspiring career or personal goals for the new year. Format the output as a JSON array of strings. Do not include any other text.";
+    final response = await _remoteDataSource.generateResponse(prompt);
+    try {
+      final jsonStart = response.indexOf('[');
+      final jsonEnd = response.lastIndexOf(']') + 1;
+      if (jsonStart != -1 && jsonEnd != -1) {
+        final jsonStr = response.substring(jsonStart, jsonEnd);
+        final List<dynamic> parsed = json.decode(jsonStr);
+        return parsed.map((e) => e.toString()).toList();
+      }
+      return ["Build a consistent morning routine", "Read 12 books this year", "Master a new skill"];
+    } catch (e) {
+      return ["Build a consistent morning routine", "Read 12 books this year", "Master a new skill"];
+    }
+  }
 }
+
