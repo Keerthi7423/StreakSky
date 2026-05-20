@@ -1,0 +1,121 @@
+================================================================================
+                     STREAKSKY — DAY 33 DEVELOPMENT JOURNAL
+         YEAR-START ENGINE, AI INTENTIONS, & MULTI-YEAR LEGACY ARCHITECTURE
+                     INTERVIEW PREPARATION & SYSTEM SPECS
+================================================================================
+
+This document outlines the architectural and product blueprint implemented for the 
+Year-Start Engine in StreakSky. It is designed to help you articulate the backend 
+logic and user experience flows for retaining users across multi-year lifecycles.
+
+---
+
+### SECTION 1: THE "YEAR-START" GOAL ROLLOVER ENGINE (BACKGROUND PROCESS)
+
+One of the biggest challenges in long-term habit tracking is "New Year Drop-off", 
+where users abandon the app because their previous goals feel detached from the new calendar.
+To solve this, we implemented the `GoalRolloverService`.
+
+1. ARCHITECTURE & TRIGGER LOGIC:
+   - In a production environment, this service acts like an Edge Function or a local 
+     startup validation check. It verifies the current year against a `last_run_timestamp`.
+   - We target Jan 1, 00:05. This specific delay (5 minutes past midnight) ensures 
+     server clusters have synchronized leap-seconds and timezones to avoid edge-case 
+     duplications at exactly 00:00:00.
+
+2. THE "CARRY OVER" ALGORITHM:
+   - We do NOT want to overwhelm the user by carrying over every single failed daily habit.
+   - We specifically query the `GoalRepository` for goals where:
+     `type == GoalType.career` (long-term aspirations) AND `isCompleted == false` AND 
+     `createdAt.year < currentYear`.
+   - We duplicate these goals into the new year, but we tag them with a specific boolean flag:
+     `rolledOver: true`.
+   - Why duplicate instead of update? Database immutability. By keeping the old goal intact 
+     (but marked as uncompleted in the past year), the `YearReviewModel` can still accurately 
+     represent the user's past data without the rollover corrupting historical records.
+
+---
+
+### SECTION 2: AI-DRIVEN "NEW YEAR INTENTIONS" (ONBOARDING LOOP)
+
+To increase Day 1 retention for the new year, we presented the `NewYearIntentionScreen` 
+on the first launch of January.
+
+1. CONTEXTUAL PROMPT ENGINEERING:
+   - We updated `AiRepository` and `AiRepositoryImpl` to include `generateNewYearIntentions`.
+   - The LLM prompt is injected with the user's `pastYearSummary` (e.g., "completed 80% of workout habits, struggled with reading").
+   - The prompt instructs Ollama to generate exactly 3 highly personalized, concrete goals 
+     formatted purely as a JSON array.
+
+2. UI & ANIMATION CHOREOGRAPHY:
+   - We used `AnimationController` and `Tween<double>` for a graceful fade-in effect (`FadeTransition`).
+   - The loading state shows a neon green (`#B3FF00`) indicator, signaling that "Sky" (the AI) 
+     is actively analyzing their past year.
+   - Once the JSON is parsed, the 3 intentions fade in sequentially, offering the user a 
+     frictionless "Accept Intentions" button. This removes the cognitive load of typing 
+     new goals manually on January 1st.
+
+---
+
+### SECTION 3: MULTI-YEAR "LEGACY VIEW" (GAMIFIED LOYALTY)
+
+To reward long-term users, we introduced the `LegacyViewScreen`.
+
+1. THE PSYCHOLOGY OF UNLOCKS:
+   - The Legacy View is gated logic: `if (pastYears.length < 2) { showLockedState(); }`.
+   - By locking this feature until the user completes their second year, we create a 
+     long-term aspirational milestone. It shifts the app from a temporary tool to a 
+     permanent "Life Ledger."
+
+2. VISUAL DESIGN AESTHETIC:
+   - The UI uses heavy glassmorphism combined with StreakSky's signature neon aesthetic.
+   - We render cards with deep dark backgrounds (`#1A1A1A`), accented by subtle neon green 
+     box shadows (`spreadRadius: -5`, `blurRadius: 20`) to create an inner-glow effect.
+   - A `LinearGradient` provides a polished fade across the giant "2024" or "2025" typography.
+
+---
+
+### SECTION 4: TECHNICAL INTERVIEW QUESTIONS & MODEL ANSWER GUIDE
+
+Here are questions you might face regarding these Day 33 implementations.
+
+--------------------------------------------------------------------------------
+QUESTION 1: Why did you choose to duplicate the `GoalModel` for the new year instead 
+of just updating the `endDate` or `currentValue` of the existing goal?
+--------------------------------------------------------------------------------
+ANSWER:
+"Mutating the original goal violates the principle of historical immutability. In StreakSky, 
+we have a 'Year-End Review' feature that relies on analyzing exactly what happened in a 
+specific 365-day window. If we updated the original goal's timeframe to the new year, 
+the user's historical data for the past year would disappear, breaking their past Year Review. 
+By duplicating it and setting `rolledOver: true`, we preserve the audit trail of the failed 
+attempt in the past year, while giving them a fresh, clean start in the current year."
+
+--------------------------------------------------------------------------------
+QUESTION 2: How do you handle AI hallucinations or JSON parsing failures when the LLM 
+generates the New Year Intentions?
+--------------------------------------------------------------------------------
+ANSWER:
+"Local LLMs (like Ollama) are prone to adding conversational filler, such as 'Here are your 
+intentions: [ ... ]'. To handle this, I don't rely on strict JSON parsers right away. 
+First, I use `indexOf('[')` and `lastIndexOf(']')` to extract only the array payload from 
+the string. Then, I wrap `json.decode` in a `try-catch` block. If parsing fails entirely, 
+the system seamlessly falls back to a hardcoded array of 3 highly-effective universal habits 
+(e.g., 'Build a consistent morning routine'). This guarantees the UI never crashes or shows 
+broken text to the user."
+
+--------------------------------------------------------------------------------
+QUESTION 3: What is a `SingleTickerProviderStateMixin` and why did you use it in the 
+New Year Intention screen?
+--------------------------------------------------------------------------------
+ANSWER:
+"In Flutter, animations require a `Ticker`, which acts like a clock that ticks once per frame 
+(usually 60 or 120 times a second). The `SingleTickerProviderStateMixin` provides this ticker 
+to our `AnimationController`, binding the animation lifecycle to the widget's lifecycle. 
+This is crucial for performance because it automatically pauses the animation if the screen 
+is no longer visible, saving battery and CPU cycles. We used it to create the smooth, cinematic 
+fade-in effect for the AI-generated intentions."
+
+================================================================================
+                                   END OF FILE
+================================================================================

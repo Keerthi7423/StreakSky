@@ -8,4 +8,5 @@ abstract class AiRepository {
   Future<Map<String, dynamic>> parseVoiceCommand(String transcript);
   Future<String> getMidYearPaceCheck(String yearDataSummary);
   Future<String> generateYearReviewNarrative(String yearDataSummary);
+  Future<List<String>> generateNewYearIntentions(String pastYearSummary);
 }
