@@ -1,0 +1,61 @@
+# Day 35: Advanced Automation & System Integrations
+=========================================================
+Overview
+--------
+On Day 35, we implemented advanced mobile and backend integrations that bridge our app closer to the native operating systems and enterprise cloud security. The three main components are:
+
+1. **Lock Screen Widget**: Bringing StreakSky directly to the user's iOS/Android lock screen for zero-friction habit logging and quote previewing.
+2. **Firebase Cloud Messaging (FCM)**: Setting up push notifications for server-triggered "Streak Danger" alerts.
+3. **Azure API Management (APIM)**: Adding a gateway interceptor for rate-limiting, securing our endpoints, and preventing abuse.
+
+---------------------------------------------------------
+1. Lock Screen Widget Integration
+---------------------------------------------------------
+File: `lib/features/widgets/lock_screen_widget_service.dart`
+
+**What we did:**
+We created a Dart service designed to communicate with native widget code (like Swift's WidgetKit for iOS and AppWidgetProvider for Android) using a plugin like `home_widget`. 
+
+**Why it matters:**
+A lock screen widget drastically increases Daily Active Users (DAU) by reducing the friction to open the app. The user can see their current weather, streak, and a preview of the day's quote instantly. If they tap a checkbox on the widget, it uses a deep link (URI scheme) to silently trigger a background update in our Flutter app, marking the habit as complete.
+
+**Interview Insight:**
+- *Interviewer:* "How does a Flutter app update an iOS widget?"
+- *Answer:* "Flutter itself cannot draw iOS widgets. We write the widget UI in SwiftUI (WidgetKit) natively. Our Flutter app then writes JSON data to a shared `AppGroup` (a shared container accessible by both the app and the widget). We then invoke a platform channel method to tell iOS to reload the widget timeline."
+
+---------------------------------------------------------
+2. Firebase Cloud Messaging ("Streak Danger" Alerts)
+---------------------------------------------------------
+File: `lib/core/services/fcm_service.dart`
+
+**What we did:**
+We configured `FirebaseMessaging` to handle incoming push notifications, both when the app is in the foreground and the background.
+
+**Why it matters:**
+Most apps just use generic local notifications ("Don't forget to drink water!"). In StreakSky, we track "Streak Danger" centrally on the server. If a user is 1 hour away from midnight and hasn't logged their habits, our backend (e.g., Supabase Edge Function) sends a targeted FCM payload with `type: 'streak_danger'`. The `_firebaseMessagingBackgroundHandler` intercepts this silently if we want to run background syncing, or we can just let it display a high-priority system notification.
+
+**Interview Insight:**
+- *Interviewer:* "What's the difference between a foreground message and a background message in FCM?"
+- *Answer:* "When the app is in the foreground, iOS/Android won't automatically show a banner. Our `onMessage.listen` callback fires, and we handle the UI manually (like showing an in-app snackbar). If the app is in the background or terminated, the OS automatically parses the notification payload and displays a system tray alert. Any data payload is handled by the top-level `@pragma('vm:entry-point')` Dart function so it runs in a separate isolate."
+
+---------------------------------------------------------
+3. Azure API Management (APIM) Security
+---------------------------------------------------------
+File: `lib/core/network/apim_interceptor.dart`
+
+**What we did:**
+We created a Dio `Interceptor` that injects an Azure APIM `Ocp-Apim-Subscription-Key` into the headers of every outgoing HTTP request. It also listens for specific HTTP status codes like `429 (Too Many Requests)` or `401 (Unauthorized)`.
+
+**Why it matters:**
+Directly exposing backend APIs (even Supabase) to mobile apps can be risky if bots or malicious users try to spam endpoints (e.g., brute-forcing AI endpoints or spamming habit syncs). Azure API Management acts as a secure front door. It rate-limits requests per IP or subscription key. Our interceptor ensures that all outgoing requests comply with APIM requirements and gracefully handles rate limits by notifying the user instead of just crashing or silently failing.
+
+**Interview Insight:**
+- *Interviewer:* "How would you handle rate-limiting errors on a mobile app so it doesn't degrade the user experience?"
+- *Answer:* "Instead of letting the app fail, I would catch the `429 Too Many Requests` status code globally using an HTTP interceptor (like Dio). I can then dispatch an event to the state manager (like Riverpod) to show a polite 'We are experiencing high traffic, please wait' banner. If it's a critical background sync, I would implement an exponential backoff retry mechanism using an offline queue (like Hive)."
+
+---------------------------------------------------------
+Summary Checklist for Interviews:
+---------------------------------------------------------
+- [x] Know how Flutter communicates with native OS features (MethodChannels / AppGroups).
+- [x] Understand FCM background isolates and foreground streams.
+- [x] Grasp API Gateway concepts (Rate Limiting, DDoS protection, headers) and how to intercept HTTP requests cleanly.
