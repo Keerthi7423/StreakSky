@@ -1,0 +1,80 @@
+# Day 34: Subscription Service & Remote Config
+=========================================================
+Overview
+--------
+On Day 34, we integrated the core architecture to monetize StreakSky. This involves two major components:
+1. Firebase Remote Config: For dynamically setting subscription prices and feature gating without app updates.
+2. Supabase Subscriptions: Managing the user's active plan (Free vs Pro) and exposing it across the app via Riverpod.
+3. Feature Locks (Gating): Blocking access to premium features (Sky AI, Career Goals, Multi-Year Heatmap) if the user isn't Pro.
+
+---------------------------------------------------------
+1. Supabase Database Migration
+---------------------------------------------------------
+File: `supabase/migrations/20260523_add_subscriptions.sql`
+
+We created a `subscriptions` table linked to `auth.users`.
+- Fields: `user_id`, `status` (active/inactive), `plan_type` (monthly/yearly), `valid_until`.
+- Triggers: We added a trigger `on_auth_user_created_subscription` to automatically create a 'free'/'inactive' subscription row for any new user that signs up. 
+- Interview Insight: Why use a trigger? This ensures every user has a subscription record from day one, meaning our app never has to handle null safety issues for "missing subscription row". It simplifies the frontend data-fetching logic.
+
+---------------------------------------------------------
+2. Remote Config Integration
+---------------------------------------------------------
+File: `lib/core/services/remote_config_service.dart`
+
+We created a service to fetch configuration from Firebase Remote Config.
+- We set default values (`subscription_monthly_price`: 299, `subscription_yearly_price`: 1999, `is_ai_feature_free`: false).
+- This is incredibly powerful for growth and A/B testing. We can change the price of the app in different countries or turn the AI feature "free" for a weekend promotion without ever submitting a new build to the App Store or Google Play.
+- Interview Insight: If an interviewer asks "How do you handle pricing changes or emergency feature rollbacks?" Remote Config is the answer. It decouples business logic configuration from the release cycle.
+
+---------------------------------------------------------
+3. Subscription State Management (Riverpod)
+---------------------------------------------------------
+Files:
+- `lib/features/subscription/domain/models/subscription_status.dart` (Freezed Data Model)
+- `lib/features/subscription/data/repositories/subscription_repository.dart`
+- `lib/features/subscription/presentation/providers/subscription_provider.dart`
+
+We read the user's subscription from Supabase and expose it as a Riverpod provider `isProProvider`.
+- By using `ref.watch(isProProvider)`, any widget in our app instantly knows if the user is a Pro subscriber. 
+- If the subscription upgrades, Riverpod automatically triggers a rebuild on all UI components dependent on `isProProvider`, immediately unlocking the features.
+- Interview Insight: "Why Riverpod?" It enables reactive UI. We don't need to pass `bool isPro` down the widget tree. Instead, the specific lock screens listen to this global provider and reactively remove the lock when the payment completes.
+
+---------------------------------------------------------
+4. Feature Gating (Pro Locks)
+---------------------------------------------------------
+We identified the Pro features in the PRD and locked them:
+
+1. Sky AI (`ai_chat_screen.dart`):
+   - We read both `isProProvider` and `remoteConfig.isAiFeatureFree`.
+   - If `!isAiFree && !isPro`, we replace the chat UI with a beautiful padlock and an "Upgrade to Pro" button.
+
+2. Career Goals (`goals_screen.dart`):
+   - Since "Career" is one tab inside the Goals screen, we added an `if (!isPro)` check right before rendering the `CareerTimeline`.
+   - Free users can still set Weekly and Monthly goals, driving value while teasing the premium tier.
+
+3. Heatmap History (`heatmap_screen.dart`):
+   - The multi-year toggle switch throws the user to the paywall if tapped and `!isPro`.
+   - Exporting the heatmap as an image also redirects to the paywall.
+
+---------------------------------------------------------
+5. The Paywall UI
+---------------------------------------------------------
+File: `lib/features/subscription/presentation/screens/paywall_screen.dart`
+
+A high-converting, aesthetic screen displaying the value proposition of StreakSky Pro.
+- It dynamically reads `monthlyPrice` and `yearlyPrice` from `RemoteConfigService`.
+- We mocked the actual payment gateway by writing a `upgradeToProMock` method in `SubscriptionRepository` that updates the Supabase table. In production, this would integrate with RevenueCat or directly with Apple/Google billing APIs.
+
+---------------------------------------------------------
+Common Interview Questions based on this Task:
+---------------------------------------------------------
+
+Q: How do you prevent users from spoofing `isPro`?
+A: In a real app, `isPro` should always be validated server-side. While we check it on the client for UI purposes, any actual action (like fetching multi-year data or calling the AI endpoint) would also be secured by Supabase RLS (Row Level Security) or API middleware that validates the JWT's subscription claims.
+
+Q: Why not hardcode prices in the app?
+A: App Store review takes 24-48 hours. If we hardcode prices and realize we made a mistake, or we want to run a Black Friday sale, we'd have to wait for Apple to approve the update. Remote Config allows instant, over-the-air updates.
+
+Q: How does Riverpod handle the user logging out?
+A: Our `subscriptionStatusProvider` watches the `authStateProvider`. When the user logs out, the auth state changes to null. Riverpod invalidates the subscription state and resets `isPro` to false, automatically locking the features on the login screen. No manual cleanup needed.

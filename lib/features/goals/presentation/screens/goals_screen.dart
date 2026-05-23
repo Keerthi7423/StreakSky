@@ -8,6 +8,8 @@ import '../../domain/models/goal_model.dart';
 import '../controllers/goal_controller.dart';
 import '../widgets/goal_card.dart';
 import '../widgets/career_timeline.dart';
+import '../../../subscription/presentation/providers/subscription_provider.dart';
+import 'package:go_router/go_router.dart';
 
 class GoalsScreen extends ConsumerStatefulWidget {
   const GoalsScreen({super.key});
@@ -100,6 +102,28 @@ class _GoalsList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (type == GoalType.career) {
+      final isPro = ref.watch(isProProvider);
+      if (!isPro) {
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.lock_outline, size: 64, color: AppColors.textTertiary.withValues(alpha: 0.5)),
+              const SizedBox(height: 16),
+              Text('Career Goals are a Pro Feature', style: AppTypography.h3.copyWith(color: AppColors.textSecondary)),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () => context.push('/paywall'),
+                style: ElevatedButton.styleFrom(backgroundColor: AppColors.primaryAccent),
+                child: const Text('Upgrade to Pro', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+              )
+            ],
+          ),
+        );
+      }
+    }
+
     final goalsAsync = ref.watch(goalsListProvider(type));
 
     return goalsAsync.when(

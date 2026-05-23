@@ -10,6 +10,8 @@ import '../../../../core/constants/app_typography.dart';
 import '../controllers/heatmap_controller.dart';
 import '../widgets/heatmap_grid.dart';
 import '../widgets/heatmap_year_selector.dart';
+import '../../../subscription/presentation/providers/subscription_provider.dart';
+import 'package:go_router/go_router.dart';
 
 class HeatmapScreen extends ConsumerStatefulWidget {
   const HeatmapScreen({super.key});
@@ -95,7 +97,14 @@ class _HeatmapScreenState extends ConsumerState<HeatmapScreen> {
             const Text('Multi-year', style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
             Switch(
               value: state.isMultiYearView,
-              onChanged: (_) => ref.read(heatmapControllerProvider.notifier).toggleMultiYearView(),
+              onChanged: (_) {
+                final isPro = ref.read(isProProvider);
+                if (!isPro) {
+                  context.push('/paywall');
+                  return;
+                }
+                ref.read(heatmapControllerProvider.notifier).toggleMultiYearView();
+              },
               activeThumbColor: AppColors.primaryAccent,
             ),
           ],
@@ -270,6 +279,12 @@ class _HeatmapScreenState extends ConsumerState<HeatmapScreen> {
   }
 
   Future<void> _exportHeatmap(BuildContext context) async {
+    final isPro = ref.read(isProProvider);
+    if (!isPro) {
+      context.push('/paywall');
+      return;
+    }
+    
     try {
       final image = await _screenshotController.capture();
       if (image == null) return;

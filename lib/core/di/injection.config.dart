@@ -1,63 +1,123 @@
-import 'package:get_it/get_it.dart' as i1;
-import 'package:injectable/injectable.dart' as i2;
-import 'package:supabase_flutter/supabase_flutter.dart' as i3;
-import 'package:shared_preferences/shared_preferences.dart' as i4;
-import 'package:dio/dio.dart' as i5;
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format width=80
 
-import '../../features/auth/data/repositories/firebase_auth_service.dart' as i6;
-import '../../features/auth/domain/repositories/auth_repository.dart' as i7;
-import '../../features/habits/data/repositories/habit_repository_impl.dart' as i8;
-import '../../features/habits/domain/repositories/habit_repository.dart' as i9;
-import '../../features/goals/data/repositories/goal_repository_impl.dart' as i10;
-import '../../features/goals/domain/repositories/goal_repository.dart' as i11;
-import '../../features/streaks/data/services/streak_service.dart' as i12;
-import '../../features/streaks/domain/repositories/streak_repository.dart' as i13;
-import '../../features/ai_agent/data/datasources/azure_ai_datasource.dart' as i14;
-import '../../features/ai_agent/data/datasources/ollama_datasource.dart' as i15;
-import '../../features/ai_agent/data/repositories/ai_repository_impl.dart' as i16;
-import '../../features/ai_agent/domain/repositories/ai_repository.dart' as i17;
-import '../../features/year_review/data/repositories/year_review_repository_impl.dart' as i18;
-import '../../features/year_review/domain/repositories/year_review_repository.dart' as i19;
+// **************************************************************************
+// InjectableConfigGenerator
+// **************************************************************************
 
-import 'register_module.dart' as i20;
+// ignore_for_file: type=lint
+// coverage:ignore-file
 
-extension GetItInjectableX on i1.GetIt {
-  Future<i1.GetIt> init({
+// ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:dio/dio.dart' as _i361;
+import 'package:get_it/get_it.dart' as _i174;
+import 'package:injectable/injectable.dart' as _i526;
+import 'package:shared_preferences/shared_preferences.dart' as _i460;
+import 'package:streaksky/core/di/register_module.dart' as _i356;
+import 'package:streaksky/core/services/analytics_service.dart' as _i812;
+import 'package:streaksky/features/ai_agent/data/datasources/azure_ai_datasource.dart'
+    as _i646;
+import 'package:streaksky/features/ai_agent/data/datasources/ollama_datasource.dart'
+    as _i443;
+import 'package:streaksky/features/ai_agent/data/repositories/ai_repository_impl.dart'
+    as _i810;
+import 'package:streaksky/features/ai_agent/domain/repositories/ai_repository.dart'
+    as _i504;
+import 'package:streaksky/features/auth/data/repositories/firebase_auth_service.dart'
+    as _i900;
+import 'package:streaksky/features/auth/domain/repositories/auth_repository.dart'
+    as _i799;
+import 'package:streaksky/features/goals/data/repositories/goal_repository_impl.dart'
+    as _i531;
+import 'package:streaksky/features/goals/domain/repositories/goal_repository.dart'
+    as _i125;
+import 'package:streaksky/features/habits/data/repositories/habit_repository_impl.dart'
+    as _i524;
+import 'package:streaksky/features/habits/data/services/habit_local_service.dart'
+    as _i461;
+import 'package:streaksky/features/habits/data/services/sync_service.dart'
+    as _i1050;
+import 'package:streaksky/features/habits/domain/repositories/habit_repository.dart'
+    as _i593;
+import 'package:streaksky/features/profile/data/repositories/supabase_profile_repository.dart'
+    as _i425;
+import 'package:streaksky/features/profile/domain/repositories/profile_repository.dart'
+    as _i293;
+import 'package:streaksky/features/quotes/data/repositories/quote_repository_impl.dart'
+    as _i100;
+import 'package:streaksky/features/quotes/domain/repositories/quote_repository.dart'
+    as _i891;
+import 'package:streaksky/features/streaks/data/services/streak_service.dart'
+    as _i184;
+import 'package:streaksky/features/streaks/domain/repositories/streak_repository.dart'
+    as _i170;
+import 'package:streaksky/features/year_review/data/repositories/year_review_repository_impl.dart'
+    as _i768;
+import 'package:streaksky/features/year_review/domain/repositories/year_review_repository.dart'
+    as _i587;
+import 'package:supabase_flutter/supabase_flutter.dart' as _i454;
+
+extension GetItInjectableX on _i174.GetIt {
+  // initializes the registration of main-scope dependencies inside of GetIt
+  Future<_i174.GetIt> init({
     String? environment,
-    i2.EnvironmentFilter? environmentFilter,
+    _i526.EnvironmentFilter? environmentFilter,
   }) async {
-    final gh = i2.GetItHelper(this, environment, environmentFilter);
-    final registerModule = i20.RegisterModule();
-
-    // Lazy Singletons from Third Party Modules
-    gh.lazySingleton<i3.SupabaseClient>(() => registerModule.supabaseClient);
-    gh.lazySingleton<i5.Dio>(() => registerModule.dio);
-    
-    // Pre-resolve SharedPreferences
-    final sharedPreferences = await registerModule.prefs;
-    gh.factory<i4.SharedPreferences>(() => sharedPreferences);
-
-    // Register Data Sources
-    gh.lazySingleton<i14.AzureAiDatasource>(() => i14.AzureAiDatasource(this<i5.Dio>()));
-    gh.lazySingleton<i15.OllamaDataSource>(() => i15.OllamaDataSource(
-          this<i5.Dio>(),
-          this<i14.AzureAiDatasource>(),
-        ));
-
-    // Register Repositories & Services
-    gh.lazySingleton<i7.AuthRepository>(() => i6.FirebaseAuthService());
-    gh.lazySingleton<i9.HabitRepository>(() => i8.HabitRepositoryImpl(this<i3.SupabaseClient>()));
-    gh.lazySingleton<i11.GoalRepository>(() => i10.GoalRepositoryImpl(this<i3.SupabaseClient>()));
-    gh.lazySingleton<i13.StreakRepository>(() => i12.StreakService(this<i3.SupabaseClient>()));
-    gh.lazySingleton<i17.AiRepository>(() => i16.AiRepositoryImpl(this<i15.OllamaDataSource>()));
-    gh.lazySingleton<i19.YearReviewRepository>(() => i18.YearReviewRepositoryImpl(
-          this<i3.SupabaseClient>(),
-          this<i9.HabitRepository>(),
-          this<i11.GoalRepository>(),
-          this<i13.StreakRepository>(),
-          this<i17.AiRepository>(),
-        ));
-
+    final gh = _i526.GetItHelper(this, environment, environmentFilter);
+    final registerModule = _$RegisterModule();
+    await gh.factoryAsync<_i460.SharedPreferences>(
+      () => registerModule.prefs,
+      preResolve: true,
+    );
+    gh.lazySingleton<_i454.SupabaseClient>(() => registerModule.supabaseClient);
+    gh.lazySingleton<_i361.Dio>(() => registerModule.dio);
+    gh.lazySingleton<_i812.AnalyticsService>(() => _i812.AnalyticsService());
+    gh.lazySingleton<_i461.HabitLocalService>(() => _i461.HabitLocalService());
+    gh.lazySingleton<_i799.AuthRepository>(() => _i900.FirebaseAuthService());
+    gh.lazySingleton<_i170.StreakRepository>(
+      () => _i184.StreakService(gh<_i454.SupabaseClient>()),
+    );
+    gh.lazySingleton<_i125.GoalRepository>(
+      () => _i531.GoalRepositoryImpl(gh<_i454.SupabaseClient>()),
+    );
+    gh.lazySingleton<_i593.HabitRepository>(
+      () => _i524.HabitRepositoryImpl(gh<_i454.SupabaseClient>()),
+    );
+    gh.lazySingleton<_i646.AzureAiDatasource>(
+      () => _i646.AzureAiDatasource(gh<_i361.Dio>()),
+    );
+    gh.lazySingleton<_i891.QuoteRepository>(
+      () => _i100.QuoteRepositoryImpl(gh<_i460.SharedPreferences>()),
+    );
+    gh.lazySingleton<_i293.ProfileRepository>(
+      () => _i425.SupabaseProfileRepository(gh<_i454.SupabaseClient>()),
+    );
+    gh.lazySingleton<_i443.OllamaDataSource>(
+      () => _i443.OllamaDataSource(
+        gh<_i361.Dio>(),
+        gh<_i646.AzureAiDatasource>(),
+      ),
+    );
+    gh.lazySingleton<_i1050.SyncService>(
+      () => _i1050.SyncService(
+        gh<_i461.HabitLocalService>(),
+        gh<_i454.SupabaseClient>(),
+      ),
+    );
+    gh.lazySingleton<_i504.AiRepository>(
+      () => _i810.AiRepositoryImpl(gh<_i443.OllamaDataSource>()),
+    );
+    gh.lazySingleton<_i587.YearReviewRepository>(
+      () => _i768.YearReviewRepositoryImpl(
+        gh<_i454.SupabaseClient>(),
+        gh<_i593.HabitRepository>(),
+        gh<_i125.GoalRepository>(),
+        gh<_i170.StreakRepository>(),
+        gh<_i504.AiRepository>(),
+      ),
+    );
     return this;
   }
 }
+
+class _$RegisterModule extends _i356.RegisterModule {}

@@ -51,12 +51,14 @@ class HomeScreen extends ConsumerWidget {
           const SliverToBoxAdapter(child: HomeYearReviewBanner()),
           habitsAsync.when(
             data: (habits) => habits.isEmpty
-                ? SliverFillRemaining(child: _buildEmptyState(context))
+                ? SliverFillRemaining(hasScrollBody: false, child: _buildEmptyState(context))
                 : _buildHabitList(habits, completionsAsync.asData?.value ?? {}),
             loading: () => const SliverFillRemaining(
+              hasScrollBody: false,
               child: Center(child: CircularProgressIndicator(color: Color(0xFFB3FF00))),
             ),
             error: (err, stack) => SliverFillRemaining(
+              hasScrollBody: false,
               child: Center(child: Text('Error: $err', style: const TextStyle(color: Colors.red))),
             ),
           ),
