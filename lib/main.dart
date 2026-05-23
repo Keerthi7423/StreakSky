@@ -11,6 +11,7 @@ import 'core/di/injection.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'firebase_options.dart';
+import 'core/services/remote_config_service.dart';
 import 'features/habits/data/services/habit_local_service.dart';
 import 'features/habits/data/services/sync_service.dart';
 
@@ -47,6 +48,9 @@ Future<void> main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    
+    final remoteConfigService = RemoteConfigService();
+    await remoteConfigService.initialize();
   } catch (e) {
     debugPrint('Firebase initialization failed: $e');
   }

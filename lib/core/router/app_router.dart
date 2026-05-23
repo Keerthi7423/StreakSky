@@ -14,6 +14,7 @@ import '../../features/graphs/presentation/screens/graphs_screen.dart';
 import '../../features/auth/presentation/controllers/auth_controller.dart';
 import '../../features/streaks/presentation/widgets/milestone_celebration_overlay.dart';
 import '../../features/year_review/presentation/screens/year_review_screen.dart';
+import '../../features/subscription/presentation/screens/paywall_screen.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -80,6 +81,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           final year = int.tryParse(state.uri.queryParameters['year'] ?? '') ?? DateTime.now().year;
           return YearReviewScreen(year: year);
         },
+      ),
+      GoRoute(
+        path: '/paywall',
+        builder: (context, state) => const PaywallScreen(),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {

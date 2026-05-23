@@ -8,6 +8,9 @@ import '../widgets/pattern_recognition_card.dart';
 import '../../../quotes/presentation/controllers/quote_controller.dart';
 import '../../../quotes/domain/models/quote_model.dart';
 import '../widgets/suggested_prompt_chips.dart';
+import '../../../subscription/presentation/providers/subscription_provider.dart';
+import '../../../../core/services/remote_config_service.dart';
+import 'package:go_router/go_router.dart';
 
 class AiChatScreen extends ConsumerStatefulWidget {
   const AiChatScreen({super.key});
@@ -45,6 +48,38 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> with SingleTickerPr
 
   @override
   Widget build(BuildContext context) {
+    final isPro = ref.watch(isProProvider);
+    final remoteConfig = ref.watch(remoteConfigServiceProvider);
+    final isAiFree = remoteConfig.isAiFeatureFree;
+    final isLocked = !isAiFree && !isPro;
+
+    if (isLocked) {
+      return Scaffold(
+        backgroundColor: const Color(0xFF0D0D0D),
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          title: const Text('Sky AI', style: TextStyle(color: Colors.white)),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.lock_outline, size: 80, color: Colors.white54),
+              const SizedBox(height: 24),
+              const Text('Sky AI is a Pro Feature', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () => context.push('/paywall'),
+                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFB3FF00)),
+                child: const Text('Upgrade to Pro', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+              )
+            ],
+          ),
+        ),
+      );
+    }
+
     final aiState = ref.watch(aiControllerProvider);
 
     ref.listen(aiControllerProvider, (previous, next) {
