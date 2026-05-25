@@ -10,6 +10,7 @@ import '../controllers/stats_controller.dart';
 import '../widgets/stat_widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import '../../../../core/widgets/skeleton_loader.dart';
 
 class StatsScreen extends ConsumerWidget {
   const StatsScreen({super.key});
@@ -71,9 +72,9 @@ class StatsScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 16),
                     if (heatmapState.isLoading)
-                      const SizedBox(
-                        height: 100,
-                        child: Center(child: CircularProgressIndicator()),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 20.0),
+                        child: SkeletonLoader(height: 100, width: double.infinity, borderRadius: 8),
                       )
                     else
                       HeatmapGrid(

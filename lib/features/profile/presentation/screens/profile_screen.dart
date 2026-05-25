@@ -6,6 +6,8 @@ import 'package:streaksky/core/theme/app_theme.dart';
 import '../controllers/profile_controller.dart';
 import 'profile_edit_screen.dart';
 import '../../domain/models/user_profile.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import '../../../../core/widgets/skeleton_loader.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -62,13 +64,25 @@ class ProfileScreen extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  child: CircleAvatar(
-                    radius: 60,
-                    backgroundColor: Colors.grey[900],
-                    backgroundImage: avatarUrl != null && avatarUrl.isNotEmpty ? NetworkImage(avatarUrl) : null,
-                    child: avatarUrl == null || avatarUrl.isEmpty
-                      ? const Icon(Icons.person, size: 60, color: Colors.white)
-                      : null,
+                  child: ClipOval(
+                    child: SizedBox(
+                      width: 120,
+                      height: 120,
+                      child: avatarUrl != null && avatarUrl.isNotEmpty
+                          ? CachedNetworkImage(
+                              imageUrl: avatarUrl,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => const SkeletonLoader(width: 120, height: 120, borderRadius: 60),
+                              errorWidget: (context, url, error) => Container(
+                                color: Colors.grey[900],
+                                child: const Icon(Icons.person, size: 60, color: Colors.white),
+                              ),
+                            )
+                          : Container(
+                              color: Colors.grey[900],
+                              child: const Icon(Icons.person, size: 60, color: Colors.white),
+                            ),
+                    ),
                   ),
                 ),
                 Positioned(
