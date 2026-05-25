@@ -1,0 +1,37 @@
+# Day 36 - Polish, Performance & Quality (Part 1)
+
+This document explains the technical implementations and decisions made on Day 36 of the StreakSky project. You can use these points to prepare for technical interviews.
+
+## Task 106: Audit UI for "Dark & Powerful" aesthetic
+
+### What we did:
+We reviewed the `AppColors` class in `lib/core/constants/app_colors.dart` to ensure our core branding colors are strictly defined and used correctly across the application.
+- `background`: `#0D0D0D` (Deep black for AMOLED screens, saves battery and looks premium)
+- `primaryAccent`: `#B3FF00` (Neon green for high contrast and energetic feel)
+
+### Interview Talking Points:
+- **Why #0D0D0D instead of pure black (#000000)?** Pure black can sometimes cause "OLED smearing" (where pixels take too long to turn on when scrolling). #0D0D0D is dark enough to feel like pure black and save battery on OLED screens, but bright enough to mitigate extreme smearing and provide depth.
+- **Design Systems:** Explain how using a centralized `AppColors` class ensures consistency. Instead of hardcoding colors in every widget, we define a single source of truth. This makes theming and future redesigns much easier.
+
+## Task 107: Implement Skeleton loading screens for data-heavy features
+
+### What we did:
+Replaced generic `CircularProgressIndicator` (spinners) with a `SkeletonLoader` widget powered by the `shimmer` package. We updated screens like `HomeScreen` and `StatsScreen`.
+
+### Interview Talking Points:
+- **What is a Skeleton Screen?** It's a UI pattern that displays a blank version of a page into which information is gradually loaded. It gives the illusion that the page is loading faster than it actually is.
+- **User Experience (UX):** Spinners draw attention to the fact that the user is waiting. Skeleton loaders, especially with a shimmer effect, guide the user's eyes to where the content will appear, making the wait feel shorter and reducing perceived latency.
+- **Implementation:** We created a reusable `SkeletonLoader` widget. It takes a width, height, and border radius, and wraps a container in a `Shimmer.fromColors`. We matched the shimmer's base color to our app's surface color (`#1A1A1A`) and the highlight color to our divider color (`#2E2E2E`) to maintain the dark theme aesthetic.
+
+## Task 108: Optimize image fetching with cached_network_image
+
+### What we did:
+Replaced `NetworkImage` with `CachedNetworkImage` (from the `cached_network_image` package) in profile screens. We also added our `SkeletonLoader` as a placeholder while the images download.
+
+### Interview Talking Points:
+- **Why Cache Images?** The default `Image.network` in Flutter downloads the image every time the widget rebuilds or is loaded, consuming excessive bandwidth and causing UI stuttering. Caching stores the image locally so subsequent loads are instant.
+- **How it works:** 
+  1. Memory Cache: Keeps recently used images in RAM for instant rendering.
+  2. Disk Cache: Saves images to the device's storage so they persist across app restarts.
+- **Graceful Loading & Error Handling:** `CachedNetworkImage` allows us to define a `placeholder` (where we used our SkeletonLoader) and an `errorWidget` (where we show a fallback person icon). This ensures the UI never breaks or looks empty, even on slow or failed network connections.
+- **ClipOval vs CircleAvatar:** To use a custom widget like `CachedNetworkImage` easily as a circular avatar, we wrapped it in a `ClipOval` instead of using `CircleAvatar`'s `backgroundImage` property, giving us more control over the placeholder and error states.

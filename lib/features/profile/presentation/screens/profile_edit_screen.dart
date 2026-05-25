@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/models/user_profile.dart';
 import '../controllers/profile_controller.dart';
 import '../../../../core/theme/app_theme.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import '../../../../core/widgets/skeleton_loader.dart';
 
 class ProfileEditScreen extends ConsumerStatefulWidget {
   final UserProfile profile;
@@ -54,15 +56,25 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                         shape: BoxShape.circle,
                         border: Border.all(color: AppTheme.neonAccent, width: 2),
                       ),
-                      child: CircleAvatar(
-                        radius: 50,
-                        backgroundColor: Colors.grey[900],
-                        backgroundImage: widget.profile.avatarUrl != null && widget.profile.avatarUrl!.isNotEmpty
-                          ? NetworkImage(widget.profile.avatarUrl!) 
-                          : null,
-                        child: widget.profile.avatarUrl == null || widget.profile.avatarUrl!.isEmpty
-                          ? const Icon(Icons.person, size: 50, color: Colors.white)
-                          : null,
+                      child: ClipOval(
+                        child: SizedBox(
+                          width: 100,
+                          height: 100,
+                          child: widget.profile.avatarUrl != null && widget.profile.avatarUrl!.isNotEmpty
+                              ? CachedNetworkImage(
+                                  imageUrl: widget.profile.avatarUrl!,
+                                  fit: BoxFit.cover,
+                                  placeholder: (context, url) => const SkeletonLoader(width: 100, height: 100, borderRadius: 50),
+                                  errorWidget: (context, url, error) => Container(
+                                    color: Colors.grey[900],
+                                    child: const Icon(Icons.person, size: 50, color: Colors.white),
+                                  ),
+                                )
+                              : Container(
+                                  color: Colors.grey[900],
+                                  child: const Icon(Icons.person, size: 50, color: Colors.white),
+                                ),
+                        ),
                       ),
                     ),
                     Positioned(

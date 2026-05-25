@@ -8,6 +8,7 @@ import '../../../weather/presentation/widgets/weather_hero_card.dart';
 import '../../../ai_agent/presentation/widgets/ai_nudge_card.dart';
 import '../../../quotes/presentation/widgets/morning_quote_card.dart';
 import '../../../year_review/presentation/widgets/home_year_review_banner.dart';
+import '../../../../core/widgets/skeleton_loader.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -53,9 +54,17 @@ class HomeScreen extends ConsumerWidget {
             data: (habits) => habits.isEmpty
                 ? SliverFillRemaining(hasScrollBody: false, child: _buildEmptyState(context))
                 : _buildHabitList(habits, completionsAsync.asData?.value ?? {}),
-            loading: () => const SliverFillRemaining(
-              hasScrollBody: false,
-              child: Center(child: CircularProgressIndicator(color: Color(0xFFB3FF00))),
+            loading: () => SliverPadding(
+              padding: const EdgeInsets.all(24),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) => const Padding(
+                    padding: EdgeInsets.only(bottom: 16),
+                    child: SkeletonLoader(height: 80, width: double.infinity, borderRadius: 16),
+                  ),
+                  childCount: 3,
+                ),
+              ),
             ),
             error: (err, stack) => SliverFillRemaining(
               hasScrollBody: false,
