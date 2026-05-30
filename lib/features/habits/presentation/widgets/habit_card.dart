@@ -44,9 +44,11 @@ class _HabitCardState extends ConsumerState<HabitCard> with SingleTickerProvider
     super.dispose();
   }
 
-  void _handleToggle() {
+  void _handleToggle(bool disableAnimations) {
     HapticFeedback.mediumImpact();
-    _bounceController.forward(from: 0.0);
+    if (!disableAnimations) {
+      _bounceController.forward(from: 0.0);
+    }
     
     // Toggle completion logic
     ref.read(habitControllerProvider.notifier).toggleCompletion(
@@ -60,9 +62,14 @@ class _HabitCardState extends ConsumerState<HabitCard> with SingleTickerProvider
     final themeColor = Color(int.parse('0xFF${widget.habit.colorHex ?? "B3FF00"}'));
     final isCompleted = widget.isCompleted;
     final streakAsync = ref.watch(streakProvider(widget.habit.id));
+    final disableAnimations = MediaQuery.disableAnimationsOf(context);
 
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
+    return Semantics(
+      label: 'Habit: ${widget.habit.name}, Status: ${isCompleted ? "Completed" : "Incomplete"}',
+      hint: 'Double tap to open habit details',
+      button: true,
+      child: AnimatedContainer(
+        duration: disableAnimations ? Duration.zero : const Duration(milliseconds: 300),
       decoration: BoxDecoration(
         color: isCompleted ? themeColor.withValues(alpha: 0.15) : Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(20),
@@ -184,23 +191,28 @@ class _HabitCardState extends ConsumerState<HabitCard> with SingleTickerProvider
 
                 // Animated Checkbox
                 ScaleTransition(
-                  scale: _scaleAnimation,
+                  scale: disableAnimations ? const AlwaysStoppedAnimation(1.0) : _scaleAnimation,
                   child: GestureDetector(
-                    onTap: _handleToggle,
+                    onTap: () => _handleToggle(disableAnimations),
                     child: Container(
-                      width: 28,
-                      height: 28,
-                      decoration: BoxDecoration(
-                        color: isCompleted ? themeColor : Colors.transparent,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: isCompleted ? themeColor : Colors.white24,
-                          width: 2,
+                      width: 44,
+                      height: 44,
+                      alignment: Alignment.center,
+                      child: Container(
+                        width: 28,
+                        height: 28,
+                        decoration: BoxDecoration(
+                          color: isCompleted ? themeColor : Colors.transparent,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: isCompleted ? themeColor : Colors.white24,
+                            width: 2,
+                          ),
                         ),
+                        child: isCompleted
+                            ? const Icon(Icons.check, size: 18, color: Colors.black)
+                            : null,
                       ),
-                      child: isCompleted
-                          ? const Icon(Icons.check, size: 18, color: Colors.black)
-                          : null,
                     ),
                   ),
                 ),
@@ -208,6 +220,7 @@ class _HabitCardState extends ConsumerState<HabitCard> with SingleTickerProvider
             ),
           ),
         ),
+      ),
       ),
     );
   }

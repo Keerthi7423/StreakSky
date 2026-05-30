@@ -1,0 +1,47 @@
+# Day 37: Accessibility, Reduced Motion, and Light Mode Fallback
+================================================================
+
+In Day 37, we addressed critical user accessibility and theme-handling tasks as specified in the PRD (Tasks 109, 110, 111). This document explains the core concepts behind these tasks to help you prepare for technical interviews.
+
+## 1. Accessibility Audit (Task 109)
+### Concept
+Accessibility (A11y) in mobile applications ensures that users with disabilities (such as visual impairment or motor difficulties) can comfortably navigate and use the app.
+
+### Implementation Details
+- **Semantics Widget**: In Flutter, accessibility is handled primarily through the `Semantics` widget. We wrapped `AnimatedContainer` in `HabitCard` with `Semantics` to provide a clear label, hint, and `button: true` flag. This allows screen readers (like VoiceOver on iOS or TalkBack on Android) to read out the habit details comprehensively instead of parsing the widget tree haphazardly.
+- **Tap Targets (44px+)**: The Web Content Accessibility Guidelines (WCAG) and Apple's Human Interface Guidelines recommend a minimum tap target size of 44x44 pixels. Our checkbox visual container is 28x28. To satisfy the standard without altering the visual design, we wrapped the 28x28 `Container` in a 44x44 `Container` inside the `GestureDetector`.
+
+### Interview Questions to Anticipate
+- *How do you make a Flutter app accessible?* 
+  **Answer:** By using the `Semantics` widget to annotate UI components for screen readers, ensuring high contrast colors, and keeping tap targets at least 44x44 pixels.
+- *How do you handle small UI elements that are hard to tap?*
+  **Answer:** I wrap them in invisible padding or a larger container (like `SizedBox(width: 44, height: 44)`) inside a `GestureDetector` or `InkWell` to increase the hit-test area without affecting the visual layout.
+
+## 2. Reduced Motion Support (Task 110)
+### Concept
+Some users experience motion sickness or vestibular disorders triggered by complex animations (like zooming, scaling, bouncing). Modern operating systems allow users to enable "Reduce Motion" in settings. 
+
+### Implementation Details
+- **MediaQuery.disableAnimationsOf(context)**: Flutter exposes this property which reflects the OS-level "Reduce Motion" setting.
+- In `HabitCard`, we injected `disableAnimations` logic into our `_handleToggle` function. When reduced motion is enabled, we completely bypass the `_bounceController.forward()` animation.
+- We also modified the `AnimatedContainer` duration to `Duration.zero` and swapped out the `ScaleTransition` for a static `AlwaysStoppedAnimation(1.0)` when `disableAnimations` is true.
+
+### Interview Questions to Anticipate
+- *How do you support "Reduce Motion" accessibility settings in Flutter?*
+  **Answer:** I use `MediaQuery.disableAnimationsOf(context)` (or `MediaQuery.of(context).disableAnimations`). If it evaluates to true, I replace animation durations with `Duration.zero` or bypass starting `AnimationController` sequences to respect the user's OS preferences.
+
+## 3. Light Mode Fallback Theme (Task 111)
+### Concept
+Although the design heavily leans on a "Dark & Powerful" aesthetic, it's a best practice to support a Light Mode fallback for users who might struggle with dark mode (e.g., astigmatism can make light text on dark backgrounds hard to read).
+
+### Implementation Details
+- **ThemeMode.system**: In `main.dart`, the `themeMode` was hardcoded to `ThemeMode.dark`. We changed it to `ThemeMode.system`.
+- By setting `themeMode: ThemeMode.system`, Flutter automatically switches between the provided `theme` (Light) and `darkTheme` based on the device's system-wide brightness setting. 
+
+### Interview Questions to Anticipate
+- *How do you implement Dark Mode and Light Mode switching in Flutter?*
+  **Answer:** By defining both `theme` (for light mode) and `darkTheme` properties in the `MaterialApp` widget, and setting `themeMode` to `ThemeMode.system`. This delegates the theme switching to the operating system's settings. You can also set it to `ThemeMode.light` or `ThemeMode.dark` if you want an in-app toggle.
+
+---
+**Summary for Interviews:**
+When discussing these topics, emphasize that building a robust application is not just about making it work, but making it usable for *everyone*. Demonstrating knowledge of WCAG standards (44px tap targets) and OS-level accessibility features (Reduce Motion, VoiceOver/TalkBack via Semantics) shows maturity and a user-centric approach.
