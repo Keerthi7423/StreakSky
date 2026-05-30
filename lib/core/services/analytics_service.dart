@@ -81,6 +81,50 @@ class AnalyticsService {
       debugPrint('⚠️ Analytics Error: $e');
     }
   }
+
+  Future<void> logHabitCreated(String habitTitle, String category) async {
+    debugPrint('📊 Analytics: Habit Created - $habitTitle ($category)');
+    try {
+      await _analytics?.logEvent(
+        name: 'habit_created',
+        parameters: {
+          'habit_title': habitTitle,
+          'category': category,
+        },
+      );
+    } catch (e) {
+      debugPrint('⚠️ Analytics Error: $e');
+    }
+  }
+
+  Future<void> logHabitCompleted(String habitId, String habitTitle) async {
+    debugPrint('📊 Analytics: Habit Completed - $habitTitle');
+    try {
+      await _analytics?.logEvent(
+        name: 'habit_completed',
+        parameters: {
+          'habit_id': habitId,
+          'habit_title': habitTitle,
+        },
+      );
+    } catch (e) {
+      debugPrint('⚠️ Analytics Error: $e');
+    }
+  }
+
+  Future<void> logStreakMilestone(int streakCount) async {
+    debugPrint('📊 Analytics: Streak Milestone - $streakCount');
+    try {
+      await _analytics?.logEvent(
+        name: 'streak_milestone',
+        parameters: {
+          'streak_count': streakCount,
+        },
+      );
+    } catch (e) {
+      debugPrint('⚠️ Analytics Error: $e');
+    }
+  }
 }
 
 final analyticsServiceProvider = Provider<AnalyticsService>((ref) {
