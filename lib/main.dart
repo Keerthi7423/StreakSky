@@ -89,7 +89,7 @@ class StreakSkyApp extends ConsumerWidget {
       debugShowCheckedModeBanner: AppConfig.instance.flavor == AppFlavor.dev,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.dark, // Default to dark as per PRD
+      themeMode: ThemeMode.system, // Fallback to light mode if OS is light mode
       routerConfig: router,
     );
   }

@@ -31,10 +31,11 @@ class HomeScreen extends ConsumerWidget {
     ref.listen<AsyncValue<void>>(habitControllerProvider, (previous, next) {
       next.whenOrNull(
         error: (error, stack) {
+          final isNetworkError = error.toString().contains('SocketException');
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Error: $error'),
-              backgroundColor: Colors.red,
+              content: Text(isNetworkError ? 'Network error: Please check your connection.' : 'Error: $error'),
+              backgroundColor: isNetworkError ? Colors.orange : Colors.red,
             ),
           );
         },
@@ -68,7 +69,43 @@ class HomeScreen extends ConsumerWidget {
             ),
             error: (err, stack) => SliverFillRemaining(
               hasScrollBody: false,
-              child: Center(child: Text('Error: $err', style: const TextStyle(color: Colors.red))),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.cloud_off, size: 64, color: Colors.white54),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'CONNECTION LOST',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 2,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 32),
+                      child: Text(
+                        'Unable to reach the server. Please check your internet connection.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.white54),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    OutlinedButton(
+                      onPressed: () => ref.invalidate(todaysHabitsProvider),
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Color(0xFFB3FF00)),
+                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                      child: const Text('RETRY', style: TextStyle(color: Color(0xFFB3FF00), fontWeight: FontWeight.bold)),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         ],
