@@ -19,7 +19,8 @@ class QuoteRepositoryImpl implements QuoteRepository {
     // DISCIPLINE & CONSISTENCY
     QuoteModel(
       id: '1',
-      text: "We are what we repeatedly do. Excellence, then, is not an act, but a habit.",
+      text:
+          "We are what we repeatedly do. Excellence, then, is not an act, but a habit.",
       author: "Aristotle",
       category: QuoteCategory.discipline,
     ),
@@ -51,7 +52,8 @@ class QuoteRepositoryImpl implements QuoteRepository {
     ),
     QuoteModel(
       id: '6',
-      text: "Rock bottom became the solid foundation on which I rebuilt my life.",
+      text:
+          "Rock bottom became the solid foundation on which I rebuilt my life.",
       author: "J.K. Rowling",
       category: QuoteCategory.resilience,
     ),
@@ -59,13 +61,15 @@ class QuoteRepositoryImpl implements QuoteRepository {
     // VISION & AMBITION
     QuoteModel(
       id: '7',
-      text: "The future belongs to those who believe in the beauty of their dreams.",
+      text:
+          "The future belongs to those who believe in the beauty of their dreams.",
       author: "Eleanor Roosevelt",
       category: QuoteCategory.vision,
     ),
     QuoteModel(
       id: '8',
-      text: "You don't have to be great to start, but you have to start to be great.",
+      text:
+          "You don't have to be great to start, but you have to start to be great.",
       author: "Zig Ziglar",
       category: QuoteCategory.vision,
     ),
@@ -87,13 +91,15 @@ class QuoteRepositoryImpl implements QuoteRepository {
     // GROWTH & LEARNING
     QuoteModel(
       id: '11',
-      text: "Live as if you were to die tomorrow. Learn as if you were to live forever.",
+      text:
+          "Live as if you were to die tomorrow. Learn as if you were to live forever.",
       author: "Mahatma Gandhi",
       category: QuoteCategory.growth,
     ),
     QuoteModel(
       id: '12',
-      text: "Education is not the filling of a pail but the lighting of a fire.",
+      text:
+          "Education is not the filling of a pail but the lighting of a fire.",
       author: "W.B. Yeats",
       category: QuoteCategory.growth,
     ),
@@ -135,7 +141,8 @@ class QuoteRepositoryImpl implements QuoteRepository {
     ),
     QuoteModel(
       id: '18',
-      text: "Tomorrow is the first blank page of a 365-page book. Write a good one.",
+      text:
+          "Tomorrow is the first blank page of a 365-page book. Write a good one.",
       author: "Brad Paisley",
       category: QuoteCategory.beginnings,
     ),
@@ -149,7 +156,8 @@ class QuoteRepositoryImpl implements QuoteRepository {
     ),
     QuoteModel(
       id: '20',
-      text: "Motivation is what gets you started. Habit is what keeps you going.",
+      text:
+          "Motivation is what gets you started. Habit is what keeps you going.",
       author: "Jim Ryun",
       category: QuoteCategory.milestone,
     ),
@@ -176,17 +184,19 @@ class QuoteRepositoryImpl implements QuoteRepository {
     final filtered = _allQuotes.where((q) => q.category == category).toList();
     if (filtered.isEmpty) {
       // Fallback to discipline if category not found (shouldn't happen with full data)
-      return _allQuotes.firstWhere((q) => q.category == QuoteCategory.discipline);
+      return _allQuotes.firstWhere(
+        (q) => q.category == QuoteCategory.discipline,
+      );
     }
     final quote = filtered[Random().nextInt(filtered.length)];
-    
+
     // Add to history if not already there
     if (!_historyIds.contains(quote.id)) {
       _historyIds.insert(0, quote.id);
       if (_historyIds.length > 30) _historyIds.removeLast();
       await _saveHistory();
     }
-    
+
     return quote.copyWith(isBookmarked: _bookmarkedIds.contains(quote.id));
   }
 

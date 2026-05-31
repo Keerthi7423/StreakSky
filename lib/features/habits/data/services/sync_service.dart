@@ -16,7 +16,9 @@ class SyncService {
   SyncService(this._localService, this._supabase);
 
   void init() {
-    _connectivitySubscription = Connectivity().onConnectivityChanged.listen((results) {
+    _connectivitySubscription = Connectivity().onConnectivityChanged.listen((
+      results,
+    ) {
       // Check if any of the results indicate a connection
       if (results.any((result) => result != ConnectivityResult.none)) {
         syncCompletions();
@@ -27,11 +29,11 @@ class SyncService {
   Future<void> syncCompletions() async {
     if (_isSyncing) return;
     _isSyncing = true;
-    
+
     try {
       final unsynced = _localService.getUnsyncedCompletions();
       debugPrint('SyncService: Found ${unsynced.length} unsynced completions');
-      
+
       for (final completion in unsynced) {
         try {
           final data = completion.toJson();
@@ -41,16 +43,22 @@ class SyncService {
           }
 
           await _supabase.from('habit_completions').upsert(data);
-          await _localService.markAsSynced(completion.habitId, completion.completedDate);
-          
+          await _localService.markAsSynced(
+            completion.habitId,
+            completion.completedDate,
+          );
+
           // Real-time Firestore sync (for today's completions as per PRD)
           final today = DateTime.now();
-          final todayStr = "${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}";
+          final todayStr =
+              "${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}";
           if (completion.completedDate == todayStr) {
             await _syncToFirestore(completion.userId, completion.habitId, true);
           }
-          
-          debugPrint('SyncService: Synced habit ${completion.habitId} for ${completion.completedDate}');
+
+          debugPrint(
+            'SyncService: Synced habit ${completion.habitId} for ${completion.completedDate}',
+          );
         } catch (e) {
           debugPrint('SyncService: Error syncing completion: $e');
         }
@@ -60,11 +68,15 @@ class SyncService {
     }
   }
 
-  Future<void> _syncToFirestore(String userId, String habitId, bool isCompleted) async {
+  Future<void> _syncToFirestore(
+    String userId,
+    String habitId,
+    bool isCompleted,
+  ) async {
     try {
       final firestore = FirebaseFirestore.instance;
       final docRef = firestore.collection('sync').doc(userId);
-      
+
       if (isCompleted) {
         await docRef.set({
           'habit_completions': FieldValue.arrayUnion([habitId]),

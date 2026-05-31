@@ -18,12 +18,12 @@ class AuthController extends StateNotifier<AsyncValue<void>> {
   final AuthRepository _authRepository;
   final Ref _ref;
 
-  AuthController(this._authRepository, this._ref) : super(const AsyncValue.data(null));
-
+  AuthController(this._authRepository, this._ref)
+    : super(const AsyncValue.data(null));
 
   Future<void> signIn(String email, String password) async {
     state = const AsyncValue.loading();
-    
+
     // DEMO MODE for Testing/Interviews
     if (email == 'demo@streaksky.com') {
       await Future.delayed(const Duration(seconds: 1));
@@ -91,8 +91,8 @@ class AuthController extends StateNotifier<AsyncValue<void>> {
   }
 }
 
-final authControllerProvider = StateNotifierProvider<AuthController, AsyncValue<void>>((ref) {
-  final repo = ref.watch(authRepositoryProvider);
-  return AuthController(repo, ref);
-});
-
+final authControllerProvider =
+    StateNotifierProvider<AuthController, AsyncValue<void>>((ref) {
+      final repo = ref.watch(authRepositoryProvider);
+      return AuthController(repo, ref);
+    });

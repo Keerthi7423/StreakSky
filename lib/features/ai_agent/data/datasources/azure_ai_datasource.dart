@@ -14,7 +14,7 @@ class AzureAiDatasource {
     // Reference _dio to keep dependency injection constructor intact
     final _ = _dio;
     debugPrint('AzureAiDatasource: Falling back to Cloud AI...');
-    
+
     // Simulate API delay
     await Future.delayed(const Duration(seconds: 2));
 

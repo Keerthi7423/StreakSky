@@ -39,7 +39,10 @@ class HomeYearReviewBanner extends StatelessWidget {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xFFB3FF00).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),

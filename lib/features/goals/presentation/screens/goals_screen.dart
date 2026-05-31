@@ -18,7 +18,8 @@ class GoalsScreen extends ConsumerStatefulWidget {
   ConsumerState<GoalsScreen> createState() => _GoalsScreenState();
 }
 
-class _GoalsScreenState extends ConsumerState<GoalsScreen> with SingleTickerProviderStateMixin {
+class _GoalsScreenState extends ConsumerState<GoalsScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -61,24 +62,28 @@ class _GoalsScreenState extends ConsumerState<GoalsScreen> with SingleTickerProv
           _GoalsList(type: GoalType.career),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _showAddGoalSheet(context);
-        },
-        backgroundColor: AppColors.primaryAccent,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: const Icon(Icons.add, color: Colors.black, size: 28),
-      ).animate(
-        onPlay: (controller) => controller.repeat(reverse: true),
-      ).scale(
-        duration: 2.seconds,
-        begin: const Offset(1.0, 1.0),
-        end: const Offset(1.1, 1.1),
-        curve: Curves.easeInOut,
-      ).shimmer(
-        duration: 3.seconds,
-        color: Colors.white.withValues(alpha: 0.3),
-      ),
+      floatingActionButton:
+          FloatingActionButton(
+                onPressed: () {
+                  _showAddGoalSheet(context);
+                },
+                backgroundColor: AppColors.primaryAccent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: const Icon(Icons.add, color: Colors.black, size: 28),
+              )
+              .animate(onPlay: (controller) => controller.repeat(reverse: true))
+              .scale(
+                duration: 2.seconds,
+                begin: const Offset(1.0, 1.0),
+                end: const Offset(1.1, 1.1),
+                curve: Curves.easeInOut,
+              )
+              .shimmer(
+                duration: 3.seconds,
+                color: Colors.white.withValues(alpha: 0.3),
+              ),
     );
   }
 
@@ -109,15 +114,32 @@ class _GoalsList extends ConsumerWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.lock_outline, size: 64, color: AppColors.textTertiary.withValues(alpha: 0.5)),
+              Icon(
+                Icons.lock_outline,
+                size: 64,
+                color: AppColors.textTertiary.withValues(alpha: 0.5),
+              ),
               const SizedBox(height: 16),
-              Text('Career Goals are a Pro Feature', style: AppTypography.h3.copyWith(color: AppColors.textSecondary)),
+              Text(
+                'Career Goals are a Pro Feature',
+                style: AppTypography.h3.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () => context.push('/paywall'),
-                style: ElevatedButton.styleFrom(backgroundColor: AppColors.primaryAccent),
-                child: const Text('Upgrade to Pro', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
-              )
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primaryAccent,
+                ),
+                child: const Text(
+                  'Upgrade to Pro',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ],
           ),
         );
@@ -135,11 +157,17 @@ class _GoalsList extends ConsumerWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.flag_outlined, size: 64, color: AppColors.textTertiary.withValues(alpha: 0.5)),
+                  Icon(
+                    Icons.flag_outlined,
+                    size: 64,
+                    color: AppColors.textTertiary.withValues(alpha: 0.5),
+                  ),
                   const SizedBox(height: 16),
                   Text(
                     'NO ${type.name.toUpperCase()} GOALS YET',
-                    style: AppTypography.bodyLarge.copyWith(color: AppColors.textSecondary),
+                    style: AppTypography.bodyLarge.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8),
@@ -167,8 +195,11 @@ class _GoalsList extends ConsumerWidget {
           },
         );
       },
-      loading: () => const Center(child: CircularProgressIndicator(color: AppColors.primaryAccent)),
-      error: (err, stack) => Center(child: Text('Error: $err', style: AppTypography.caption)),
+      loading: () => const Center(
+        child: CircularProgressIndicator(color: AppColors.primaryAccent),
+      ),
+      error: (err, stack) =>
+          Center(child: Text('Error: $err', style: AppTypography.caption)),
     );
   }
 }
@@ -177,7 +208,8 @@ class _AddGoalBottomSheet extends ConsumerStatefulWidget {
   const _AddGoalBottomSheet();
 
   @override
-  ConsumerState<_AddGoalBottomSheet> createState() => _AddGoalBottomSheetState();
+  ConsumerState<_AddGoalBottomSheet> createState() =>
+      _AddGoalBottomSheetState();
 }
 
 class _AddGoalBottomSheetState extends ConsumerState<_AddGoalBottomSheet> {
@@ -200,7 +232,12 @@ class _AddGoalBottomSheetState extends ConsumerState<_AddGoalBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(20, 20, 20, MediaQuery.of(context).viewInsets.bottom + 20),
+      padding: EdgeInsets.fromLTRB(
+        20,
+        20,
+        20,
+        MediaQuery.of(context).viewInsets.bottom + 20,
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -212,7 +249,9 @@ class _AddGoalBottomSheetState extends ConsumerState<_AddGoalBottomSheet> {
             decoration: const InputDecoration(
               labelText: 'TITLE',
               labelStyle: AppTypography.micro,
-              enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.divider)),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: AppColors.divider),
+              ),
             ),
             style: AppTypography.bodyLarge,
           ),
@@ -222,7 +261,9 @@ class _AddGoalBottomSheetState extends ConsumerState<_AddGoalBottomSheet> {
             decoration: const InputDecoration(
               labelText: 'DESCRIPTION (OPTIONAL)',
               labelStyle: AppTypography.micro,
-              enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.divider)),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: AppColors.divider),
+              ),
             ),
             style: AppTypography.bodyLarge,
           ),
@@ -235,7 +276,9 @@ class _AddGoalBottomSheetState extends ConsumerState<_AddGoalBottomSheet> {
                   decoration: const InputDecoration(
                     labelText: 'TARGET VALUE',
                     labelStyle: AppTypography.micro,
-                    enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.divider)),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: AppColors.divider),
+                    ),
                   ),
                   keyboardType: TextInputType.number,
                   style: AppTypography.bodyLarge,
@@ -248,7 +291,10 @@ class _AddGoalBottomSheetState extends ConsumerState<_AddGoalBottomSheet> {
                 items: GoalType.values.map((type) {
                   return DropdownMenuItem(
                     value: type,
-                    child: Text(type.name.toUpperCase(), style: AppTypography.body),
+                    child: Text(
+                      type.name.toUpperCase(),
+                      style: AppTypography.body,
+                    ),
                   );
                 }).toList(),
                 onChanged: (val) {
@@ -267,7 +313,9 @@ class _AddGoalBottomSheetState extends ConsumerState<_AddGoalBottomSheet> {
                     decoration: const InputDecoration(
                       labelText: 'PHASE (NUMBER)',
                       labelStyle: AppTypography.micro,
-                      enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.divider)),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: AppColors.divider),
+                      ),
                     ),
                     keyboardType: TextInputType.number,
                     style: AppTypography.bodyLarge,
@@ -276,7 +324,12 @@ class _AddGoalBottomSheetState extends ConsumerState<_AddGoalBottomSheet> {
                 const SizedBox(width: 20),
                 Row(
                   children: [
-                    Text('MILESTONE', style: AppTypography.micro.copyWith(color: AppColors.textSecondary)),
+                    Text(
+                      'MILESTONE',
+                      style: AppTypography.micro.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
                     Switch(
                       value: _isMilestone,
                       onChanged: (val) => setState(() => _isMilestone = val),
@@ -292,14 +345,16 @@ class _AddGoalBottomSheetState extends ConsumerState<_AddGoalBottomSheet> {
           ElevatedButton(
             onPressed: () async {
               if (_titleController.text.isNotEmpty) {
-                await ref.read(goalControllerProvider.notifier).addGoal(
-                  title: _titleController.text,
-                  type: _selectedType,
-                  description: _descController.text,
-                  targetValue: int.tryParse(_targetController.text),
-                  phase: int.tryParse(_phaseController.text),
-                  isMilestone: _isMilestone,
-                );
+                await ref
+                    .read(goalControllerProvider.notifier)
+                    .addGoal(
+                      title: _titleController.text,
+                      type: _selectedType,
+                      description: _descController.text,
+                      targetValue: int.tryParse(_targetController.text),
+                      phase: int.tryParse(_phaseController.text),
+                      isMilestone: _isMilestone,
+                    );
                 if (context.mounted) Navigator.pop(context);
               }
             },

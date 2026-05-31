@@ -34,7 +34,11 @@ class HomeScreen extends ConsumerWidget {
           final isNetworkError = error.toString().contains('SocketException');
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(isNetworkError ? 'Network error: Please check your connection.' : 'Error: $error'),
+              content: Text(
+                isNetworkError
+                    ? 'Network error: Please check your connection.'
+                    : 'Error: $error',
+              ),
               backgroundColor: isNetworkError ? Colors.orange : Colors.red,
             ),
           );
@@ -53,7 +57,10 @@ class HomeScreen extends ConsumerWidget {
           const SliverToBoxAdapter(child: HomeYearReviewBanner()),
           habitsAsync.when(
             data: (habits) => habits.isEmpty
-                ? SliverFillRemaining(hasScrollBody: false, child: _buildEmptyState(context))
+                ? SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: _buildEmptyState(context),
+                  )
                 : _buildHabitList(habits, completionsAsync.asData?.value ?? {}),
             loading: () => SliverPadding(
               padding: const EdgeInsets.all(24),
@@ -61,7 +68,11 @@ class HomeScreen extends ConsumerWidget {
                 delegate: SliverChildBuilderDelegate(
                   (context, index) => const Padding(
                     padding: EdgeInsets.only(bottom: 16),
-                    child: SkeletonLoader(height: 80, width: double.infinity, borderRadius: 16),
+                    child: SkeletonLoader(
+                      height: 80,
+                      width: double.infinity,
+                      borderRadius: 16,
+                    ),
                   ),
                   childCount: 3,
                 ),
@@ -73,7 +84,11 @@ class HomeScreen extends ConsumerWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.cloud_off, size: 64, color: Colors.white54),
+                    const Icon(
+                      Icons.cloud_off,
+                      size: 64,
+                      color: Colors.white54,
+                    ),
                     const SizedBox(height: 16),
                     const Text(
                       'CONNECTION LOST',
@@ -98,10 +113,21 @@ class HomeScreen extends ConsumerWidget {
                       onPressed: () => ref.invalidate(todaysHabitsProvider),
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: Color(0xFFB3FF00)),
-                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 32,
+                          vertical: 12,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
-                      child: const Text('RETRY', style: TextStyle(color: Color(0xFFB3FF00), fontWeight: FontWeight.bold)),
+                      child: const Text(
+                        'RETRY',
+                        style: TextStyle(
+                          color: Color(0xFFB3FF00),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -151,7 +177,11 @@ class HomeScreen extends ConsumerWidget {
               shape: BoxShape.circle,
               color: const Color(0xFFB3FF00).withValues(alpha: 0.05),
             ),
-            child: const Icon(Icons.auto_awesome, size: 64, color: Color(0xFFB3FF00)),
+            child: const Icon(
+              Icons.auto_awesome,
+              size: 64,
+              color: Color(0xFFB3FF00),
+            ),
           ),
           const SizedBox(height: 32),
           const Text(
@@ -175,11 +205,16 @@ class HomeScreen extends ConsumerWidget {
             style: OutlinedButton.styleFrom(
               side: const BorderSide(color: Color(0xFFB3FF00)),
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
             child: const Text(
               'CREATE FIRST HABIT',
-              style: TextStyle(color: Color(0xFFB3FF00), fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: Color(0xFFB3FF00),
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],
@@ -206,7 +241,9 @@ class HomeScreen extends ConsumerWidget {
             },
             itemCount: habits.length,
             onReorder: (oldIndex, newIndex) {
-              ref.read(habitControllerProvider.notifier).reorderHabits(oldIndex, newIndex);
+              ref
+                  .read(habitControllerProvider.notifier)
+                  .reorderHabits(oldIndex, newIndex);
             },
           );
         },

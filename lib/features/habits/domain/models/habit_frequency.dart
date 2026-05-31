@@ -1,8 +1,4 @@
-enum FrequencyType {
-  daily,
-  weekdays,
-  custom,
-}
+enum FrequencyType { daily, weekdays, custom }
 
 class HabitFrequency {
   final FrequencyType type;
@@ -18,17 +14,23 @@ class HabitFrequency {
   factory HabitFrequency.fromJson(Map<String, dynamic> json) {
     return HabitFrequency(
       type: _parseFrequencyType(json['type'] as String?),
-      daysOfWeek: (json['days_of_week'] as List?)?.map((e) => e as int).toList(),
+      daysOfWeek: (json['days_of_week'] as List?)
+          ?.map((e) => e as int)
+          .toList(),
       timesPerWeek: json['times_per_week'] as int?,
     );
   }
 
   static FrequencyType _parseFrequencyType(String? type) {
     switch (type) {
-      case 'daily': return FrequencyType.daily;
-      case 'weekdays': return FrequencyType.weekdays;
-      case 'custom': return FrequencyType.custom;
-      default: return FrequencyType.daily;
+      case 'daily':
+        return FrequencyType.daily;
+      case 'weekdays':
+        return FrequencyType.weekdays;
+      case 'custom':
+        return FrequencyType.custom;
+      default:
+        return FrequencyType.daily;
     }
   }
 
@@ -57,7 +59,8 @@ class HabitFrequency {
       case FrequencyType.daily:
         return true;
       case FrequencyType.weekdays:
-        return date.weekday >= DateTime.monday && date.weekday <= DateTime.friday;
+        return date.weekday >= DateTime.monday &&
+            date.weekday <= DateTime.friday;
       case FrequencyType.custom:
         if (daysOfWeek != null && daysOfWeek!.isNotEmpty) {
           return daysOfWeek!.contains(date.weekday);

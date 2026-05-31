@@ -28,10 +28,14 @@ class StreakModel {
       userId: json['user_id'] as String? ?? '',
       currentStreak: json['current_streak'] as int? ?? 0,
       longestStreak: json['longest_streak'] as int? ?? 0,
-      lastActive: json['last_active'] != null ? DateTime.parse(json['last_active'] as String) : null,
+      lastActive: json['last_active'] != null
+          ? DateTime.parse(json['last_active'] as String)
+          : null,
       shieldsHeld: json['shields_held'] as int? ?? 0,
       comebackCount: json['comeback_count'] as int? ?? 0,
-      updatedAt: json['updated_at'] != null ? DateTime.parse(json['updated_at'] as String) : null,
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'] as String)
+          : null,
     );
   }
 

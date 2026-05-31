@@ -5,14 +5,12 @@ import 'package:streaksky/features/weather/presentation/widgets/weather_hero_car
 
 void main() {
   group('Task 119: Widget Tests for Weather Hero Card', () {
-    testWidgets('Should display loading state initially', (WidgetTester tester) async {
+    testWidgets('Should display loading state initially', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         const ProviderScope(
-          child: MaterialApp(
-            home: Scaffold(
-              body: WeatherHeroCard(),
-            ),
-          ),
+          child: MaterialApp(home: Scaffold(body: WeatherHeroCard())),
         ),
       );
 

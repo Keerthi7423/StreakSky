@@ -10,10 +10,12 @@ class RemoteConfigService {
 
   Future<void> initialize() async {
     try {
-      await _remoteConfig.setConfigSettings(RemoteConfigSettings(
-        fetchTimeout: const Duration(minutes: 1),
-        minimumFetchInterval: const Duration(hours: 1),
-      ));
+      await _remoteConfig.setConfigSettings(
+        RemoteConfigSettings(
+          fetchTimeout: const Duration(minutes: 1),
+          minimumFetchInterval: const Duration(hours: 1),
+        ),
+      );
 
       await _remoteConfig.setDefaults(const {
         'subscription_monthly_price': 299,

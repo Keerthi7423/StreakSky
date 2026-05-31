@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   debugPrint("Handling a background message: ${message.messageId}");
-  
+
   if (message.data['type'] == 'streak_danger') {
     // We could potentially trigger local notifications or Hive updates here
     debugPrint("Streak Danger Alert received in background!");
@@ -45,7 +45,7 @@ class FcmService {
     // 4. Handle foreground messages
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       debugPrint('Received foreground message: ${message.notification?.title}');
-      
+
       if (message.data['type'] == 'streak_danger') {
         // Trigger an in-app alert or banner via Riverpod/state management
         debugPrint("DANGER: You are about to lose your streak!");

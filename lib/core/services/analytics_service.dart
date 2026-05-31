@@ -18,7 +18,9 @@ class AnalyticsService {
   }
 
   Future<void> logGoalCreated(GoalModel goal) async {
-    debugPrint('📊 Analytics: Goal Created - ${goal.title} (${goal.type.name})');
+    debugPrint(
+      '📊 Analytics: Goal Created - ${goal.title} (${goal.type.name})',
+    );
     try {
       await _analytics?.logEvent(
         name: 'goal_created',
@@ -51,7 +53,9 @@ class AnalyticsService {
   }
 
   Future<void> logGoalProgress(GoalModel goal, int newValue) async {
-    debugPrint('📊 Analytics: Goal Progress - ${goal.title}: $newValue/${goal.targetValue}');
+    debugPrint(
+      '📊 Analytics: Goal Progress - ${goal.title}: $newValue/${goal.targetValue}',
+    );
     try {
       await _analytics?.logEvent(
         name: 'goal_progress_updated',
@@ -59,7 +63,9 @@ class AnalyticsService {
           'goal_id': goal.id,
           'new_value': newValue,
           'target_value': goal.targetValue ?? 0,
-          'completion_percentage': goal.targetValue != null ? (newValue / goal.targetValue! * 100).round() : 0,
+          'completion_percentage': goal.targetValue != null
+              ? (newValue / goal.targetValue! * 100).round()
+              : 0,
         },
       );
     } catch (e) {
@@ -72,10 +78,7 @@ class AnalyticsService {
     try {
       await _analytics?.logEvent(
         name: 'goal_reset',
-        parameters: {
-          'goal_id': goal.id,
-          'goal_type': goal.type.name,
-        },
+        parameters: {'goal_id': goal.id, 'goal_type': goal.type.name},
       );
     } catch (e) {
       debugPrint('⚠️ Analytics Error: $e');
@@ -87,10 +90,7 @@ class AnalyticsService {
     try {
       await _analytics?.logEvent(
         name: 'habit_created',
-        parameters: {
-          'habit_title': habitTitle,
-          'category': category,
-        },
+        parameters: {'habit_title': habitTitle, 'category': category},
       );
     } catch (e) {
       debugPrint('⚠️ Analytics Error: $e');
@@ -102,10 +102,7 @@ class AnalyticsService {
     try {
       await _analytics?.logEvent(
         name: 'habit_completed',
-        parameters: {
-          'habit_id': habitId,
-          'habit_title': habitTitle,
-        },
+        parameters: {'habit_id': habitId, 'habit_title': habitTitle},
       );
     } catch (e) {
       debugPrint('⚠️ Analytics Error: $e');
@@ -117,9 +114,7 @@ class AnalyticsService {
     try {
       await _analytics?.logEvent(
         name: 'streak_milestone',
-        parameters: {
-          'streak_count': streakCount,
-        },
+        parameters: {'streak_count': streakCount},
       );
     } catch (e) {
       debugPrint('⚠️ Analytics Error: $e');

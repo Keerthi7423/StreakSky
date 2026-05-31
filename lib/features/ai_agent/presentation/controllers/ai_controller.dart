@@ -32,8 +32,11 @@ class AiController extends StateNotifier<AiState> {
     );
 
     try {
-      final responseText = await _repository.getChatResponse(text, state.messages);
-      
+      final responseText = await _repository.getChatResponse(
+        text,
+        state.messages,
+      );
+
       final assistantMessage = ChatMessage(
         id: _uuid.v4(),
         text: responseText,
@@ -48,7 +51,8 @@ class AiController extends StateNotifier<AiState> {
     } catch (e) {
       final errorMessage = ChatMessage(
         id: _uuid.v4(),
-        text: "Sorry, I'm having trouble connecting to the sky right now. Please try again later.",
+        text:
+            "Sorry, I'm having trouble connecting to the sky right now. Please try again later.",
         role: MessageRole.assistant,
         timestamp: DateTime.now(),
         isError: true,
@@ -67,7 +71,9 @@ class AiController extends StateNotifier<AiState> {
       final nudge = await _repository.getDailyNudge(habitDataSummary);
       state = state.copyWith(dailyNudge: nudge);
     } catch (e) {
-      state = state.copyWith(dailyNudge: "Keep pushing towards the clear skies!");
+      state = state.copyWith(
+        dailyNudge: "Keep pushing towards the clear skies!",
+      );
     }
   }
 
@@ -79,7 +85,10 @@ class AiController extends StateNotifier<AiState> {
     }
   }
 
-  Future<String> generateHabitCommitMessage(String habitName, String context) async {
+  Future<String> generateHabitCommitMessage(
+    String habitName,
+    String context,
+  ) async {
     try {
       return await _repository.generateCommitMessage(habitName, context);
     } catch (e) {
@@ -102,7 +111,9 @@ class AiController extends StateNotifier<AiState> {
   Future<void> fetchMidYearPaceCheck(String yearDataSummary) async {
     state = state.copyWith(isLoading: true, error: null);
     try {
-      final responseText = await _repository.getMidYearPaceCheck(yearDataSummary);
+      final responseText = await _repository.getMidYearPaceCheck(
+        yearDataSummary,
+      );
       final message = ChatMessage(
         id: _uuid.v4(),
         text: responseText,
@@ -122,7 +133,9 @@ class AiController extends StateNotifier<AiState> {
   }
 }
 
-final aiControllerProvider = StateNotifierProvider<AiController, AiState>((ref) {
+final aiControllerProvider = StateNotifierProvider<AiController, AiState>((
+  ref,
+) {
   final repo = ref.watch(aiRepositoryProvider);
   return AiController(repo);
 });

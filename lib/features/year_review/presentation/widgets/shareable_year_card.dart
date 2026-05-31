@@ -5,17 +5,17 @@ class ShareableYearCard extends StatelessWidget {
   final YearReviewModel review;
   final VoidCallback? onExport;
 
-  const ShareableYearCard({
-    super.key,
-    required this.review,
-    this.onExport,
-  });
+  const ShareableYearCard({super.key, required this.review, this.onExport});
 
   @override
   Widget build(BuildContext context) {
     final topHabit = review.streakHallOfFame.topLongestStreaks.isNotEmpty
         ? review.streakHallOfFame.topLongestStreaks.first
-        : const TopStreakItem(habitName: 'Consistency', emoji: '🌱', streakDays: 0);
+        : const TopStreakItem(
+            habitName: 'Consistency',
+            emoji: '🌱',
+            streakDays: 0,
+          );
 
     return Container(
       width: double.infinity,
@@ -72,7 +72,10 @@ class ShareableYearCard extends StatelessWidget {
                 ],
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xFFB3FF00).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(30),
@@ -100,16 +103,11 @@ class ShareableYearCard extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.02),
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.05),
-              ),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
             ),
             child: Column(
               children: [
-                const Text(
-                  '☀️',
-                  style: TextStyle(fontSize: 48),
-                ),
+                const Text('☀️', style: TextStyle(fontSize: 48)),
                 const SizedBox(height: 8),
                 Text(
                   '${review.weatherSummary.totalSunnyDays}',
@@ -161,7 +159,8 @@ class ShareableYearCard extends StatelessWidget {
                 child: _buildMiniStat(
                   title: 'GOAL SCORE',
                   value: '${review.goalSummary.overallGoalCompletionScore}%',
-                  subtitle: '${review.goalSummary.weeklyGoalsCompleted}/${review.goalSummary.weeklyGoalsTotal} Weekly Goals',
+                  subtitle:
+                      '${review.goalSummary.weeklyGoalsCompleted}/${review.goalSummary.weeklyGoalsTotal} Weekly Goals',
                   accentColor: const Color(0xFFFF0055), // Neon Pink
                 ),
               ),
@@ -190,17 +189,28 @@ class ShareableYearCard extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: List.generate(12, (index) {
-                final emoji = review.weatherSummary.monthlyWeatherStrip.length > index
+                final emoji =
+                    review.weatherSummary.monthlyWeatherStrip.length > index
                     ? review.weatherSummary.monthlyWeatherStrip[index]
                     : '☀️';
-                final monthName = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'][index];
+                final monthName = [
+                  'J',
+                  'F',
+                  'M',
+                  'A',
+                  'M',
+                  'J',
+                  'J',
+                  'A',
+                  'S',
+                  'O',
+                  'N',
+                  'D',
+                ][index];
 
                 return Column(
                   children: [
-                    Text(
-                      emoji,
-                      style: const TextStyle(fontSize: 18),
-                    ),
+                    Text(emoji, style: const TextStyle(fontSize: 18)),
                     const SizedBox(height: 6),
                     Text(
                       monthName,
@@ -272,9 +282,7 @@ class ShareableYearCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.02),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.white.withValues(alpha: 0.04),
-        ),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.04)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

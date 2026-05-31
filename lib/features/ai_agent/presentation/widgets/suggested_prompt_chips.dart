@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 class SuggestedPromptChips extends StatelessWidget {
   final Function(String) onPromptSelected;
 
-  const SuggestedPromptChips({
-    super.key,
-    required this.onPromptSelected,
-  });
+  const SuggestedPromptChips({super.key, required this.onPromptSelected});
 
   @override
   Widget build(BuildContext context) {
@@ -29,10 +26,7 @@ class SuggestedPromptChips extends StatelessWidget {
           return ActionChip(
             label: Text(
               prompt,
-              style: const TextStyle(
-                color: Colors.white70,
-                fontSize: 12,
-              ),
+              style: const TextStyle(color: Colors.white70, fontSize: 12),
             ),
             backgroundColor: Colors.transparent,
             side: BorderSide(color: Colors.white.withValues(alpha: 0.2)),

@@ -47,23 +47,30 @@ class _VoiceCheckInButtonState extends ConsumerState<VoiceCheckInButton> {
   }
 
   Future<void> _processTranscript(String transcript) async {
-    if (transcript.isEmpty || transcript == 'Press the button and speak') return;
+    if (transcript.isEmpty || transcript == 'Press the button and speak')
+      return;
 
-    final result = await ref.read(aiControllerProvider.notifier).handleVoiceCheckIn(transcript);
-    
+    final result = await ref
+        .read(aiControllerProvider.notifier)
+        .handleVoiceCheckIn(transcript);
+
     if (result['habit'] != 'unknown') {
       final habitName = result['habit'] as String;
       final status = result['status'] as String? ?? 'done';
-      
+
       // Try to find the habit by name
       final habits = ref.read(habitsListProvider).asData?.value ?? [];
       final habit = habits.firstWhere(
         (h) => h.name.toLowerCase().contains(habitName.toLowerCase()),
-        orElse: () => habits.isNotEmpty ? habits.first : throw Exception('No habits found'),
+        orElse: () => habits.isNotEmpty
+            ? habits.first
+            : throw Exception('No habits found'),
       );
 
       if (status == 'done') {
-        await ref.read(habitControllerProvider.notifier).toggleCompletion(habit.id, DateTime.now());
+        await ref
+            .read(habitControllerProvider.notifier)
+            .toggleCompletion(habit.id, DateTime.now());
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -77,7 +84,9 @@ class _VoiceCheckInButtonState extends ConsumerState<VoiceCheckInButton> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text("Sky couldn't recognize the habit. Try saying 'Done with reading'"),
+            content: Text(
+              "Sky couldn't recognize the habit. Try saying 'Done with reading'",
+            ),
             backgroundColor: Colors.redAccent,
           ),
         );
@@ -95,7 +104,10 @@ class _VoiceCheckInButtonState extends ConsumerState<VoiceCheckInButton> {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               _text,
-              style: const TextStyle(color: Colors.white70, fontStyle: FontStyle.italic),
+              style: const TextStyle(
+                color: Colors.white70,
+                fontStyle: FontStyle.italic,
+              ),
             ),
           ),
         GestureDetector(
@@ -103,7 +115,9 @@ class _VoiceCheckInButtonState extends ConsumerState<VoiceCheckInButton> {
           onLongPressEnd: (_) => _listen(),
           child: FloatingActionButton(
             onPressed: () {}, // Handled by long press
-            backgroundColor: _isListening ? Colors.redAccent : const Color(0xFFB3FF00),
+            backgroundColor: _isListening
+                ? Colors.redAccent
+                : const Color(0xFFB3FF00),
             child: Icon(
               _isListening ? Icons.mic : Icons.mic_none,
               color: Colors.black,

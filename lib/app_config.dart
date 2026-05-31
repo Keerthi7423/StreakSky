@@ -36,7 +36,9 @@ class AppConfig {
 
   static AppConfig get instance {
     if (_instance == null) {
-      throw Exception('AppConfig has not been initialized. Call initialize() first.');
+      throw Exception(
+        'AppConfig has not been initialized. Call initialize() first.',
+      );
     }
     return _instance!;
   }

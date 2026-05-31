@@ -7,27 +7,33 @@ import 'azure_ai_datasource.dart';
 @lazySingleton
 class OllamaDataSource {
   final Dio _dio;
-  final String _baseUrl = dotenv.get('OLLAMA_BASE_URL', fallback: 'http://localhost:11434/api');
+  final String _baseUrl = dotenv.get(
+    'OLLAMA_BASE_URL',
+    fallback: 'http://localhost:11434/api',
+  );
   final String _model = dotenv.get('OLLAMA_MODEL', fallback: 'llama3.2:3b');
   final AzureAiDatasource _azureFallback;
 
   OllamaDataSource(this._dio, this._azureFallback);
 
-  Future<String> generateResponse(String prompt, {List<Map<String, String>>? history}) async {
+  Future<String> generateResponse(
+    String prompt, {
+    List<Map<String, String>>? history,
+  }) async {
     try {
       final messages = [
-        {'role': 'system', 'content': 'You are Sky, a supportive, weather-themed habit coach. You guide users through their habit journey using weather metaphors (sunny days, stormy patches, clear skies) to provide encouraging nudges and answers.'},
+        {
+          'role': 'system',
+          'content':
+              'You are Sky, a supportive, weather-themed habit coach. You guide users through their habit journey using weather metaphors (sunny days, stormy patches, clear skies) to provide encouraging nudges and answers.',
+        },
         if (history != null) ...history,
         {'role': 'user', 'content': prompt},
       ];
 
       final response = await _dio.post(
         '$_baseUrl/chat',
-        data: {
-          'model': _model,
-          'messages': messages,
-          'stream': false,
-        },
+        data: {'model': _model, 'messages': messages, 'stream': false},
       );
 
       if (response.statusCode == 200) {
@@ -42,27 +48,32 @@ class OllamaDataSource {
   }
 
   Future<String> generateNudge(String habitDataSummary) async {
-    final prompt = "Based on yesterday's habit data: $habitDataSummary. Provide a short, 1-2 sentence supportive nudge for today. Keep it weather-themed.";
+    final prompt =
+        "Based on yesterday's habit data: $habitDataSummary. Provide a short, 1-2 sentence supportive nudge for today. Keep it weather-themed.";
     return generateResponse(prompt);
   }
 
   Future<String> generateCommitMessage(String habitName, String context) async {
-    final prompt = "Generate a GitHub-inspired daily one-liner commit message for completing the habit '$habitName'. Context: $context. Examples: 'feat: 14-day reading streak hit. Sunny day.', 'fix: missed gym, used streak shield. Still alive.'. Provide ONLY the message text.";
+    final prompt =
+        "Generate a GitHub-inspired daily one-liner commit message for completing the habit '$habitName'. Context: $context. Examples: 'feat: 14-day reading streak hit. Sunny day.', 'fix: missed gym, used streak shield. Still alive.'. Provide ONLY the message text.";
     return generateResponse(prompt);
   }
 
   Future<String> generatePatternAnalysis(String historicalData) async {
-    final prompt = "Analyze this 30/60 day habit history: $historicalData. Identify 2-3 key patterns (e.g., 'You tend to miss meditation on Tuesdays', 'Reading consistency improves after gym'). Keep it concise and supportive.";
+    final prompt =
+        "Analyze this 30/60 day habit history: $historicalData. Identify 2-3 key patterns (e.g., 'You tend to miss meditation on Tuesdays', 'Reading consistency improves after gym'). Keep it concise and supportive.";
     return generateResponse(prompt);
   }
 
   Future<String> parseVoiceTranscript(String transcript) async {
-    final prompt = "Parse this voice check-in: '$transcript'. Identify the habit name and status (done/missed). Return ONLY a JSON object like {\"habit\": \"reading\", \"status\": \"done\"}. If unknown, return {\"habit\": \"unknown\"}.";
+    final prompt =
+        "Parse this voice check-in: '$transcript'. Identify the habit name and status (done/missed). Return ONLY a JSON object like {\"habit\": \"reading\", \"status\": \"done\"}. If unknown, return {\"habit\": \"unknown\"}.";
     return generateResponse(prompt);
   }
 
   Future<String> generateMidYearPaceCheck(String yearDataSummary) async {
-    final prompt = "It's July 1st, time for a Mid-Year Pace Check. Based on this 6-month summary: $yearDataSummary. Provide a concise, weather-themed review of their progress. Celebrate the sunny streaks and offer a gentle course correction for any stormy patches. Keep it under 3 sentences.";
+    final prompt =
+        "It's July 1st, time for a Mid-Year Pace Check. Based on this 6-month summary: $yearDataSummary. Provide a concise, weather-themed review of their progress. Celebrate the sunny streaks and offer a gentle course correction for any stormy patches. Keep it under 3 sentences.";
     return generateResponse(prompt);
   }
 }

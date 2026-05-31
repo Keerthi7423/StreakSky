@@ -15,15 +15,23 @@ class WeatherHeroCard extends ConsumerWidget {
     final forecastAsync = ref.watch(weatherForecastProvider);
 
     return weatherAsync.when(
-      data: (weather) => _buildCard(context, weather, forecastAsync.asData?.value ?? []),
+      data: (weather) =>
+          _buildCard(context, weather, forecastAsync.asData?.value ?? []),
       loading: () => _buildLoading(),
       error: (err, stack) => const SizedBox.shrink(),
     );
   }
 
-  Widget _buildCard(BuildContext context, WeatherModel weather, List<WeatherModel> forecast) {
+  Widget _buildCard(
+    BuildContext context,
+    WeatherModel weather,
+    List<WeatherModel> forecast,
+  ) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
+      margin: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg,
+        vertical: AppSpacing.sm,
+      ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(AppSpacing.cardRadius * 1.5),
         gradient: LinearGradient(
@@ -54,7 +62,7 @@ class WeatherHeroCard extends ConsumerWidget {
               ),
             ),
           ),
-          
+
           Padding(
             padding: const EdgeInsets.all(24),
             child: Column(
@@ -102,18 +110,23 @@ class WeatherHeroCard extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: 24),
-                
+
                 // Forecast Strip
                 if (forecast.isNotEmpty) ...[
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 12,
+                      horizontal: 16,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.black.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: forecast.map((f) => Expanded(child: _buildForecastItem(f))).toList(),
+                      children: forecast
+                          .map((f) => Expanded(child: _buildForecastItem(f)))
+                          .toList(),
                     ),
                   ),
                 ],
@@ -127,7 +140,7 @@ class WeatherHeroCard extends ConsumerWidget {
 
   Widget _buildForecastItem(WeatherModel weather) {
     final isToday = weather.date.day == DateTime.now().day;
-    
+
     return Column(
       children: [
         Text(
@@ -138,10 +151,7 @@ class WeatherHeroCard extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: 4),
-        Text(
-          weather.type.emoji,
-          style: const TextStyle(fontSize: 18),
-        ),
+        Text(weather.type.emoji, style: const TextStyle(fontSize: 18)),
         if (isToday)
           Container(
             margin: const EdgeInsets.only(top: 4),

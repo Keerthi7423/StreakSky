@@ -13,7 +13,7 @@ class GoalProjectionChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final data = GoalProjectionService.generateProjection(goal);
-    
+
     return Container(
       height: 120,
       padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -21,20 +21,30 @@ class GoalProjectionChart extends StatelessWidget {
         LineChartData(
           gridData: const FlGridData(show: false),
           titlesData: FlTitlesData(
-            leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            leftTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            rightTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            topTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
             bottomTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
                 getTitlesWidget: (value, meta) {
                   final index = value.toInt();
-                  if (index >= 0 && index < data.labels.length && index % (data.labels.length ~/ 4 + 1) == 0) {
+                  if (index >= 0 &&
+                      index < data.labels.length &&
+                      index % (data.labels.length ~/ 4 + 1) == 0) {
                     return Padding(
                       padding: const EdgeInsets.only(top: 4.0),
                       child: Text(
                         data.labels[index],
-                        style: AppTypography.micro.copyWith(color: AppColors.textTertiary),
+                        style: AppTypography.micro.copyWith(
+                          color: AppColors.textTertiary,
+                        ),
                       ),
                     );
                   }
@@ -48,7 +58,11 @@ class GoalProjectionChart extends StatelessWidget {
           lineBarsData: [
             // Ideal Path
             LineChartBarData(
-              spots: data.idealPoints.asMap().entries.map((e) => FlSpot(e.key.toDouble(), e.value)).toList(),
+              spots: data.idealPoints
+                  .asMap()
+                  .entries
+                  .map((e) => FlSpot(e.key.toDouble(), e.value))
+                  .toList(),
               isCurved: false,
               color: AppColors.textTertiary.withValues(alpha: 0.3),
               barWidth: 1,
@@ -57,7 +71,11 @@ class GoalProjectionChart extends StatelessWidget {
             ),
             // Actual Path
             LineChartBarData(
-              spots: data.actualPoints.asMap().entries.map((e) => FlSpot(e.key.toDouble(), e.value)).toList(),
+              spots: data.actualPoints
+                  .asMap()
+                  .entries
+                  .map((e) => FlSpot(e.key.toDouble(), e.value))
+                  .toList(),
               isCurved: true,
               color: AppColors.primaryAccent,
               barWidth: 3,

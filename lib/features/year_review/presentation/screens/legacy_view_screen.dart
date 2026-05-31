@@ -13,10 +13,7 @@ class LegacyViewScreen extends ConsumerWidget {
     if (pastYears.length < 2) {
       return Scaffold(
         backgroundColor: const Color(0xFF0D0D0D),
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-        ),
+        appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0),
         body: const Center(
           child: Text(
             "Legacy View unlocks after 2 years of habits.",
@@ -29,7 +26,10 @@ class LegacyViewScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: const Color(0xFF0D0D0D),
       appBar: AppBar(
-        title: const Text('Legacy View', style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.2)),
+        title: const Text(
+          'Legacy View',
+          style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.2),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,

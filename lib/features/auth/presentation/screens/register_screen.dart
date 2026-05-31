@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:streaksky/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:streaksky/core/theme/app_theme.dart';
 
-
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
 
@@ -28,7 +27,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   void _onRegister() async {
     if (_formKey.currentState!.validate()) {
-      await ref.read(authControllerProvider.notifier).signUp(
+      await ref
+          .read(authControllerProvider.notifier)
+          .signUp(
             _emailController.text.trim(),
             _passwordController.text.trim(),
           );
@@ -43,7 +44,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       next.whenOrNull(
         error: (error, stackTrace) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(error.toString()), backgroundColor: Colors.red),
+            SnackBar(
+              content: Text(error.toString()),
+              backgroundColor: Colors.red,
+            ),
           );
         },
       );
@@ -77,33 +81,45 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 const SizedBox(height: 8),
                 Text(
                   'Start your journey to a better you',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Colors.white70,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.copyWith(color: Colors.white70),
                 ),
                 const SizedBox(height: 48),
                 TextFormField(
                   controller: _emailController,
                   style: const TextStyle(color: Colors.white),
-                  decoration: _buildInputDecoration('Email', Icons.email_outlined),
-                  validator: (value) => value?.isEmpty ?? true ? 'Enter email' : null,
+                  decoration: _buildInputDecoration(
+                    'Email',
+                    Icons.email_outlined,
+                  ),
+                  validator: (value) =>
+                      value?.isEmpty ?? true ? 'Enter email' : null,
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: _passwordController,
                   style: const TextStyle(color: Colors.white),
                   obscureText: true,
-                  decoration: _buildInputDecoration('Password', Icons.lock_outline),
-                  validator: (value) => value?.isEmpty ?? true ? 'Enter password' : null,
+                  decoration: _buildInputDecoration(
+                    'Password',
+                    Icons.lock_outline,
+                  ),
+                  validator: (value) =>
+                      value?.isEmpty ?? true ? 'Enter password' : null,
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: _confirmPasswordController,
                   style: const TextStyle(color: Colors.white),
                   obscureText: true,
-                  decoration: _buildInputDecoration('Confirm Password', Icons.lock_clock_outlined),
+                  decoration: _buildInputDecoration(
+                    'Confirm Password',
+                    Icons.lock_clock_outlined,
+                  ),
                   validator: (value) {
-                    if (value != _passwordController.text) return 'Passwords do not match';
+                    if (value != _passwordController.text)
+                      return 'Passwords do not match';
                     return null;
                   },
                 ),
@@ -126,7 +142,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         ? const CircularProgressIndicator(color: Colors.black)
                         : const Text(
                             'REGISTER',
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                   ),
                 ),

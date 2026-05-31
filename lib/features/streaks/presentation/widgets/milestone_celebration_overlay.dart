@@ -16,12 +16,13 @@ class MilestoneCelebrationOverlay extends ConsumerWidget {
       children: [
         // Dim background
         GestureDetector(
-          onTap: () => ref.read(milestoneCelebrationProvider.notifier).state = null,
+          onTap: () =>
+              ref.read(milestoneCelebrationProvider.notifier).state = null,
           child: Container(
             color: Colors.black.withValues(alpha: 0.8),
           ).animate().fadeIn(duration: 400.ms),
         ),
-        
+
         // Celebration Content
         Center(
           child: Column(
@@ -29,38 +30,42 @@ class MilestoneCelebrationOverlay extends ConsumerWidget {
             children: [
               // Badge/Emoji with Spring Animation
               Container(
-                width: 160,
-                height: 160,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: const Color(0xFF0D0D0D),
-                  border: Border.all(
-                    color: const Color(0xFFB3FF00), // Neon Green
-                    width: 4,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFFB3FF00).withValues(alpha: 0.5),
-                      blurRadius: 30,
-                      spreadRadius: 5,
+                    width: 160,
+                    height: 160,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: const Color(0xFF0D0D0D),
+                      border: Border.all(
+                        color: const Color(0xFFB3FF00), // Neon Green
+                        width: 4,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFFB3FF00).withValues(alpha: 0.5),
+                          blurRadius: 30,
+                          spreadRadius: 5,
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                child: Center(
-                  child: Text(
-                    milestone.emoji,
-                    style: const TextStyle(fontSize: 80),
+                    child: Center(
+                      child: Text(
+                        milestone.emoji,
+                        style: const TextStyle(fontSize: 80),
+                      ),
+                    ),
+                  )
+                  .animate()
+                  .scale(
+                    duration: 600.ms,
+                    curve: Curves.elasticOut,
+                    begin: const Offset(0, 0),
+                    end: const Offset(1, 1),
+                  )
+                  .shimmer(
+                    delay: 800.ms,
+                    duration: 1200.ms,
+                    color: Colors.white24,
                   ),
-                ),
-              )
-              .animate()
-              .scale(
-                duration: 600.ms,
-                curve: Curves.elasticOut,
-                begin: const Offset(0, 0),
-                end: const Offset(1, 1),
-              )
-              .shimmer(delay: 800.ms, duration: 1200.ms, color: Colors.white24),
 
               const SizedBox(height: 32),
 
@@ -79,25 +84,25 @@ class MilestoneCelebrationOverlay extends ConsumerWidget {
                     ),
                   ],
                 ),
-              )
-              .animate()
-              .fadeIn(delay: 300.ms)
-              .slideY(begin: 0.5, end: 0),
+              ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.5, end: 0),
 
               const SizedBox(height: 8),
 
               // Milestone Name
               Text(
-                milestone.label,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 40,
-                  fontWeight: FontWeight.bold,
-                ),
-              )
-              .animate()
-              .fadeIn(delay: 500.ms)
-              .scale(begin: const Offset(0.8, 0.8), end: const Offset(1, 1)),
+                    milestone.label,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 40,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )
+                  .animate()
+                  .fadeIn(delay: 500.ms)
+                  .scale(
+                    begin: const Offset(0.8, 0.8),
+                    end: const Offset(1, 1),
+                  ),
 
               const SizedBox(height: 16),
 
@@ -109,31 +114,40 @@ class MilestoneCelebrationOverlay extends ConsumerWidget {
                   fontSize: 18,
                   letterSpacing: 2,
                 ),
-              )
-              .animate()
-              .fadeIn(delay: 700.ms),
+              ).animate().fadeIn(delay: 700.ms),
 
               const SizedBox(height: 48),
 
               // Continue Button
               ElevatedButton(
-                onPressed: () => ref.read(milestoneCelebrationProvider.notifier).state = null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFB3FF00),
-                  foregroundColor: Colors.black,
-                  padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
+                    onPressed: () =>
+                        ref.read(milestoneCelebrationProvider.notifier).state =
+                            null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFB3FF00),
+                      foregroundColor: Colors.black,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 48,
+                        vertical: 16,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                    child: const Text(
+                      'KEEP GOING',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.5,
+                      ),
+                    ),
+                  )
+                  .animate()
+                  .fadeIn(delay: 900.ms)
+                  .scale(
+                    begin: const Offset(0.9, 0.9),
+                    end: const Offset(1, 1),
                   ),
-                ),
-                child: const Text(
-                  'KEEP GOING',
-                  style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.5),
-                ),
-              )
-              .animate()
-              .fadeIn(delay: 900.ms)
-              .scale(begin: const Offset(0.9, 0.9), end: const Offset(1, 1)),
             ],
           ),
         ),

@@ -39,7 +39,9 @@ class StatCard extends StatelessWidget {
         children: [
           Text(
             title,
-            style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+            style: AppTypography.bodySmall.copyWith(
+              color: AppColors.textSecondary,
+            ),
           ),
           const SizedBox(height: 4),
           Text(
@@ -137,15 +139,24 @@ class WeeklyTrendChart extends StatelessWidget {
                           padding: const EdgeInsets.only(top: 8.0),
                           child: Text(
                             days[index],
-                            style: const TextStyle(color: Colors.grey, fontSize: 10),
+                            style: const TextStyle(
+                              color: Colors.grey,
+                              fontSize: 10,
+                            ),
                           ),
                         );
                       },
                     ),
                   ),
-                  leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                  rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                  topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  leftTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  rightTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  topTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
                 ),
                 gridData: const FlGridData(show: false),
                 borderData: FlBorderData(show: false),
@@ -160,7 +171,8 @@ class WeeklyTrendChart extends StatelessWidget {
                         borderRadius: BorderRadius.circular(4),
                         backDrawRodData: BackgroundBarChartRodData(
                           show: true,
-                          toY: (data.reduce((a, b) => a > b ? a : b) + 1).toDouble(),
+                          toY: (data.reduce((a, b) => a > b ? a : b) + 1)
+                              .toDouble(),
                           color: AppColors.divider.withValues(alpha: 0.05),
                         ),
                       ),
@@ -229,7 +241,11 @@ class DetailedLineChart extends StatelessWidget {
         spots.add(FlSpot(i.toDouble(), data[i]));
       }
     } else {
-      spots = data.asMap().entries.map((e) => FlSpot(e.key.toDouble(), e.value)).toList();
+      spots = data
+          .asMap()
+          .entries
+          .map((e) => FlSpot(e.key.toDouble(), e.value))
+          .toList();
     }
 
     return LineChartData(
@@ -262,7 +278,9 @@ class DetailedLineChart extends StatelessWidget {
       ),
       titlesData: FlTitlesData(
         show: true,
-        rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        rightTitles: const AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
         topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
         bottomTitles: AxisTitles(
           sideTitles: SideTitles(
@@ -273,7 +291,7 @@ class DetailedLineChart extends StatelessWidget {
               if (value % 1 != 0) return const SizedBox();
               final index = value.toInt();
               if (index < 0 || index >= data.length) return const SizedBox();
-              
+
               String text = '';
               if (data.length <= 7) {
                 text = ['M', 'T', 'W', 'T', 'F', 'S', 'S'][index];
@@ -285,7 +303,10 @@ class DetailedLineChart extends StatelessWidget {
 
               return Padding(
                 padding: const EdgeInsets.only(top: 8.0),
-                child: Text(text, style: const TextStyle(color: Colors.grey, fontSize: 10)),
+                child: Text(
+                  text,
+                  style: const TextStyle(color: Colors.grey, fontSize: 10),
+                ),
               );
             },
           ),
@@ -319,11 +340,11 @@ class DetailedLineChart extends StatelessWidget {
             show: data.length <= 7,
             getDotPainter: (spot, percent, barData, index) =>
                 FlDotCirclePainter(
-              radius: 4,
-              color: AppColors.background,
-              strokeWidth: 2,
-              strokeColor: accentColor,
-            ),
+                  radius: 4,
+                  color: AppColors.background,
+                  strokeWidth: 2,
+                  strokeColor: accentColor,
+                ),
           ),
           belowBarData: BarAreaData(
             show: true,
@@ -366,7 +387,9 @@ class KeystoneHabitCard extends StatelessWidget {
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: AppColors.primaryAccent.withValues(alpha: 0.2)),
+        border: Border.all(
+          color: AppColors.primaryAccent.withValues(alpha: 0.2),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -379,7 +402,11 @@ class KeystoneHabitCard extends StatelessWidget {
                   color: AppColors.primaryAccent.withValues(alpha: 0.2),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.auto_awesome, color: AppColors.primaryAccent, size: 20),
+                child: const Icon(
+                  Icons.auto_awesome,
+                  color: AppColors.primaryAccent,
+                  size: 20,
+                ),
               ),
               const SizedBox(width: 16),
               const Text('Keystone Habit', style: AppTypography.h3),
@@ -388,7 +415,9 @@ class KeystoneHabitCard extends StatelessWidget {
           const SizedBox(height: 20),
           Text(
             'Your success is driven by:',
-            style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+            style: AppTypography.bodySmall.copyWith(
+              color: AppColors.textSecondary,
+            ),
           ),
           const SizedBox(height: 4),
           Text(habitName, style: AppTypography.h2),
@@ -401,15 +430,21 @@ class KeystoneHabitCard extends StatelessWidget {
                   children: [
                     Text(
                       'Correlation Strength',
-                      style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+                      style: AppTypography.bodySmall.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     ClipRRect(
                       borderRadius: BorderRadius.circular(4),
                       child: LinearProgressIndicator(
                         value: correlation,
-                        backgroundColor: AppColors.divider.withValues(alpha: 0.1),
-                        valueColor: const AlwaysStoppedAnimation(AppColors.primaryAccent),
+                        backgroundColor: AppColors.divider.withValues(
+                          alpha: 0.1,
+                        ),
+                        valueColor: const AlwaysStoppedAnimation(
+                          AppColors.primaryAccent,
+                        ),
                         minHeight: 8,
                       ),
                     ),
@@ -419,14 +454,19 @@ class KeystoneHabitCard extends StatelessWidget {
               const SizedBox(width: 24),
               Text(
                 '${(correlation * 100).toInt()}%',
-                style: AppTypography.h2.copyWith(color: AppColors.primaryAccent),
+                style: AppTypography.h2.copyWith(
+                  color: AppColors.primaryAccent,
+                ),
               ),
             ],
           ),
           const SizedBox(height: 16),
           Text(
             'Completing this habit increases your overall daily success by ${(correlation * 100).toInt()}%.',
-            style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary, height: 1.4),
+            style: AppTypography.bodySmall.copyWith(
+              color: AppColors.textSecondary,
+              height: 1.4,
+            ),
           ),
         ],
       ),
@@ -442,7 +482,7 @@ class ActivityCalendarStrip extends StatelessWidget {
     final now = DateTime.now();
     // Get the start of the week (Monday)
     final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -460,15 +500,28 @@ class ActivityCalendarStrip extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: List.generate(7, (index) {
             final day = startOfWeek.add(Duration(days: index));
-            final isToday = day.day == now.day && day.month == now.month && day.year == now.year;
-            final dayName = ['S', 'M', 'T', 'W', 'T', 'F', 'S'][day.weekday % 7];
-            
+            final isToday =
+                day.day == now.day &&
+                day.month == now.month &&
+                day.year == now.year;
+            final dayName = [
+              'S',
+              'M',
+              'T',
+              'W',
+              'T',
+              'F',
+              'S',
+            ][day.weekday % 7];
+
             return Column(
               children: [
                 Text(
                   dayName,
                   style: TextStyle(
-                    color: isToday ? AppColors.primaryAccent : AppColors.textSecondary,
+                    color: isToday
+                        ? AppColors.primaryAccent
+                        : AppColors.textSecondary,
                     fontSize: 12,
                     fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
                   ),
@@ -478,10 +531,14 @@ class ActivityCalendarStrip extends StatelessWidget {
                   width: 36,
                   height: 36,
                   decoration: BoxDecoration(
-                    color: isToday ? AppColors.primaryAccent : AppColors.surface,
+                    color: isToday
+                        ? AppColors.primaryAccent
+                        : AppColors.surface,
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: isToday ? AppColors.primaryAccent : AppColors.divider.withValues(alpha: 0.1),
+                      color: isToday
+                          ? AppColors.primaryAccent
+                          : AppColors.divider.withValues(alpha: 0.1),
                     ),
                   ),
                   child: Center(
@@ -489,7 +546,9 @@ class ActivityCalendarStrip extends StatelessWidget {
                       day.day.toString(),
                       style: TextStyle(
                         color: isToday ? Colors.black : AppColors.textPrimary,
-                        fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
+                        fontWeight: isToday
+                            ? FontWeight.bold
+                            : FontWeight.normal,
                       ),
                     ),
                   ),

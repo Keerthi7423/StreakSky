@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:streaksky/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:streaksky/core/theme/app_theme.dart';
 
-
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
@@ -26,7 +25,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   void _onLogin() async {
     if (_formKey.currentState!.validate()) {
-      await ref.read(authControllerProvider.notifier).signIn(
+      await ref
+          .read(authControllerProvider.notifier)
+          .signIn(
             _emailController.text.trim(),
             _passwordController.text.trim(),
           );
@@ -41,7 +42,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       next.whenOrNull(
         error: (error, stackTrace) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(error.toString()), backgroundColor: Colors.red),
+            SnackBar(
+              content: Text(error.toString()),
+              backgroundColor: Colors.red,
+            ),
           );
         },
       );
@@ -68,24 +72,32 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 const SizedBox(height: 8),
                 Text(
                   'Sign in to continue your streak',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Colors.white70,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.copyWith(color: Colors.white70),
                 ),
                 const SizedBox(height: 48),
                 TextFormField(
                   controller: _emailController,
                   style: const TextStyle(color: Colors.white),
-                  decoration: _buildInputDecoration('Email', Icons.email_outlined),
-                  validator: (value) => value?.isEmpty ?? true ? 'Enter email' : null,
+                  decoration: _buildInputDecoration(
+                    'Email',
+                    Icons.email_outlined,
+                  ),
+                  validator: (value) =>
+                      value?.isEmpty ?? true ? 'Enter email' : null,
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: _passwordController,
                   style: const TextStyle(color: Colors.white),
                   obscureText: true,
-                  decoration: _buildInputDecoration('Password', Icons.lock_outline),
-                  validator: (value) => value?.isEmpty ?? true ? 'Enter password' : null,
+                  decoration: _buildInputDecoration(
+                    'Password',
+                    Icons.lock_outline,
+                  ),
+                  validator: (value) =>
+                      value?.isEmpty ?? true ? 'Enter password' : null,
                 ),
                 const SizedBox(height: 12),
                 Align(
@@ -117,7 +129,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ? const CircularProgressIndicator(color: Colors.black)
                         : const Text(
                             'LOG IN',
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                   ),
                 ),
@@ -127,20 +142,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 _buildSocialButton(
                   'Continue with Google',
                   'assets/icons/google.png',
-                  () => ref.read(authControllerProvider.notifier).signInWithGoogle(),
+                  () => ref
+                      .read(authControllerProvider.notifier)
+                      .signInWithGoogle(),
                 ),
                 const SizedBox(height: 16),
                 _buildSocialButton(
                   'Continue with Apple',
                   'assets/icons/apple.png',
-                  () => ref.read(authControllerProvider.notifier).signInWithApple(),
+                  () => ref
+                      .read(authControllerProvider.notifier)
+                      .signInWithApple(),
                 ),
                 const SizedBox(height: 16),
                 SizedBox(
                   width: double.infinity,
                   height: 56,
                   child: TextButton(
-                    onPressed: () => ref.read(authControllerProvider.notifier).signInAnonymously(),
+                    onPressed: () => ref
+                        .read(authControllerProvider.notifier)
+                        .signInAnonymously(),
                     child: Text(
                       'CONTINUE AS GUEST',
                       style: TextStyle(
@@ -203,7 +224,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         Expanded(child: Divider(color: Colors.white.withValues(alpha: 0.1))),
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Text('OR', style: TextStyle(color: Colors.white30, fontSize: 12)),
+          child: Text(
+            'OR',
+            style: TextStyle(color: Colors.white30, fontSize: 12),
+          ),
         ),
         Expanded(child: Divider(color: Colors.white.withValues(alpha: 0.1))),
       ],
@@ -218,7 +242,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         onPressed: onTap,
         style: OutlinedButton.styleFrom(
           side: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -226,7 +252,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             // Placeholder for icon
             const Icon(Icons.account_circle_outlined, color: Colors.white),
             const SizedBox(width: 12),
-            Text(label, style: const TextStyle(color: Colors.white, fontSize: 16)),
+            Text(
+              label,
+              style: const TextStyle(color: Colors.white, fontSize: 16),
+            ),
           ],
         ),
       ),

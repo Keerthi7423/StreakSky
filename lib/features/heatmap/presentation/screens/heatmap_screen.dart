@@ -50,7 +50,7 @@ class _HeatmapScreenState extends ConsumerState<HeatmapScreen> {
                   const SizedBox(height: 20),
                   _buildHabitFilters(state, notifier),
                   const SizedBox(height: 24),
-                  
+
                   Screenshot(
                     controller: _screenshotController,
                     child: Container(
@@ -65,7 +65,7 @@ class _HeatmapScreenState extends ConsumerState<HeatmapScreen> {
                       ),
                     ),
                   ),
-                  
+
                   const SizedBox(height: 24),
                   _buildStatsSection(state),
                 ],
@@ -81,20 +81,22 @@ class _HeatmapScreenState extends ConsumerState<HeatmapScreen> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Yearly Progress',
-              style: AppTypography.h2,
-            ),
+            const Text('Yearly Progress', style: AppTypography.h2),
             const SizedBox(height: 4),
             Text(
               'Consistency visualization over time',
-              style: AppTypography.body.copyWith(color: AppColors.textSecondary),
+              style: AppTypography.body.copyWith(
+                color: AppColors.textSecondary,
+              ),
             ),
           ],
         ),
         Row(
           children: [
-            const Text('Multi-year', style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+            const Text(
+              'Multi-year',
+              style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+            ),
             Switch(
               value: state.isMultiYearView,
               onChanged: (_) {
@@ -103,7 +105,9 @@ class _HeatmapScreenState extends ConsumerState<HeatmapScreen> {
                   context.push('/paywall');
                   return;
                 }
-                ref.read(heatmapControllerProvider.notifier).toggleMultiYearView();
+                ref
+                    .read(heatmapControllerProvider.notifier)
+                    .toggleMultiYearView();
               },
               activeThumbColor: AppColors.primaryAccent,
             ),
@@ -127,24 +131,31 @@ class _HeatmapScreenState extends ConsumerState<HeatmapScreen> {
               onSelected: (selected) => notifier.selectHabit(null),
               selectedColor: AppColors.primaryAccent,
               labelStyle: TextStyle(
-                color: state.selectedHabitId == null ? AppColors.background : AppColors.textPrimary,
+                color: state.selectedHabitId == null
+                    ? AppColors.background
+                    : AppColors.textPrimary,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
-          ...state.habits.map((habit) => Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: ChoiceChip(
-              label: Text(habit.name),
-              selected: state.selectedHabitId == habit.id,
-              onSelected: (selected) => notifier.selectHabit(selected ? habit.id : null),
-              selectedColor: AppColors.primaryAccent,
-              labelStyle: TextStyle(
-                color: state.selectedHabitId == habit.id ? AppColors.background : AppColors.textPrimary,
-                fontWeight: FontWeight.bold,
+          ...state.habits.map(
+            (habit) => Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: ChoiceChip(
+                label: Text(habit.name),
+                selected: state.selectedHabitId == habit.id,
+                onSelected: (selected) =>
+                    notifier.selectHabit(selected ? habit.id : null),
+                selectedColor: AppColors.primaryAccent,
+                labelStyle: TextStyle(
+                  color: state.selectedHabitId == habit.id
+                      ? AppColors.background
+                      : AppColors.textPrimary,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-          )),
+          ),
         ],
       ),
     );
@@ -179,27 +190,38 @@ class _HeatmapScreenState extends ConsumerState<HeatmapScreen> {
   Widget _buildMultiYearGrids(HeatmapState state) {
     final years = [2024, 2025, 2026];
     return Column(
-      children: years.map((year) => Padding(
-        padding: const EdgeInsets.only(bottom: 16.0),
-        child: Card(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('$year', style: AppTypography.h3.copyWith(color: AppColors.primaryAccent)),
-                const SizedBox(height: 16),
-                HeatmapGrid(
-                  year: year,
-                  percentages: state.multiYearPercentages[year] ?? {},
-                  comebackDates: const {}, // Comebacks not shown in multi-year for simplicity
-                  onCellTap: (date) => _showDayDetails(context, date, state),
+      children: years
+          .map(
+            (year) => Padding(
+              padding: const EdgeInsets.only(bottom: 16.0),
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '$year',
+                        style: AppTypography.h3.copyWith(
+                          color: AppColors.primaryAccent,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      HeatmapGrid(
+                        year: year,
+                        percentages: state.multiYearPercentages[year] ?? {},
+                        comebackDates:
+                            const {}, // Comebacks not shown in multi-year for simplicity
+                        onCellTap: (date) =>
+                            _showDayDetails(context, date, state),
+                      ),
+                    ],
+                  ),
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
-      )).toList(),
+          )
+          .toList(),
     );
   }
 
@@ -218,7 +240,10 @@ class _HeatmapScreenState extends ConsumerState<HeatmapScreen> {
         const Text('More', style: TextStyle(color: Colors.grey, fontSize: 10)),
         const SizedBox(width: 12),
         _legendBox(AppColors.rainbow),
-        const Text(' Comeback', style: TextStyle(color: Colors.grey, fontSize: 10)),
+        const Text(
+          ' Comeback',
+          style: TextStyle(color: Colors.grey, fontSize: 10),
+        ),
       ],
     );
   }
@@ -236,12 +261,20 @@ class _HeatmapScreenState extends ConsumerState<HeatmapScreen> {
   }
 
   Widget _buildStatsSection(HeatmapState state) {
-    final totalDays = state.isMultiYearView ? 365 * 3 : state.dailyCompletionPercentages.length;
-    final activeDays = state.isMultiYearView 
-        ? state.multiYearPercentages.values.fold(0, (sum, yearData) => sum + yearData.values.where((v) => v > 0).length)
+    final totalDays = state.isMultiYearView
+        ? 365 * 3
+        : state.dailyCompletionPercentages.length;
+    final activeDays = state.isMultiYearView
+        ? state.multiYearPercentages.values.fold(
+            0,
+            (sum, yearData) => sum + yearData.values.where((v) => v > 0).length,
+          )
         : state.dailyCompletionPercentages.values.where((v) => v > 0).length;
-    
-    final consistency = totalDays > 0 ? (activeDays / (state.isMultiYearView ? 1095 : 365) * 100).toStringAsFixed(1) : '0.0';
+
+    final consistency = totalDays > 0
+        ? (activeDays / (state.isMultiYearView ? 1095 : 365) * 100)
+              .toStringAsFixed(1)
+        : '0.0';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -252,7 +285,10 @@ class _HeatmapScreenState extends ConsumerState<HeatmapScreen> {
           children: [
             _statCard('Active Days', activeDays.toString()),
             const SizedBox(width: 12),
-            _statCard(state.isMultiYearView ? 'Overall Pace' : 'Yearly Pace', '$consistency%'),
+            _statCard(
+              state.isMultiYearView ? 'Overall Pace' : 'Yearly Pace',
+              '$consistency%',
+            ),
           ],
         ),
       ],
@@ -284,7 +320,7 @@ class _HeatmapScreenState extends ConsumerState<HeatmapScreen> {
       context.push('/paywall');
       return;
     }
-    
+
     try {
       final image = await _screenshotController.capture();
       if (image == null) return;
@@ -296,30 +332,36 @@ class _HeatmapScreenState extends ConsumerState<HeatmapScreen> {
 
       await SharePlus.instance.share(
         ShareParams(
-          text: 'Check out my Habit Heatmap on StreakSky! 🚀 #StreakSky #HabitTracker',
+          text:
+              'Check out my Habit Heatmap on StreakSky! 🚀 #StreakSky #HabitTracker',
           files: [XFile(imagePath)],
         ),
       );
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to export heatmap: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Failed to export heatmap: $e')));
       }
     }
   }
 
-  void _showDayDetails(BuildContext context, DateTime date, HeatmapState state) {
+  void _showDayDetails(
+    BuildContext context,
+    DateTime date,
+    HeatmapState state,
+  ) {
     final dateStr = DateFormat('yyyy-MM-dd').format(date);
-    
+
     double percentage = 0.0;
     if (state.isMultiYearView) {
       percentage = state.multiYearPercentages[date.year]?[dateStr] ?? 0.0;
     } else {
       percentage = state.dailyCompletionPercentages[dateStr] ?? 0.0;
     }
-    
-    final isComeback = !state.isMultiYearView && state.comebackDates.contains(dateStr);
+
+    final isComeback =
+        !state.isMultiYearView && state.comebackDates.contains(dateStr);
 
     showModalBottomSheet(
       context: context,
@@ -342,7 +384,10 @@ class _HeatmapScreenState extends ConsumerState<HeatmapScreen> {
                 ),
                 if (isComeback)
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.rainbow.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
@@ -350,7 +395,11 @@ class _HeatmapScreenState extends ConsumerState<HeatmapScreen> {
                     ),
                     child: const Text(
                       'COMEBACK!',
-                      style: TextStyle(color: AppColors.rainbow, fontSize: 10, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        color: AppColors.rainbow,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
               ],
@@ -358,11 +407,16 @@ class _HeatmapScreenState extends ConsumerState<HeatmapScreen> {
             const SizedBox(height: 24),
             ListTile(
               contentPadding: EdgeInsets.zero,
-              leading: const Icon(Icons.analytics_outlined, color: AppColors.primaryAccent),
+              leading: const Icon(
+                Icons.analytics_outlined,
+                color: AppColors.primaryAccent,
+              ),
               title: const Text('Completion Rate'),
               trailing: Text(
                 '${(percentage * 100).toInt()}%',
-                style: AppTypography.h3.copyWith(color: AppColors.primaryAccent),
+                style: AppTypography.h3.copyWith(
+                  color: AppColors.primaryAccent,
+                ),
               ),
             ),
             const SizedBox(height: 16),

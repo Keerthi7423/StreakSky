@@ -16,7 +16,7 @@ class SupabaseProfileRepository implements ProfileRepository {
         .select()
         .eq('id', id)
         .maybeSingle();
-    
+
     if (response == null) return null;
     return UserProfile.fromJson(response);
   }
@@ -30,17 +30,12 @@ class SupabaseProfileRepository implements ProfileRepository {
       'timezone': profile.timezone,
       'language': profile.language,
     };
-    
-    await _client
-        .from('users')
-        .update(data)
-        .eq('id', profile.id);
+
+    await _client.from('users').update(data).eq('id', profile.id);
   }
 
   @override
   Future<void> createProfile(UserProfile profile) async {
-    await _client
-        .from('users')
-        .insert(profile.toJson());
+    await _client.from('users').insert(profile.toJson());
   }
 }

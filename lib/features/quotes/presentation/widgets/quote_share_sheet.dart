@@ -54,24 +54,37 @@ class _QuoteShareSheetState extends ConsumerState<QuoteShareSheet> {
           const SizedBox(height: 24),
           Screenshot(
             controller: _screenshotController,
-            child: _buildSharePreview(weatherAsync.asData?.value.type.emoji ?? '☀️', 
-                leaderboardAsync.asData?.value.firstOrNull?.currentStreak ?? 0),
+            child: _buildSharePreview(
+              weatherAsync.asData?.value.type.emoji ?? '☀️',
+              leaderboardAsync.asData?.value.firstOrNull?.currentStreak ?? 0,
+            ),
           ),
           const SizedBox(height: 32),
           ElevatedButton.icon(
             onPressed: _shareImage,
             icon: const Icon(Icons.share_rounded, color: Colors.black),
-            label: const Text('Export & Share', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+            label: const Text(
+              'Export & Share',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFB3FF00),
               minimumSize: const Size(double.infinity, 56),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
             ),
           ),
           const SizedBox(height: 12),
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel', style: TextStyle(color: Colors.white54)),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: Colors.white54),
+            ),
           ),
           const SizedBox(height: 12),
         ],
@@ -90,7 +103,10 @@ class _QuoteShareSheetState extends ConsumerState<QuoteShareSheet> {
           colors: [Color(0xFF1A1A1A), Color(0xFF0D0D0D)],
         ),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFB3FF00).withValues(alpha: 0.3), width: 1),
+        border: Border.all(
+          color: const Color(0xFFB3FF00).withValues(alpha: 0.3),
+          width: 1,
+        ),
       ),
       child: Column(
         children: [
@@ -121,10 +137,7 @@ class _QuoteShareSheetState extends ConsumerState<QuoteShareSheet> {
               ),
               Row(
                 children: [
-                  Text(
-                    weatherEmoji,
-                    style: const TextStyle(fontSize: 16),
-                  ),
+                  Text(weatherEmoji, style: const TextStyle(fontSize: 16)),
                   const SizedBox(width: 8),
                   Text(
                     '🔥 $streak',
@@ -139,7 +152,11 @@ class _QuoteShareSheetState extends ConsumerState<QuoteShareSheet> {
             ],
           ),
           const SizedBox(height: 40),
-          const Icon(Icons.format_quote_rounded, color: Color(0xFFB3FF00), size: 40),
+          const Icon(
+            Icons.format_quote_rounded,
+            color: Color(0xFFB3FF00),
+            size: 40,
+          ),
           const SizedBox(height: 24),
           Text(
             widget.quote.text,
@@ -172,7 +189,9 @@ class _QuoteShareSheetState extends ConsumerState<QuoteShareSheet> {
     final image = await _screenshotController.capture();
     if (image != null) {
       final directory = await getTemporaryDirectory();
-      final imagePath = await File('${directory.path}/streaksky_quote.png').create();
+      final imagePath = await File(
+        '${directory.path}/streaksky_quote.png',
+      ).create();
       await imagePath.writeAsBytes(image);
 
       await SharePlus.instance.share(

@@ -9,6 +9,6 @@ void main() {
     supabaseUrl: 'https://project.supabase.co',
     supabaseAnonKey: 'prod-anon-key',
   );
-  
+
   app.main();
 }

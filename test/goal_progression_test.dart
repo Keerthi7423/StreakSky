@@ -15,11 +15,11 @@ void main() {
       );
 
       final projection = GoalProjectionService.generateProjection(weeklyGoal);
-      
+
       expect(projection.labels.length, 7);
       expect(projection.idealPoints.length, 7);
       expect(projection.actualPoints.length, lessThanOrEqualTo(7));
-      
+
       // Ensure ideal linear progression targets exactly the target value at the end
       expect(projection.idealPoints.last, 100.0);
     });
@@ -35,7 +35,7 @@ void main() {
       );
 
       final projection = GoalProjectionService.generateProjection(monthlyGoal);
-      
+
       expect(projection.labels.length, greaterThanOrEqualTo(28));
       expect(projection.labels.length, lessThanOrEqualTo(31));
       expect(projection.idealPoints.last, 300.0);
@@ -52,9 +52,22 @@ void main() {
       );
 
       final projection = GoalProjectionService.generateProjection(careerGoal);
-      
+
       expect(projection.labels.length, 12);
-      expect(projection.labels, ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D']);
+      expect(projection.labels, [
+        'J',
+        'F',
+        'M',
+        'A',
+        'M',
+        'J',
+        'J',
+        'A',
+        'S',
+        'O',
+        'N',
+        'D',
+      ]);
       expect(projection.idealPoints.last, 10.0);
     });
   });

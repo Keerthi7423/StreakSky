@@ -22,31 +22,36 @@ void main() {
       );
     });
 
-    testWidgets('Should display habit details correctly (Emoji, Name, Category)', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          child: MaterialApp(
-            home: Scaffold(
-              body: HabitCard(habit: testHabit, isCompleted: false),
+    testWidgets(
+      'Should display habit details correctly (Emoji, Name, Category)',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(
+          ProviderScope(
+            child: MaterialApp(
+              home: Scaffold(
+                body: HabitCard(habit: testHabit, isCompleted: false),
+              ),
             ),
           ),
-        ),
-      );
+        );
 
-      // Verify the emoji is rendered
-      expect(find.text('💧'), findsOneWidget);
-      
-      // Verify the habit name is rendered
-      expect(find.text('Drink Water'), findsOneWidget);
-      
-      // Verify the category is rendered in uppercase
-      expect(find.text('HEALTH'), findsOneWidget);
+        // Verify the emoji is rendered
+        expect(find.text('💧'), findsOneWidget);
 
-      // Verify checkbox does not show check mark when incomplete
-      expect(find.byIcon(Icons.check), findsNothing);
-    });
+        // Verify the habit name is rendered
+        expect(find.text('Drink Water'), findsOneWidget);
 
-    testWidgets('Should display check mark when habit is completed', (WidgetTester tester) async {
+        // Verify the category is rendered in uppercase
+        expect(find.text('HEALTH'), findsOneWidget);
+
+        // Verify checkbox does not show check mark when incomplete
+        expect(find.byIcon(Icons.check), findsNothing);
+      },
+    );
+
+    testWidgets('Should display check mark when habit is completed', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         ProviderScope(
           child: MaterialApp(
@@ -59,7 +64,7 @@ void main() {
 
       // Verify the check icon is present
       expect(find.byIcon(Icons.check), findsOneWidget);
-      
+
       // The text should still be present
       expect(find.text('Drink Water'), findsOneWidget);
     });

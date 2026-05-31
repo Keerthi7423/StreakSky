@@ -30,7 +30,9 @@ final routerProvider = Provider<GoRouter>((ref) {
     navigatorKey: _rootNavigatorKey,
     redirect: (context, state) {
       final bool loggedIn = authState.asData?.value != null || demoLoggedIn;
-      final bool loggingIn = state.matchedLocation == '/login' || state.matchedLocation == '/register';
+      final bool loggingIn =
+          state.matchedLocation == '/login' ||
+          state.matchedLocation == '/register';
       final bool splashing = state.matchedLocation == '/splash';
       final bool onboarding = state.matchedLocation == '/onboarding';
 
@@ -67,10 +69,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/onboarding',
         builder: (context, state) => const OnboardingScreen(),
       ),
-      GoRoute(
-        path: '/login',
-        builder: (context, state) => const LoginScreen(),
-      ),
+      GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
       GoRoute(
         path: '/register',
         builder: (context, state) => const RegisterScreen(),
@@ -78,7 +77,9 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/year-review',
         builder: (context, state) {
-          final year = int.tryParse(state.uri.queryParameters['year'] ?? '') ?? DateTime.now().year;
+          final year =
+              int.tryParse(state.uri.queryParameters['year'] ?? '') ??
+              DateTime.now().year;
           return YearReviewScreen(year: year);
         },
       ),
@@ -146,19 +147,13 @@ final routerProvider = Provider<GoRouter>((ref) {
 class MainShell extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
 
-  const MainShell({
-    super.key,
-    required this.navigationShell,
-  });
+  const MainShell({super.key, required this.navigationShell});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
-        children: [
-          navigationShell,
-          const MilestoneCelebrationOverlay(),
-        ],
+        children: [navigationShell, const MilestoneCelebrationOverlay()],
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
@@ -206,4 +201,3 @@ class MainShell extends StatelessWidget {
     );
   }
 }
-

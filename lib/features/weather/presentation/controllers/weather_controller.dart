@@ -22,16 +22,17 @@ final weatherProvider = FutureProvider<WeatherModel>((ref) async {
   }
 
   final completionRate = completions.length / habits.length;
-  
+
   // Fetch historical data for Storm and Rainbow logic
   final localService = getIt<HabitLocalService>();
   final allHabits = await ref.watch(habitsListProvider.future);
   final now = DateTime.now();
-  
+
   final pastRates = <double>[];
   for (int i = 1; i <= 3; i++) {
     final date = now.subtract(Duration(days: i));
-    final dateStr = "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+    final dateStr =
+        "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
     final habitsDue = allHabits.where((h) => h.isDue(date)).toList();
     if (habitsDue.isEmpty) {
       pastRates.add(1.0); // Assume sunny if no habits due
@@ -42,10 +43,10 @@ final weatherProvider = FutureProvider<WeatherModel>((ref) async {
   }
 
   // Check for Storm (Task 45: 0% for 3+ days)
-  // PRD 7.5: Storm — 0% for 3+ days. 
+  // PRD 7.5: Storm — 0% for 3+ days.
   // We check if today is 0% and the last 2 days were also 0%.
   bool isStorm = completionRate == 0 && pastRates.take(2).every((r) => r == 0);
-  
+
   // Check for Rainbow (Task 43: First flawless day after 0% storm)
   // Rainbow: 100% today and the previous period was a storm (0% for 3 days).
   bool wasStormy = pastRates.every((r) => r == 0);
@@ -57,15 +58,16 @@ final weatherProvider = FutureProvider<WeatherModel>((ref) async {
   if (!isDemo && user != null) {
     final streakRepo = ref.watch(streakRepositoryProvider);
     final allStreaks = await streakRepo.getAllStreaks(user.uid);
-    
+
     final yesterday = now.subtract(const Duration(days: 1));
-    isTornado = allStreaks.any((s) => 
-      s.currentStreak == 0 && 
-      s.longestStreak > 0 && 
-      s.lastActive != null &&
-      s.lastActive!.year == yesterday.year &&
-      s.lastActive!.month == yesterday.month &&
-      s.lastActive!.day == yesterday.day
+    isTornado = allStreaks.any(
+      (s) =>
+          s.currentStreak == 0 &&
+          s.longestStreak > 0 &&
+          s.lastActive != null &&
+          s.lastActive!.year == yesterday.year &&
+          s.lastActive!.month == yesterday.month &&
+          s.lastActive!.day == yesterday.day,
     );
   }
 
@@ -87,29 +89,28 @@ final weatherProvider = FutureProvider<WeatherModel>((ref) async {
 final weatherForecastProvider = FutureProvider<List<WeatherModel>>((ref) async {
   final user = ref.watch(authStateProvider).asData?.value;
   final isDemo = ref.watch(demoLoggedInProvider);
-  
+
   if (user == null && !isDemo) return [];
 
   final habits = await ref.watch(habitsListProvider.future);
   if (habits.isEmpty) return [];
 
   final localService = getIt<HabitLocalService>();
-  
+
   final now = DateTime.now();
   final forecast = <WeatherModel>[];
 
   // Look back 7 days
   for (int i = 0; i < 7; i++) {
     final date = now.subtract(Duration(days: i));
-    final dateStr = "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
-    
+    final dateStr =
+        "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+
     final habitsDue = habits.where((h) => h.isDue(date)).toList();
     if (habitsDue.isEmpty) {
-      forecast.add(WeatherModel(
-        type: WeatherType.sunny,
-        completionRate: 1.0,
-        date: date,
-      ));
+      forecast.add(
+        WeatherModel(type: WeatherType.sunny, completionRate: 1.0, date: date),
+      );
       continue;
     }
 
@@ -124,11 +125,13 @@ final weatherForecastProvider = FutureProvider<List<WeatherModel>>((ref) async {
     }
 
     final rate = completions.length / habitsDue.length;
-    forecast.add(WeatherModel(
-      type: WeatherType.fromCompletionRate(rate),
-      completionRate: rate,
-      date: date,
-    ));
+    forecast.add(
+      WeatherModel(
+        type: WeatherType.fromCompletionRate(rate),
+        completionRate: rate,
+        date: date,
+      ),
+    );
   }
 
   return forecast.reversed.toList();

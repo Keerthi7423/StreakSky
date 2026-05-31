@@ -21,15 +21,17 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
       await ref.read(subscriptionControllerProvider).upgradeToPro(planType);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Upgraded to StreakSky Pro successfully!')),
+          const SnackBar(
+            content: Text('Upgraded to StreakSky Pro successfully!'),
+          ),
         );
         context.pop(); // Go back
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to upgrade: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Failed to upgrade: $e')));
       }
     } finally {
       if (mounted) {
@@ -87,19 +89,26 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                 ),
               ),
               const SizedBox(height: 48),
-              
+
               _buildFeatureRow(Icons.history, 'Multi-year Heatmap History'),
               const SizedBox(height: 16),
               _buildFeatureRow(Icons.flag_outlined, 'Advanced Career Goals'),
               const SizedBox(height: 16),
-              _buildFeatureRow(Icons.smart_toy_outlined, 'Sky AI Personal Agent'),
+              _buildFeatureRow(
+                Icons.smart_toy_outlined,
+                'Sky AI Personal Agent',
+              ),
               const SizedBox(height: 16),
               _buildFeatureRow(Icons.security, 'Unlimited Streak Shields'),
-              
+
               const Spacer(),
-              
+
               if (_isLoading)
-                const Center(child: CircularProgressIndicator(color: AppColors.primaryAccent))
+                const Center(
+                  child: CircularProgressIndicator(
+                    color: AppColors.primaryAccent,
+                  ),
+                )
               else ...[
                 ElevatedButton(
                   onPressed: () => _upgrade('monthly'),
@@ -128,7 +137,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                   child: Text(
                     '₹$yearlyPrice / year (Save 44%)',
                     style: const TextStyle(
-                      fontSize: 18, 
+                      fontSize: 18,
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
                     ),

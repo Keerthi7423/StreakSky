@@ -20,11 +20,11 @@ class HeatmapGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final firstDayOfYear = DateTime(year, 1, 1);
     final lastDayOfYear = DateTime(year, 12, 31);
-    
-    // Calculate how many days to show. GitHub usually shows a bit of the previous year 
+
+    // Calculate how many days to show. GitHub usually shows a bit of the previous year
     // to fill the first week, but here we'll just show the year's days.
     // GitHub style: Rows = Days of week (Mon-Sun), Columns = Weeks
-    
+
     // Adjust start to the beginning of the week (Monday)
     // DateTime.monday = 1
     final int startPadding = firstDayOfYear.weekday - 1;
@@ -51,21 +51,24 @@ class HeatmapGrid extends StatelessWidget {
                   child: GridView.builder(
                     scrollDirection: Axis.horizontal,
                     physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 7,
-                      mainAxisSpacing: 2,
-                      crossAxisSpacing: 2,
-                      childAspectRatio: 1,
-                    ),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 7,
+                          mainAxisSpacing: 2,
+                          crossAxisSpacing: 2,
+                          childAspectRatio: 1,
+                        ),
                     itemCount: totalCells,
                     itemBuilder: (context, index) {
                       if (index < startPadding) {
                         return const SizedBox.shrink();
                       }
-                      
-                      final currentDay = firstDayOfYear.add(Duration(days: index - startPadding));
+
+                      final currentDay = firstDayOfYear.add(
+                        Duration(days: index - startPadding),
+                      );
                       final dateStr = StreakDateUtils.formatDate(currentDay);
-                      
+
                       return HeatmapCell(
                         percentage: percentages[dateStr] ?? 0.0,
                         isComeback: comebackDates.contains(dateStr),
@@ -86,13 +89,17 @@ class HeatmapGrid extends StatelessWidget {
     final labels = ['Mon', '', 'Wed', '', 'Fri', '', 'Sun'];
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: labels.map((label) => SizedBox(
-        height: 12,
-        child: Text(
-          label,
-          style: const TextStyle(color: Colors.grey, fontSize: 10),
-        ),
-      )).toList(),
+      children: labels
+          .map(
+            (label) => SizedBox(
+              height: 12,
+              child: Text(
+                label,
+                style: const TextStyle(color: Colors.grey, fontSize: 10),
+              ),
+            ),
+          )
+          .toList(),
     );
   }
 

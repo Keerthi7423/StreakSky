@@ -16,7 +16,8 @@ class StatsSummary {
   final double completionRate;
   final List<double> weeklyTrend; // Last 7 days completion counts
   final List<double> monthlyTrend; // Last 30 days completion counts
-  final List<double> careerTrend; // Last 12 months completion counts (or similar)
+  final List<double>
+  careerTrend; // Last 12 months completion counts (or similar)
   final String? keystoneHabit;
   final double keystoneCorrelation;
   final List<List<double>> miniWaveforms; // One for each stat card
@@ -54,17 +55,25 @@ class RecentHabitLog {
 final statsProvider = Provider<StatsSummary>((ref) {
   final heatmapState = ref.watch(heatmapControllerProvider);
   final leaderboard = ref.watch(leaderboardProvider).asData?.value ?? [];
-  
+
   // Calculate total habits done
   int totalDone = 0;
-  heatmapState.dailyCompletionCounts.forEach((_, count) => totalDone += count.toInt());
+  heatmapState.dailyCompletionCounts.forEach(
+    (_, count) => totalDone += count.toInt(),
+  );
 
   // Best streak from leaderboard
   int bestStreak = 0;
   int currentStreak = 0;
   if (leaderboard.isNotEmpty) {
-    bestStreak = leaderboard.fold(0, (max, s) => s.longestStreak > max ? s.longestStreak : max);
-    currentStreak = leaderboard.fold(0, (max, s) => s.currentStreak > max ? s.currentStreak : max);
+    bestStreak = leaderboard.fold(
+      0,
+      (max, s) => s.longestStreak > max ? s.longestStreak : max,
+    );
+    currentStreak = leaderboard.fold(
+      0,
+      (max, s) => s.currentStreak > max ? s.currentStreak : max,
+    );
   }
 
   // Weekly trend (Last 7 days)
@@ -73,7 +82,9 @@ final statsProvider = Provider<StatsSummary>((ref) {
   for (int i = 6; i >= 0; i--) {
     final date = now.subtract(Duration(days: i));
     final dateStr = DateFormat('yyyy-MM-dd').format(date);
-    weeklyTrend.add((heatmapState.dailyCompletionCounts[dateStr] ?? 0).toDouble());
+    weeklyTrend.add(
+      (heatmapState.dailyCompletionCounts[dateStr] ?? 0).toDouble(),
+    );
   }
 
   // Monthly trend (Last 30 days)
@@ -81,11 +92,20 @@ final statsProvider = Provider<StatsSummary>((ref) {
   for (int i = 29; i >= 0; i--) {
     final date = now.subtract(Duration(days: i));
     final dateStr = DateFormat('yyyy-MM-dd').format(date);
-    monthlyTrend.add((heatmapState.dailyCompletionCounts[dateStr] ?? 0).toDouble());
+    monthlyTrend.add(
+      (heatmapState.dailyCompletionCounts[dateStr] ?? 0).toDouble(),
+    );
   }
 
   // Career trend (Last 6 months - summarized)
-  final List<double> careerTrend = [120, 150, 180, 140, 210, 195]; // Mocked monthly totals
+  final List<double> careerTrend = [
+    120,
+    150,
+    180,
+    140,
+    210,
+    195,
+  ]; // Mocked monthly totals
 
   // Keystone Habit Logic (Mocked for now as we don't have per-habit historical data easily accessible here)
   // In a real app, you'd analyze which habit's completion most often predicts other completions.
@@ -93,7 +113,9 @@ final statsProvider = Provider<StatsSummary>((ref) {
   final keystoneCorrelation = 0.85;
 
   // Completion rate (Total completed / Total possible)
-  final activeDays = heatmapState.dailyCompletionCounts.values.where((c) => c > 0).length;
+  final activeDays = heatmapState.dailyCompletionCounts.values
+      .where((c) => c > 0)
+      .length;
   final dayOfYear = int.parse(DateFormat('D').format(now));
   final completionRate = dayOfYear > 0 ? activeDays / dayOfYear : 0.0;
 
@@ -107,30 +129,46 @@ final statsProvider = Provider<StatsSummary>((ref) {
 
   // Fetch recent habits (Task 77)
   final localService = getIt<HabitLocalService>();
-  final List<HabitCompletionModel> recentCompletions = localService.getRecentCompletions(3);
+  final List<HabitCompletionModel> recentCompletions = localService
+      .getRecentCompletions(3);
   final allHabits = ref.watch(habitsListProvider).asData?.value ?? [];
-  
-  debugPrint('StatsProvider: recentCompletions count: ${recentCompletions.length}');
-  debugPrint('StatsProvider: allHabits count: ${allHabits.length}');
-  
-  try {
-    final List<RecentHabitLog> recentHabits = recentCompletions.map<RecentHabitLog>((c) {
-      final habit = allHabits.firstWhere((h) => h.id == c.habitId, orElse: () => HabitModel(
-        id: 'unknown', userId: '', name: 'Unknown Habit', emoji: '❓', colorHex: '808080'
-      ));
-      return RecentHabitLog(
-        habitName: habit.name,
-        emoji: habit.emoji ?? '✨',
-        colorHex: habit.colorHex ?? 'B3FF00',
-        completedAt: c.completedAt != null 
-            ? DateFormat('MMM d, HH:mm').format(c.completedAt!)
-            : (c.completedDate.isNotEmpty 
-                ? DateFormat('MMM d').format(DateTime.tryParse(c.completedDate) ?? DateTime.now())
-                : 'Recent'),
-      );
-    }).toList();
 
-    debugPrint('StatsProvider: recentHabits processed, count: ${recentHabits.length}');
+  debugPrint(
+    'StatsProvider: recentCompletions count: ${recentCompletions.length}',
+  );
+  debugPrint('StatsProvider: allHabits count: ${allHabits.length}');
+
+  try {
+    final List<RecentHabitLog> recentHabits = recentCompletions
+        .map<RecentHabitLog>((c) {
+          final habit = allHabits.firstWhere(
+            (h) => h.id == c.habitId,
+            orElse: () => HabitModel(
+              id: 'unknown',
+              userId: '',
+              name: 'Unknown Habit',
+              emoji: '❓',
+              colorHex: '808080',
+            ),
+          );
+          return RecentHabitLog(
+            habitName: habit.name,
+            emoji: habit.emoji ?? '✨',
+            colorHex: habit.colorHex ?? 'B3FF00',
+            completedAt: c.completedAt != null
+                ? DateFormat('MMM d, HH:mm').format(c.completedAt!)
+                : (c.completedDate.isNotEmpty
+                      ? DateFormat('MMM d').format(
+                          DateTime.tryParse(c.completedDate) ?? DateTime.now(),
+                        )
+                      : 'Recent'),
+          );
+        })
+        .toList();
+
+    debugPrint(
+      'StatsProvider: recentHabits processed, count: ${recentHabits.length}',
+    );
 
     final summary = StatsSummary(
       totalHabitsDone: totalDone,

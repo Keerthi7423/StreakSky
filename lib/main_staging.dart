@@ -9,6 +9,6 @@ void main() {
     supabaseUrl: 'https://staging-project.supabase.co',
     supabaseAnonKey: 'staging-anon-key',
   );
-  
+
   app.main();
 }

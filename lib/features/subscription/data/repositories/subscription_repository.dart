@@ -13,7 +13,7 @@ class SubscriptionRepository {
           .select()
           .eq('user_id', userId)
           .maybeSingle();
-      
+
       if (data == null) return null;
       return SubscriptionStatus.fromJson(data);
     } catch (e) {
@@ -31,7 +31,9 @@ class SubscriptionRepository {
         .maybeSingle();
 
     final validUntil = DateTime.now().add(
-      planType == 'monthly' ? const Duration(days: 30) : const Duration(days: 365)
+      planType == 'monthly'
+          ? const Duration(days: 30)
+          : const Duration(days: 365),
     );
 
     if (exists == null) {
@@ -42,12 +44,15 @@ class SubscriptionRepository {
         'valid_until': validUntil.toIso8601String(),
       });
     } else {
-      await _supabase.from('subscriptions').update({
-        'status': 'active',
-        'plan_type': planType,
-        'valid_until': validUntil.toIso8601String(),
-        'updated_at': DateTime.now().toIso8601String(),
-      }).eq('user_id', userId);
+      await _supabase
+          .from('subscriptions')
+          .update({
+            'status': 'active',
+            'plan_type': planType,
+            'valid_until': validUntil.toIso8601String(),
+            'updated_at': DateTime.now().toIso8601String(),
+          })
+          .eq('user_id', userId);
     }
   }
 }

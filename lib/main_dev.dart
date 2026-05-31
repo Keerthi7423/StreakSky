@@ -14,6 +14,6 @@ void main() async {
     supabaseUrl: dotenv.env['SUPABASE_URL'] ?? '',
     supabaseAnonKey: dotenv.env['SUPABASE_ANON_KEY'] ?? '',
   );
-  
+
   app.main();
 }

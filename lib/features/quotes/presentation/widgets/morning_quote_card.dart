@@ -64,7 +64,9 @@ class _MorningQuoteCardState extends ConsumerState<MorningQuoteCard> {
                         Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFB3FF00).withValues(alpha: 0.1),
+                            color: const Color(
+                              0xFFB3FF00,
+                            ).withValues(alpha: 0.1),
                             shape: BoxShape.circle,
                           ),
                           child: const Icon(
@@ -97,12 +99,18 @@ class _MorningQuoteCardState extends ConsumerState<MorningQuoteCard> {
                         ),
                         IconButton(
                           icon: Icon(
-                            quote.isBookmarked ? Icons.bookmark : Icons.bookmark_border,
-                            color: quote.isBookmarked ? const Color(0xFFB3FF00) : Colors.white24,
+                            quote.isBookmarked
+                                ? Icons.bookmark
+                                : Icons.bookmark_border,
+                            color: quote.isBookmarked
+                                ? const Color(0xFFB3FF00)
+                                : Colors.white24,
                             size: 20,
                           ),
                           onPressed: () {
-                            ref.read(quoteControllerProvider.notifier).toggleBookmark(quote.id);
+                            ref
+                                .read(quoteControllerProvider.notifier)
+                                .toggleBookmark(quote.id);
                           },
                         ),
                       ],

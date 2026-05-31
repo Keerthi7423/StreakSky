@@ -14,8 +14,12 @@ class AiNudgeCard extends ConsumerWidget {
     if (nudge == null) {
       // Trigger fetch if not available
       // In a real app, we'd pass actual yesterday's data here
-      Future.microtask(() => 
-        ref.read(aiControllerProvider.notifier).fetchDailyNudge("4/5 habits completed yesterday. Streak: 12 days.")
+      Future.microtask(
+        () => ref
+            .read(aiControllerProvider.notifier)
+            .fetchDailyNudge(
+              "4/5 habits completed yesterday. Streak: 12 days.",
+            ),
       );
       return const SizedBox.shrink();
     }
@@ -33,19 +37,29 @@ class AiNudgeCard extends ConsumerWidget {
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFB3FF00).withValues(alpha: 0.2)),
+        border: Border.all(
+          color: const Color(0xFFB3FF00).withValues(alpha: 0.2),
+        ),
       ),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: const Color(0xFFB3FF00).withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(Icons.auto_awesome, color: Color(0xFFB3FF00), size: 18),
-          ).animate(onPlay: (c) => c.repeat())
-            .shimmer(duration: 2.seconds, color: const Color(0xFFB3FF00).withValues(alpha: 0.4)),
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFB3FF00).withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.auto_awesome,
+                  color: Color(0xFFB3FF00),
+                  size: 18,
+                ),
+              )
+              .animate(onPlay: (c) => c.repeat())
+              .shimmer(
+                duration: 2.seconds,
+                color: const Color(0xFFB3FF00).withValues(alpha: 0.4),
+              ),
           const SizedBox(width: 16),
           Expanded(
             child: Column(

@@ -8,7 +8,9 @@ final subscriptionRepositoryProvider = Provider<SubscriptionRepository>((ref) {
   return SubscriptionRepository(Supabase.instance.client);
 });
 
-final subscriptionStatusProvider = FutureProvider<SubscriptionStatus?>((ref) async {
+final subscriptionStatusProvider = FutureProvider<SubscriptionStatus?>((
+  ref,
+) async {
   final user = ref.watch(authStateProvider).asData?.value;
   if (user == null) return null;
 

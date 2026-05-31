@@ -26,7 +26,7 @@ class GoalProjectionService {
       end = start.add(const Duration(days: 6));
       totalDays = 7;
       currentDayIndex = now.weekday - 1;
-      
+
       final labels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
       return _generate(goal, totalDays, currentDayIndex, labels);
     } else if (goal.type == GoalType.monthly) {
@@ -35,29 +35,47 @@ class GoalProjectionService {
       end = nextMonth.subtract(const Duration(days: 1));
       totalDays = end.day;
       currentDayIndex = now.day - 1;
-      
+
       final labels = List.generate(totalDays, (i) => (i + 1).toString());
       return _generate(goal, totalDays, currentDayIndex, labels);
     } else {
       // Career goals: Use 12 month projection or similar
       totalDays = 12;
       currentDayIndex = 0; // Simplified for now
-      final labels = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
+      final labels = [
+        'J',
+        'F',
+        'M',
+        'A',
+        'M',
+        'J',
+        'J',
+        'A',
+        'S',
+        'O',
+        'N',
+        'D',
+      ];
       return _generate(goal, totalDays, currentDayIndex, labels);
     }
   }
 
-  static GoalProjectionData _generate(GoalModel goal, int totalDays, int currentDayIndex, List<String> labels) {
+  static GoalProjectionData _generate(
+    GoalModel goal,
+    int totalDays,
+    int currentDayIndex,
+    List<String> labels,
+  ) {
     final target = goal.targetValue?.toDouble() ?? 100.0;
     final current = goal.currentValue.toDouble();
-    
+
     final idealPoints = <double>[];
     final actualPoints = <double>[];
 
     for (int i = 0; i < totalDays; i++) {
       // Ideal: Linear progression
       idealPoints.add((target / (totalDays - 1)) * i);
-      
+
       // Actual: We only know current value at current day
       // For projection, we can show actual up to today, and then a dashed line?
       // Or just a single line showing growth so far.

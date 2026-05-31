@@ -12,7 +12,8 @@ class GraphsScreen extends ConsumerStatefulWidget {
   ConsumerState<GraphsScreen> createState() => _GraphsScreenState();
 }
 
-class _GraphsScreenState extends ConsumerState<GraphsScreen> with SingleTickerProviderStateMixin {
+class _GraphsScreenState extends ConsumerState<GraphsScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -55,7 +56,7 @@ class _GraphsScreenState extends ConsumerState<GraphsScreen> with SingleTickerPr
           children: [
             const Text('Performance Trends', style: AppTypography.h3),
             const SizedBox(height: 16),
-            
+
             // Tab Bar for Timeframes
             Container(
               decoration: BoxDecoration(
@@ -79,9 +80,9 @@ class _GraphsScreenState extends ConsumerState<GraphsScreen> with SingleTickerPr
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // Graph Viewport
             SizedBox(
               height: 250,
@@ -106,36 +107,37 @@ class _GraphsScreenState extends ConsumerState<GraphsScreen> with SingleTickerPr
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 32),
-            
+
             const Text('Insights & Correlations', style: AppTypography.h3),
             const SizedBox(height: 16),
-            
+
             if (stats.keystoneHabit != null)
               KeystoneHabitCard(
                 habitName: stats.keystoneHabit!,
                 correlation: stats.keystoneCorrelation,
               ),
-            
+
             const SizedBox(height: 24),
-            
+
             _buildInsightCard(
               icon: Icons.trending_up,
               color: Colors.greenAccent,
               title: 'Best Performance Day',
-              subtitle: 'You are 40% more likely to complete habits on Tuesdays.',
+              subtitle:
+                  'You are 40% more likely to complete habits on Tuesdays.',
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             _buildInsightCard(
               icon: Icons.wb_sunny_outlined,
               color: Colors.orangeAccent,
               title: 'Weather Impact',
               subtitle: 'Sunny days increase your completion rate by 15%.',
             ),
-            
+
             const SizedBox(height: 32),
           ],
         ),
@@ -175,7 +177,9 @@ class _GraphsScreenState extends ConsumerState<GraphsScreen> with SingleTickerPr
                 const SizedBox(height: 4),
                 Text(
                   subtitle,
-                  style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+                  style: AppTypography.bodySmall.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
                 ),
               ],
             ),
