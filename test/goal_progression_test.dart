@@ -7,10 +7,11 @@ void main() {
     test('Should generate 7-day projection for Weekly Goals', () {
       final weeklyGoal = GoalModel(
         id: '1',
+        userId: 'user_1',
         title: 'Read Books',
         type: GoalType.weekly,
-        targetValue: 100.0,
-        currentValue: 50.0,
+        targetValue: 100,
+        currentValue: 50,
         createdAt: DateTime.now(),
       );
 
@@ -27,10 +28,11 @@ void main() {
     test('Should generate multi-day projection for Monthly Goals', () {
       final monthlyGoal = GoalModel(
         id: '2',
+        userId: 'user_1',
         title: 'Run Marathon',
         type: GoalType.monthly,
-        targetValue: 300.0,
-        currentValue: 150.0,
+        targetValue: 300,
+        currentValue: 150,
         createdAt: DateTime.now(),
       );
 
@@ -44,10 +46,11 @@ void main() {
     test('Should generate 12-month projection for Career Goals', () {
       final careerGoal = GoalModel(
         id: '3',
+        userId: 'user_1',
         title: 'Senior Developer',
         type: GoalType.career,
-        targetValue: 10.0,
-        currentValue: 5.0,
+        targetValue: 10,
+        currentValue: 5,
         createdAt: DateTime.now(),
       );
 
