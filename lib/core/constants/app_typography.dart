@@ -17,6 +17,7 @@ class AppTypography {
     fontSize: 32,
     fontWeight: FontWeight.w900,
     color: AppColors.textPrimary,
+    fontFeatures: [FontFeature.tabularFigures()],
   );
 
   static const TextStyle h1 = TextStyle(
@@ -24,6 +25,7 @@ class AppTypography {
     fontSize: 24,
     fontWeight: FontWeight.bold,
     color: AppColors.textPrimary,
+    fontFeatures: [FontFeature.tabularFigures()],
   );
 
   static const TextStyle h2 = TextStyle(
@@ -31,6 +33,7 @@ class AppTypography {
     fontSize: 20,
     fontWeight: FontWeight.bold,
     color: AppColors.textPrimary,
+    fontFeatures: [FontFeature.tabularFigures()],
   );
 
   static const TextStyle h3 = TextStyle(
@@ -38,6 +41,7 @@ class AppTypography {
     fontSize: 17,
     fontWeight: FontWeight.w600,
     color: AppColors.textPrimary,
+    fontFeatures: [FontFeature.tabularFigures()],
   );
 
   static const TextStyle bodyLarge = TextStyle(
@@ -45,6 +49,7 @@ class AppTypography {
     fontSize: 16,
     fontWeight: FontWeight.normal,
     color: AppColors.textPrimary,
+    fontFeatures: [FontFeature.tabularFigures()],
   );
 
   static const TextStyle body = TextStyle(
@@ -52,6 +57,7 @@ class AppTypography {
     fontSize: 14,
     fontWeight: FontWeight.normal,
     color: AppColors.textPrimary,
+    fontFeatures: [FontFeature.tabularFigures()],
   );
 
   static const TextStyle bodySmall = TextStyle(
@@ -59,6 +65,7 @@ class AppTypography {
     fontSize: 13,
     fontWeight: FontWeight.normal,
     color: AppColors.textPrimary,
+    fontFeatures: [FontFeature.tabularFigures()],
   );
 
   static const TextStyle caption = TextStyle(
@@ -66,6 +73,7 @@ class AppTypography {
     fontSize: 12,
     fontWeight: FontWeight.w500,
     color: AppColors.textSecondary,
+    fontFeatures: [FontFeature.tabularFigures()],
   );
 
   static const TextStyle micro = TextStyle(
@@ -73,6 +81,7 @@ class AppTypography {
     fontSize: 10,
     fontWeight: FontWeight.w500,
     color: AppColors.textSecondary,
+    fontFeatures: [FontFeature.tabularFigures()],
   );
 
   static const TextStyle quote = TextStyle(
@@ -82,6 +91,7 @@ class AppTypography {
     height: 1.6,
     fontStyle: FontStyle.italic,
     color: AppColors.textPrimary,
+    fontFeatures: [FontFeature.tabularFigures()],
   );
 
   static const TextStyle habitName = TextStyle(
@@ -89,6 +99,7 @@ class AppTypography {
     fontSize: 15,
     fontWeight: FontWeight.w600,
     color: AppColors.textPrimary,
+    fontFeatures: [FontFeature.tabularFigures()],
   );
 
   static const TextStyle sectionLabel = TextStyle(
@@ -97,5 +108,6 @@ class AppTypography {
     fontWeight: FontWeight.w500,
     letterSpacing: 0.5,
     color: AppColors.textSecondary,
+    fontFeatures: [FontFeature.tabularFigures()],
   );
 }
