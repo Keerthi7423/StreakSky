@@ -12,13 +12,13 @@ class AzureApimInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     // Append the APIM subscription key to every outgoing request.
-    // Azure APIM uses 'Ocp-Apim-Subscription-Key' header to identify the client 
+    // Azure APIM uses 'Ocp-Apim-Subscription-Key' header to identify the client
     // and apply rate-limiting policies (e.g., max 100 requests / minute).
     options.headers['Ocp-Apim-Subscription-Key'] = subscriptionKey;
-    
+
     // Add additional security headers if necessary
     options.headers['X-Client-Platform'] = defaultTargetPlatform.toString();
-    
+
     debugPrint("APIM Interceptor: Adding Subscription Key to ${options.path}");
     super.onRequest(options, handler);
   }

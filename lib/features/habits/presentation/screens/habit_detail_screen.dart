@@ -51,7 +51,9 @@ class HabitDetailScreen extends ConsumerWidget {
                   decoration: BoxDecoration(
                     color: themeColor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: themeColor.withValues(alpha: 0.3)),
+                    border: Border.all(
+                      color: themeColor.withValues(alpha: 0.3),
+                    ),
                   ),
                   child: Text(
                     habit.emoji ?? '🎯',
@@ -130,22 +132,36 @@ class HabitDetailScreen extends ConsumerWidget {
                           ),
                           child: Row(
                             children: [
-                              Icon(Icons.check_circle, color: themeColor, size: 20),
+                              Icon(
+                                Icons.check_circle,
+                                color: themeColor,
+                                size: 20,
+                              ),
                               const SizedBox(width: 12),
                               Text(
                                 DateFormat('EEEE, MMM d, yyyy').format(date),
-                                style: const TextStyle(color: Colors.white, fontSize: 14),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                ),
                               ),
                               const Spacer(),
                               if (item.note != null && item.note!.isNotEmpty)
-                                const Icon(Icons.notes, color: Colors.white38, size: 16),
+                                const Icon(
+                                  Icons.notes,
+                                  color: Colors.white38,
+                                  size: 16,
+                                ),
                             ],
                           ),
                         );
                       },
                     ),
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, s) => Text('Error loading history: $e', style: const TextStyle(color: Colors.red)),
+              error: (e, s) => Text(
+                'Error loading history: $e',
+                style: const TextStyle(color: Colors.red),
+              ),
             ),
           ],
         ),
@@ -166,12 +182,20 @@ class HabitDetailScreen extends ConsumerWidget {
         children: [
           Text(
             label,
-            style: const TextStyle(color: Colors.white38, fontSize: 10, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+              color: Colors.white38,
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           const SizedBox(height: 4),
           Text(
             value,
-            style: TextStyle(color: color, fontSize: 20, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              color: color,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ],
       ),
@@ -193,7 +217,11 @@ class HabitDetailScreen extends ConsumerWidget {
           SizedBox(height: 16),
           Text(
             'NO COMPLETIONS YET',
-            style: TextStyle(color: Colors.white24, fontSize: 12, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              color: Colors.white24,
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ],
       ),
@@ -205,7 +233,10 @@ class HabitDetailScreen extends ConsumerWidget {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: const Color(0xFF1A1A1A),
-        title: const Text('Archive Habit?', style: TextStyle(color: Colors.white)),
+        title: const Text(
+          'Archive Habit?',
+          style: TextStyle(color: Colors.white),
+        ),
         content: const Text(
           'This habit will be hidden from your daily list but its history will be preserved.',
           style: TextStyle(color: Colors.white70),
@@ -213,7 +244,10 @@ class HabitDetailScreen extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('CANCEL', style: TextStyle(color: Colors.white38)),
+            child: const Text(
+              'CANCEL',
+              style: TextStyle(color: Colors.white38),
+            ),
           ),
           TextButton(
             onPressed: () {
@@ -225,7 +259,13 @@ class HabitDetailScreen extends ConsumerWidget {
                 }
               });
             },
-            child: const Text('ARCHIVE', style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold)),
+            child: const Text(
+              'ARCHIVE',
+              style: TextStyle(
+                color: Colors.amber,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ],
       ),
@@ -237,7 +277,10 @@ class HabitDetailScreen extends ConsumerWidget {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: const Color(0xFF1A1A1A),
-        title: const Text('Delete Habit?', style: TextStyle(color: Colors.white)),
+        title: const Text(
+          'Delete Habit?',
+          style: TextStyle(color: Colors.white),
+        ),
         content: const Text(
           'This action is permanent. All history for this habit will be lost.',
           style: TextStyle(color: Colors.white70),
@@ -245,7 +288,10 @@ class HabitDetailScreen extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('CANCEL', style: TextStyle(color: Colors.white38)),
+            child: const Text(
+              'CANCEL',
+              style: TextStyle(color: Colors.white38),
+            ),
           ),
           TextButton(
             onPressed: () {
@@ -257,7 +303,13 @@ class HabitDetailScreen extends ConsumerWidget {
                 }
               });
             },
-            child: const Text('DELETE', style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold)),
+            child: const Text(
+              'DELETE',
+              style: TextStyle(
+                color: Colors.redAccent,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ],
       ),
@@ -266,7 +318,9 @@ class HabitDetailScreen extends ConsumerWidget {
 
   void _showEditDialog(BuildContext context, WidgetRef ref) {
     final nameController = TextEditingController(text: habit.name);
-    final categoryController = TextEditingController(text: habit.category ?? '');
+    final categoryController = TextEditingController(
+      text: habit.category ?? '',
+    );
 
     showDialog(
       context: context,
@@ -282,7 +336,9 @@ class HabitDetailScreen extends ConsumerWidget {
               decoration: const InputDecoration(
                 labelText: 'Habit Name',
                 labelStyle: TextStyle(color: Colors.white54),
-                enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white24),
+                ),
               ),
             ),
             const SizedBox(height: 16),
@@ -292,7 +348,9 @@ class HabitDetailScreen extends ConsumerWidget {
               decoration: const InputDecoration(
                 labelText: 'Category',
                 labelStyle: TextStyle(color: Colors.white54),
-                enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white24),
+                ),
               ),
             ),
           ],
@@ -300,16 +358,23 @@ class HabitDetailScreen extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('CANCEL', style: TextStyle(color: Colors.white38)),
+            child: const Text(
+              'CANCEL',
+              style: TextStyle(color: Colors.white38),
+            ),
           ),
           TextButton(
             onPressed: () {
               final updatedHabit = habit.copyWith(
                 name: nameController.text,
-                category: categoryController.text.isEmpty ? null : categoryController.text,
+                category: categoryController.text.isEmpty
+                    ? null
+                    : categoryController.text,
               );
-              ref.read(habitControllerProvider.notifier).updateHabit(updatedHabit);
-              
+              ref
+                  .read(habitControllerProvider.notifier)
+                  .updateHabit(updatedHabit);
+
               // Safe navigation to avoid !_debugLocked error
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (context.mounted) {
@@ -317,7 +382,13 @@ class HabitDetailScreen extends ConsumerWidget {
                 }
               });
             },
-            child: const Text('SAVE', style: TextStyle(color: Color(0xFFB3FF00), fontWeight: FontWeight.bold)),
+            child: const Text(
+              'SAVE',
+              style: TextStyle(
+                color: Color(0xFFB3FF00),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ],
       ),

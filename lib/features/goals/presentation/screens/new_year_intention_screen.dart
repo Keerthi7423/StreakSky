@@ -5,13 +5,15 @@ class NewYearIntentionScreen extends ConsumerStatefulWidget {
   const NewYearIntentionScreen({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<NewYearIntentionScreen> createState() => _NewYearIntentionScreenState();
+  ConsumerState<NewYearIntentionScreen> createState() =>
+      _NewYearIntentionScreenState();
 }
 
-class _NewYearIntentionScreenState extends ConsumerState<NewYearIntentionScreen> with SingleTickerProviderStateMixin {
+class _NewYearIntentionScreenState extends ConsumerState<NewYearIntentionScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animController;
   late Animation<double> _fadeAnim;
-  
+
   bool _isLoading = true;
   List<String> _suggestedGoals = [];
 
@@ -22,10 +24,11 @@ class _NewYearIntentionScreenState extends ConsumerState<NewYearIntentionScreen>
       vsync: this,
       duration: const Duration(milliseconds: 1500),
     );
-    _fadeAnim = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(parent: _animController, curve: Curves.easeIn),
-    );
-    
+    _fadeAnim = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(CurvedAnimation(parent: _animController, curve: Curves.easeIn));
+
     _fetchIntentions();
   }
 
@@ -38,7 +41,7 @@ class _NewYearIntentionScreenState extends ConsumerState<NewYearIntentionScreen>
         _suggestedGoals = [
           "Complete 100 days of deep work",
           "Reach 10,000 steps daily for a month",
-          "Ship the V2 of the personal project"
+          "Ship the V2 of the personal project",
         ];
       });
       _animController.forward();
@@ -89,7 +92,9 @@ class _NewYearIntentionScreenState extends ConsumerState<NewYearIntentionScreen>
                 FadeTransition(
                   opacity: _fadeAnim,
                   child: Column(
-                    children: _suggestedGoals.map((goal) => _buildGoalCard(goal)).toList(),
+                    children: _suggestedGoals
+                        .map((goal) => _buildGoalCard(goal))
+                        .toList(),
                   ),
                 ),
               const Spacer(),
@@ -113,7 +118,10 @@ class _NewYearIntentionScreenState extends ConsumerState<NewYearIntentionScreen>
                       },
                       child: const Text(
                         "Accept Intentions",
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),

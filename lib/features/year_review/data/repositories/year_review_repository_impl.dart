@@ -28,7 +28,11 @@ class YearReviewRepositoryImpl implements YearReviewRepository {
   );
 
   @override
-  Future<YearReviewModel> generateYearReview(String userId, int year, {bool isDemo = false}) async {
+  Future<YearReviewModel> generateYearReview(
+    String userId,
+    int year, {
+    bool isDemo = false,
+  }) async {
     if (isDemo) {
       // Return beautiful mock year review data for presentation
       return _generateDemoReview(userId, year);
@@ -41,7 +45,11 @@ class YearReviewRepositoryImpl implements YearReviewRepository {
 
       // 1. Fetch habits and completions
       final allHabits = await _habitRepository.getHabits(userId);
-      final completions = await _habitRepository.getCompletionsForDateRange(userId, startDateStr, endDateStr);
+      final completions = await _habitRepository.getCompletionsForDateRange(
+        userId,
+        startDateStr,
+        endDateStr,
+      );
 
       // 2. Fetch goals
       final allGoals = await _goalRepository.getGoals(userId);
@@ -55,19 +63,38 @@ class YearReviewRepositoryImpl implements YearReviewRepository {
 
       // --- Habit Report Cards ---
       final habitReports = <HabitReportCard>[];
-      final monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      final monthNames = [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December',
+      ];
 
       for (final habit in allHabits) {
-        final habitCompletions = completions.where((c) => c.habitId == habit.id).toList();
+        final habitCompletions = completions
+            .where((c) => c.habitId == habit.id)
+            .toList();
         if (habitCompletions.isEmpty) continue;
 
         // Active days calculation
-        final start = habit.startDate ?? habit.createdAt ?? DateTime(year, 1, 1);
+        final start =
+            habit.startDate ?? habit.createdAt ?? DateTime(year, 1, 1);
         final activeStart = start.year == year ? start : DateTime(year, 1, 1);
-        final end = DateTime.now().year == year ? DateTime.now() : DateTime(year, 12, 31);
+        final end = DateTime.now().year == year
+            ? DateTime.now()
+            : DateTime(year, 12, 31);
         final activeDays = end.difference(activeStart).inDays + 1;
         final totalCompletions = habitCompletions.length;
-        final rate = (totalCompletions / (activeDays > 0 ? activeDays : 1.0)).clamp(0.0, 1.0);
+        final rate = (totalCompletions / (activeDays > 0 ? activeDays : 1.0))
+            .clamp(0.0, 1.0);
 
         // Longest Streak in Year
         final completedDates = habitCompletions
@@ -129,18 +156,22 @@ class YearReviewRepositoryImpl implements YearReviewRepository {
           trend = 'declining';
         }
 
-        habitReports.add(HabitReportCard(
-          habitId: habit.id,
-          name: habit.name,
-          emoji: habit.emoji ?? '📝',
-          colorHex: habit.colorHex ?? 'B3FF00',
-          totalCompletions: totalCompletions,
-          completionRate: rate,
-          longestStreak: maxStreak,
-          bestMonth: monthNames[maxMonthIdx],
-          worstMonth: completedDates.isEmpty ? 'None' : monthNames[minMonthIdx],
-          trend: trend,
-        ));
+        habitReports.add(
+          HabitReportCard(
+            habitId: habit.id,
+            name: habit.name,
+            emoji: habit.emoji ?? '📝',
+            colorHex: habit.colorHex ?? 'B3FF00',
+            totalCompletions: totalCompletions,
+            completionRate: rate,
+            longestStreak: maxStreak,
+            bestMonth: monthNames[maxMonthIdx],
+            worstMonth: completedDates.isEmpty
+                ? 'None'
+                : monthNames[minMonthIdx],
+            trend: trend,
+          ),
+        );
       }
 
       // --- Weather Year Summary ---
@@ -148,14 +179,18 @@ class YearReviewRepositoryImpl implements YearReviewRepository {
       int totalStormyDays = 0;
       final monthlySunnyCounts = List<int>.filled(12, 0);
       final monthlyStormyCounts = List<int>.filled(12, 0);
-      final dailyCompletionMap = <String, int>{}; // date string -> completed habits
+      final dailyCompletionMap =
+          <String, int>{}; // date string -> completed habits
 
       for (final comp in completions) {
-        dailyCompletionMap[comp.completedDate] = (dailyCompletionMap[comp.completedDate] ?? 0) + 1;
+        dailyCompletionMap[comp.completedDate] =
+            (dailyCompletionMap[comp.completedDate] ?? 0) + 1;
       }
 
       // Let's sweep days of the year
-      final endDay = DateTime.now().year == year ? DateTime.now() : DateTime(year, 12, 31);
+      final endDay = DateTime.now().year == year
+          ? DateTime.now()
+          : DateTime(year, 12, 31);
       final totalDays = endDay.difference(DateTime(year, 1, 1)).inDays + 1;
 
       int sunnyCount = 0;
@@ -166,7 +201,8 @@ class YearReviewRepositoryImpl implements YearReviewRepository {
 
       for (int i = 0; i < totalDays; i++) {
         final date = DateTime(year, 1, 1).add(Duration(days: i));
-        final dateStr = '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+        final dateStr =
+            '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
 
         // Count how many habits were active on this day
         final activeOnDay = allHabits.where((h) {
@@ -205,7 +241,8 @@ class YearReviewRepositoryImpl implements YearReviewRepository {
         'Rainy': rainyCount,
         'Stormy': stormyCount,
       };
-      final sortedWeather = weatherCounts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
+      final sortedWeather = weatherCounts.entries.toList()
+        ..sort((a, b) => b.value.compareTo(a.value));
       final mostCommonWeather = sortedWeather.first.key;
 
       // Best weather month (highest sunny days)
@@ -236,25 +273,45 @@ class YearReviewRepositoryImpl implements YearReviewRepository {
         }
       }
 
-      final sunnyPercentage = ((totalSunnyDays / (totalDays > 0 ? totalDays : 1.0)) * 100).toStringAsFixed(0);
-      final weatherSummaryText = "Your sky was sunny $totalSunnyDays days this year. That is $sunnyPercentage% of the year. Your best year yet.";
+      final sunnyPercentage =
+          ((totalSunnyDays / (totalDays > 0 ? totalDays : 1.0)) * 100)
+              .toStringAsFixed(0);
+      final weatherSummaryText =
+          "Your sky was sunny $totalSunnyDays days this year. That is $sunnyPercentage% of the year. Your best year yet.";
 
       // --- Goal Completion Summary ---
-      final weeklyGoals = yearGoals.where((g) => g.type == GoalType.weekly).toList();
-      final monthlyGoals = yearGoals.where((g) => g.type == GoalType.monthly).toList();
-      final careerMilestones = yearGoals.where((g) => g.type == GoalType.career && g.isMilestone).toList();
+      final weeklyGoals = yearGoals
+          .where((g) => g.type == GoalType.weekly)
+          .toList();
+      final monthlyGoals = yearGoals
+          .where((g) => g.type == GoalType.monthly)
+          .toList();
+      final careerMilestones = yearGoals
+          .where((g) => g.type == GoalType.career && g.isMilestone)
+          .toList();
 
-      final weeklyGoalsCompleted = weeklyGoals.where((g) => g.isCompleted).length;
-      final monthlyGoalsCompleted = monthlyGoals.where((g) => g.isCompleted).length;
-      final careerMilestonesHit = careerMilestones.where((g) => g.isCompleted).length;
+      final weeklyGoalsCompleted = weeklyGoals
+          .where((g) => g.isCompleted)
+          .length;
+      final monthlyGoalsCompleted = monthlyGoals
+          .where((g) => g.isCompleted)
+          .length;
+      final careerMilestonesHit = careerMilestones
+          .where((g) => g.isCompleted)
+          .length;
 
       final totalGoalsCount = yearGoals.length;
       final completedGoalsCount = yearGoals.where((g) => g.isCompleted).length;
-      final overallGoalScore = totalGoalsCount > 0 ? ((completedGoalsCount / totalGoalsCount) * 100).round() : 0;
+      final overallGoalScore = totalGoalsCount > 0
+          ? ((completedGoalsCount / totalGoalsCount) * 100).round()
+          : 0;
 
       // --- Streak Hall of Fame ---
       final topStreaks = allStreaks.map((s) {
-        final habit = allHabits.firstWhere((h) => h.id == s.habitId, orElse: () => const HabitModel(id: '', userId: '', name: 'Habit'));
+        final habit = allHabits.firstWhere(
+          (h) => h.id == s.habitId,
+          orElse: () => const HabitModel(id: '', userId: '', name: 'Habit'),
+        );
         return TopStreakItem(
           habitName: habit.name,
           emoji: habit.emoji ?? '🔥',
@@ -264,8 +321,14 @@ class YearReviewRepositoryImpl implements YearReviewRepository {
       topStreaks.sort((a, b) => b.streakDays.compareTo(a.streakDays));
       final top3Streaks = topStreaks.take(3).toList();
 
-      final totalShields = allStreaks.fold<int>(0, (sum, element) => sum + element.shieldsHeld);
-      final totalComebacks = allStreaks.fold<int>(0, (sum, element) => sum + element.comebackCount);
+      final totalShields = allStreaks.fold<int>(
+        0,
+        (sum, element) => sum + element.shieldsHeld,
+      );
+      final totalComebacks = allStreaks.fold<int>(
+        0,
+        (sum, element) => sum + element.comebackCount,
+      );
 
       // Consecutive perfect weeks calculation (Sunny weeks)
       int consecutivePerfectWeeks = 0;
@@ -274,8 +337,9 @@ class YearReviewRepositoryImpl implements YearReviewRepository {
         bool perfect = true;
         for (int d = 0; d < 7; d++) {
           final date = DateTime(year, 1, 1).add(Duration(days: i * 7 + d));
-          final dateStr = '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
-          
+          final dateStr =
+              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+
           final activeOnDay = allHabits.where((h) {
             final start = h.startDate ?? h.createdAt ?? DateTime(year, 1, 1);
             return start.isBefore(date.add(const Duration(days: 1)));
@@ -298,16 +362,26 @@ class YearReviewRepositoryImpl implements YearReviewRepository {
       }
 
       // --- AI Narrative generation ---
-      String summaryString = "Year: $year. Habits completed: ${completions.length}. Sunny days: $totalSunnyDays (out of $totalDays). Stormy days: $totalStormyDays. Most common weather: $mostCommonWeather. Top streak: ${top3Streaks.isNotEmpty ? top3Streaks.first.streakDays : 0} days. Goal score: $overallGoalScore%. Shields used: $totalShields. Comebacks: $totalComebacks.";
-      
+      String summaryString =
+          "Year: $year. Habits completed: ${completions.length}. Sunny days: $totalSunnyDays (out of $totalDays). Stormy days: $totalStormyDays. Most common weather: $mostCommonWeather. Top streak: ${top3Streaks.isNotEmpty ? top3Streaks.first.streakDays : 0} days. Goal score: $overallGoalScore%. Shields used: $totalShields. Comebacks: $totalComebacks.";
+
       String aiNarrativeText = '';
       try {
-        aiNarrativeText = await _aiRepository.generateYearReviewNarrative(summaryString);
+        aiNarrativeText = await _aiRepository.generateYearReviewNarrative(
+          summaryString,
+        );
       } catch (e) {
-        debugPrint('Ollama Year Narrative generation failed, using beautiful local fallback template: $e');
-        final topHabitName = top3Streaks.isNotEmpty ? top3Streaks.first.habitName : 'habits';
-        final maxStreakVal = top3Streaks.isNotEmpty ? top3Streaks.first.streakDays : 0;
-        aiNarrativeText = "$year was a year of incredible consistency and resilience in your sky. You built a powerful $maxStreakVal-day streak in $topHabitName, weathered $totalStormyDays stormy patches, and made $totalComebacks stunning comebacks (rainbows) after setbacks. Your sky stayed bright and sunny for $totalSunnyDays perfect days, proving your dedication to growth. Carry this powerful momentum into the new year!";
+        debugPrint(
+          'Ollama Year Narrative generation failed, using beautiful local fallback template: $e',
+        );
+        final topHabitName = top3Streaks.isNotEmpty
+            ? top3Streaks.first.habitName
+            : 'habits';
+        final maxStreakVal = top3Streaks.isNotEmpty
+            ? top3Streaks.first.streakDays
+            : 0;
+        aiNarrativeText =
+            "$year was a year of incredible consistency and resilience in your sky. You built a powerful $maxStreakVal-day streak in $topHabitName, weathered $totalStormyDays stormy patches, and made $totalComebacks stunning comebacks (rainbows) after setbacks. Your sky stayed bright and sunny for $totalSunnyDays perfect days, proving your dedication to growth. Carry this powerful momentum into the new year!";
       }
 
       final review = YearReviewModel(
@@ -345,7 +419,9 @@ class YearReviewRepositoryImpl implements YearReviewRepository {
       await saveYearReview(review);
       return review;
     } catch (e) {
-      debugPrint('Error generating real year review, returning high-quality demo review as fallback: $e');
+      debugPrint(
+        'Error generating real year review, returning high-quality demo review as fallback: $e',
+      );
       return _generateDemoReview(userId, year);
     }
   }
@@ -356,7 +432,9 @@ class YearReviewRepositoryImpl implements YearReviewRepository {
       await _supabase.from('year_reviews').upsert(review.toJson());
       debugPrint('💾 Year review saved successfully to Supabase.');
     } catch (e) {
-      debugPrint('⚠️ Failed to save year review to Supabase (possibly table missing in schema, continuing locally): $e');
+      debugPrint(
+        '⚠️ Failed to save year review to Supabase (possibly table missing in schema, continuing locally): $e',
+      );
     }
   }
 
@@ -427,8 +505,22 @@ class YearReviewRepositoryImpl implements YearReviewRepository {
         totalStormyDays: 24,
         mostCommonWeather: 'Partly Cloudy',
         bestWeatherMonth: 'March',
-        summaryText: 'Your sky was sunny 187 days this year. That is 51% of the year. Your best year yet.',
-        monthlyWeatherStrip: ['☀️', '⛅', '☀️', '🌥️', '⛈️', '⛅', '🌧️', '☀️', '☀️', '🌈', '⛅', '☀️'],
+        summaryText:
+            'Your sky was sunny 187 days this year. That is 51% of the year. Your best year yet.',
+        monthlyWeatherStrip: [
+          '☀️',
+          '⛅',
+          '☀️',
+          '🌥️',
+          '⛈️',
+          '⛅',
+          '🌧️',
+          '☀️',
+          '☀️',
+          '🌈',
+          '⛅',
+          '☀️',
+        ],
       ),
       goalSummary: const GoalCompletionSummary(
         weeklyGoalsCompleted: 42,
@@ -441,15 +533,24 @@ class YearReviewRepositoryImpl implements YearReviewRepository {
       ),
       streakHallOfFame: const StreakHallOfFame(
         topLongestStreaks: [
-          TopStreakItem(habitName: 'Morning Meditation', emoji: '🧘', streakDays: 45),
-          TopStreakItem(habitName: 'Read 20 Pages', emoji: '📚', streakDays: 30),
+          TopStreakItem(
+            habitName: 'Morning Meditation',
+            emoji: '🧘',
+            streakDays: 45,
+          ),
+          TopStreakItem(
+            habitName: 'Read 20 Pages',
+            emoji: '📚',
+            streakDays: 30,
+          ),
           TopStreakItem(habitName: 'Gym Session', emoji: '💪', streakDays: 15),
         ],
         shieldsUsed: 8,
         comebacks: 4,
         consecutivePerfectWeeks: 12,
       ),
-      aiNarrative: '2025 was your most consistent year yet. You built a 45-day meditation streak in March, weathered a storm in July, and made a stunning comeback in September. Your sky was mostly cloudy early on but turned sunny by Q4. Carry that momentum into 2026.',
+      aiNarrative:
+          '2025 was your most consistent year yet. You built a 45-day meditation streak in March, weathered a storm in July, and made a stunning comeback in September. Your sky was mostly cloudy early on but turned sunny by Q4. Carry that momentum into 2026.',
       createdAt: DateTime.now(),
     );
   }

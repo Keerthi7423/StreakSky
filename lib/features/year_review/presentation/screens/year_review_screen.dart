@@ -9,16 +9,14 @@ import '../widgets/shareable_year_card.dart';
 class YearReviewScreen extends ConsumerStatefulWidget {
   final int year;
 
-  const YearReviewScreen({
-    super.key,
-    required this.year,
-  });
+  const YearReviewScreen({super.key, required this.year});
 
   @override
   ConsumerState<YearReviewScreen> createState() => _YearReviewScreenState();
 }
 
-class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with SingleTickerProviderStateMixin {
+class _YearReviewScreenState extends ConsumerState<YearReviewScreen>
+    with SingleTickerProviderStateMixin {
   late PageController _pageController;
   int _currentPage = 0;
   final int _totalSlides = 6;
@@ -28,10 +26,12 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
   void initState() {
     super.initState();
     _pageController = PageController();
-    
+
     // Generate/load review data on open
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(yearReviewControllerProvider.notifier).generateReview(widget.year);
+      ref
+          .read(yearReviewControllerProvider.notifier)
+          .generateReview(widget.year);
     });
   }
 
@@ -87,7 +87,9 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
                         height: 300,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: const Color(0xFFB3FF00).withValues(alpha: 0.03),
+                          color: const Color(
+                            0xFFB3FF00,
+                          ).withValues(alpha: 0.03),
                         ),
                       ),
                     ),
@@ -104,7 +106,9 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
                         height: 300,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: const Color(0xFF00F2FF).withValues(alpha: 0.03),
+                          color: const Color(
+                            0xFF00F2FF,
+                          ).withValues(alpha: 0.03),
                         ),
                       ),
                     ),
@@ -210,7 +214,9 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
                                 borderRadius: BorderRadius.circular(16),
                               ),
                               elevation: 8,
-                              shadowColor: const Color(0xFFB3FF00).withValues(alpha: 0.3),
+                              shadowColor: const Color(
+                                0xFFB3FF00,
+                              ).withValues(alpha: 0.3),
                             ),
                             child: const Text(
                               'FINISH REVIEW',
@@ -248,9 +254,14 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
                                 size: 28,
                               ),
                               style: IconButton.styleFrom(
-                                backgroundColor: const Color(0xFFB3FF00).withValues(alpha: 0.1),
+                                backgroundColor: const Color(
+                                  0xFFB3FF00,
+                                ).withValues(alpha: 0.1),
                                 padding: const EdgeInsets.all(12),
-                                side: const BorderSide(color: Color(0xFFB3FF00), width: 1),
+                                side: const BorderSide(
+                                  color: Color(0xFFB3FF00),
+                                  width: 1,
+                                ),
                               ),
                               onPressed: _nextPage,
                             ),
@@ -270,10 +281,7 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
                           builder: (context, val, child) {
                             return Transform.scale(
                               scale: val,
-                              child: Opacity(
-                                opacity: val,
-                                child: child,
-                              ),
+                              child: Opacity(opacity: val, child: child),
                             );
                           },
                           child: Container(
@@ -282,15 +290,15 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
                             decoration: BoxDecoration(
                               color: const Color(0xFF161616),
                               borderRadius: BorderRadius.circular(24),
-                              border: Border.all(color: const Color(0xFFB3FF00), width: 1.5),
+                              border: Border.all(
+                                color: const Color(0xFFB3FF00),
+                                width: 1.5,
+                              ),
                             ),
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Text(
-                                  '✨',
-                                  style: TextStyle(fontSize: 64),
-                                ),
+                                const Text('✨', style: TextStyle(fontSize: 64)),
                                 const SizedBox(height: 16),
                                 const Text(
                                   'YEAR CARD SAVED!',
@@ -330,7 +338,7 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
                                     ),
                                     child: const Text('AWESOME'),
                                   ),
-                                )
+                                ),
                               ],
                             ),
                           ),
@@ -358,10 +366,7 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
                 SizedBox(height: 8),
                 Text(
                   'Summarizing streaks and weather patterns',
-                  style: TextStyle(
-                    color: Colors.white38,
-                    fontSize: 12,
-                  ),
+                  style: TextStyle(color: Colors.white38, fontSize: 12),
                 ),
               ],
             ),
@@ -376,18 +381,29 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
                   const SizedBox(height: 16),
                   const Text(
                     'Failed to generate Year Review',
-                    style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     err.toString(),
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white.withValues(alpha: 0.5)),
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.5),
+                    ),
                   ),
                   const SizedBox(height: 24),
                   ElevatedButton(
-                    onPressed: () => ref.read(yearReviewControllerProvider.notifier).generateReview(widget.year),
-                    style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFB3FF00), foregroundColor: Colors.black),
+                    onPressed: () => ref
+                        .read(yearReviewControllerProvider.notifier)
+                        .generateReview(widget.year),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFB3FF00),
+                      foregroundColor: Colors.black,
+                    ),
                     child: const Text('TRY AGAIN'),
                   ),
                 ],
@@ -406,10 +422,7 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text(
-            '🌟',
-            style: TextStyle(fontSize: 64),
-          ),
+          const Text('🌟', style: TextStyle(fontSize: 64)),
           const SizedBox(height: 32),
           Text(
             'YOUR ${review.year} IN REVIEW',
@@ -451,10 +464,7 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
             builder: (context, value, child) {
               return Transform.translate(
                 offset: Offset(0, 10 * (1 - value)),
-                child: Opacity(
-                  opacity: value,
-                  child: child,
-                ),
+                child: Opacity(opacity: value, child: child),
               );
             },
             child: Container(
@@ -467,8 +477,15 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text('👉  Tappable story controls  ', style: TextStyle(color: Colors.white54, fontSize: 12)),
-                  Icon(Icons.touch_app_outlined, color: const Color(0xFFB3FF00).withValues(alpha: 0.8), size: 16),
+                  const Text(
+                    '👉  Tappable story controls  ',
+                    style: TextStyle(color: Colors.white54, fontSize: 12),
+                  ),
+                  Icon(
+                    Icons.touch_app_outlined,
+                    color: const Color(0xFFB3FF00).withValues(alpha: 0.8),
+                    size: 16,
+                  ),
                 ],
               ),
             ),
@@ -485,10 +502,7 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            '📝',
-            style: TextStyle(fontSize: 32),
-          ),
+          const Text('📝', style: TextStyle(fontSize: 32)),
           const SizedBox(height: 8),
           const Text(
             'HABIT REPORT CARD',
@@ -532,10 +546,14 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
                       width: 48,
                       height: 48,
                       decoration: BoxDecoration(
-                        color: Color(int.parse('FF${report.colorHex}', radix: 16)).withValues(alpha: 0.1),
+                        color: Color(
+                          int.parse('FF${report.colorHex}', radix: 16),
+                        ).withValues(alpha: 0.1),
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: Color(int.parse('FF${report.colorHex}', radix: 16)).withValues(alpha: 0.4),
+                          color: Color(
+                            int.parse('FF${report.colorHex}', radix: 16),
+                          ).withValues(alpha: 0.4),
                         ),
                       ),
                       child: Center(
@@ -581,18 +599,23 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: Color(int.parse('FF${report.colorHex}', radix: 16)),
+                            color: Color(
+                              int.parse('FF${report.colorHex}', radix: 16),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 4),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 2,
+                          ),
                           decoration: BoxDecoration(
                             color: report.trend == 'improving'
                                 ? Colors.green.withValues(alpha: 0.1)
                                 : report.trend == 'declining'
-                                    ? Colors.red.withValues(alpha: 0.1)
-                                    : Colors.white.withValues(alpha: 0.05),
+                                ? Colors.red.withValues(alpha: 0.1)
+                                : Colors.white.withValues(alpha: 0.05),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Row(
@@ -602,14 +625,14 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
                                 report.trend == 'improving'
                                     ? Icons.arrow_upward
                                     : report.trend == 'declining'
-                                        ? Icons.arrow_downward
-                                        : Icons.trending_flat,
+                                    ? Icons.arrow_downward
+                                    : Icons.trending_flat,
                                 size: 10,
                                 color: report.trend == 'improving'
                                     ? Colors.green
                                     : report.trend == 'declining'
-                                        ? Colors.red
-                                        : Colors.white54,
+                                    ? Colors.red
+                                    : Colors.white54,
                               ),
                               const SizedBox(width: 2),
                               Text(
@@ -620,8 +643,8 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
                                   color: report.trend == 'improving'
                                       ? Colors.green
                                       : report.trend == 'declining'
-                                          ? Colors.red
-                                          : Colors.white54,
+                                      ? Colors.red
+                                      : Colors.white54,
                                 ),
                               ),
                             ],
@@ -647,10 +670,7 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            '☀️',
-            style: TextStyle(fontSize: 32),
-          ),
+          const Text('☀️', style: TextStyle(fontSize: 32)),
           const SizedBox(height: 8),
           const Text(
             'HABIT WEATHER SYSTEM',
@@ -706,10 +726,7 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text(
-                        '☀️',
-                        style: TextStyle(fontSize: 32),
-                      ),
+                      const Text('☀️', style: TextStyle(fontSize: 32)),
                       const SizedBox(height: 4),
                       Text(
                         '${ws.totalSunnyDays}',
@@ -797,16 +814,24 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
               children: [
                 Text(
                   title,
-                  style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Colors.white.withValues(alpha: 0.4)),
+                  style: TextStyle(
+                    fontSize: 8,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white.withValues(alpha: 0.4),
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   value,
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: accentColor),
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: accentColor,
+                  ),
                 ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
@@ -822,10 +847,7 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            '👑',
-            style: TextStyle(fontSize: 32),
-          ),
+          const Text('👑', style: TextStyle(fontSize: 32)),
           const SizedBox(height: 8),
           const Text(
             'GOALS & CELEBRATIONS',
@@ -852,12 +874,17 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [const Color(0xFFB3FF00).withValues(alpha: 0.05), Colors.transparent],
+                colors: [
+                  const Color(0xFFB3FF00).withValues(alpha: 0.05),
+                  Colors.transparent,
+                ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: const Color(0xFFB3FF00).withValues(alpha: 0.15)),
+              border: Border.all(
+                color: const Color(0xFFB3FF00).withValues(alpha: 0.15),
+              ),
             ),
             child: Column(
               children: [
@@ -866,11 +893,19 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
                   children: [
                     const Text(
                       'Goal Completion Score',
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white70),
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white70,
+                      ),
                     ),
                     Text(
                       '${gs.overallGoalCompletionScore}%',
-                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFFB3FF00)),
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFFB3FF00),
+                      ),
                     ),
                   ],
                 ),
@@ -881,16 +916,30 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
                     value: gs.overallGoalCompletionScore / 100,
                     minHeight: 8,
                     backgroundColor: Colors.white.withValues(alpha: 0.05),
-                    valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFB3FF00)),
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+                      Color(0xFFB3FF00),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _buildGoalFraction('Weekly', gs.weeklyGoalsCompleted, gs.weeklyGoalsTotal),
-                    _buildGoalFraction('Monthly', gs.monthlyGoalsCompleted, gs.monthlyGoalsTotal),
-                    _buildGoalFraction('Career', gs.careerMilestonesHit, gs.careerMilestonesTotal),
+                    _buildGoalFraction(
+                      'Weekly',
+                      gs.weeklyGoalsCompleted,
+                      gs.weeklyGoalsTotal,
+                    ),
+                    _buildGoalFraction(
+                      'Monthly',
+                      gs.monthlyGoalsCompleted,
+                      gs.monthlyGoalsTotal,
+                    ),
+                    _buildGoalFraction(
+                      'Career',
+                      gs.careerMilestonesHit,
+                      gs.careerMilestonesTotal,
+                    ),
                   ],
                 ),
               ],
@@ -901,7 +950,12 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
           // Streak Hall of Fame items
           const Text(
             'TOP LONG RUNS',
-            style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1.5, color: Colors.grey),
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.5,
+              color: Colors.grey,
+            ),
           ),
           const SizedBox(height: 8),
           ...List.generate(sh.topLongestStreaks.length, (idx) {
@@ -924,8 +978,8 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
                       color: idx == 0
                           ? const Color(0xFFB3FF00)
                           : idx == 1
-                              ? const Color(0xFF00F2FF)
-                              : const Color(0xFFFF0055),
+                          ? const Color(0xFF00F2FF)
+                          : const Color(0xFFFF0055),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -934,12 +988,20 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
                   Expanded(
                     child: Text(
                       item.habitName,
-                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                   Text(
                     '${item.streakDays} days',
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white70),
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white70,
+                    ),
                   ),
                 ],
               ),
@@ -955,12 +1017,19 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
       children: [
         Text(
           '$val/$total',
-          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
+          style: const TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
         const SizedBox(height: 4),
         Text(
           label,
-          style: TextStyle(fontSize: 10, color: Colors.white.withValues(alpha: 0.4)),
+          style: TextStyle(
+            fontSize: 10,
+            color: Colors.white.withValues(alpha: 0.4),
+          ),
         ),
       ],
     );
@@ -973,10 +1042,7 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            '🤖',
-            style: TextStyle(fontSize: 32),
-          ),
+          const Text('🤖', style: TextStyle(fontSize: 32)),
           const SizedBox(height: 8),
           const Text(
             'SKY AI YEAR ANALYSIS',
@@ -1022,7 +1088,9 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
                           width: 36,
                           height: 36,
                           decoration: BoxDecoration(
-                            color: const Color(0xFF00F2FF).withValues(alpha: 0.15),
+                            color: const Color(
+                              0xFF00F2FF,
+                            ).withValues(alpha: 0.15),
                             shape: BoxShape.circle,
                           ),
                           child: const Center(
@@ -1086,10 +1154,7 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            '✨',
-            style: TextStyle(fontSize: 32),
-          ),
+          const Text('✨', style: TextStyle(fontSize: 32)),
           const SizedBox(height: 8),
           const Text(
             'REFLECT & INSPIRES',
@@ -1124,7 +1189,9 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
                   child: OutlinedButton(
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.white,
-                      side: BorderSide(color: Colors.white.withValues(alpha: 0.15)),
+                      side: BorderSide(
+                        color: Colors.white.withValues(alpha: 0.15),
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
                       ),
@@ -1142,7 +1209,11 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
                         const SizedBox(width: 8),
                         Text(
                           'DOWNLOAD CARD',
-                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white.withValues(alpha: 0.9)),
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white.withValues(alpha: 0.9),
+                          ),
                         ),
                       ],
                     ),
@@ -1166,14 +1237,19 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
                         SnackBar(
                           content: const Row(
                             children: [
-                              Icon(Icons.check_circle, color: Color(0xFFB3FF00)),
+                              Icon(
+                                Icons.check_circle,
+                                color: Color(0xFFB3FF00),
+                              ),
                               SizedBox(width: 12),
                               Text('Link copied! Share it on your socials.'),
                             ],
                           ),
                           backgroundColor: const Color(0xFF161616),
                           behavior: SnackBarBehavior.floating,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                           duration: const Duration(seconds: 2),
                         ),
                       );
@@ -1185,7 +1261,10 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> with Single
                         SizedBox(width: 8),
                         Text(
                           'SHARE SKY',
-                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ],
                     ),

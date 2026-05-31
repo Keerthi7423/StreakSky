@@ -1,4 +1,3 @@
-
 enum QuoteCategory {
   discipline,
   resilience,
@@ -63,7 +62,9 @@ class QuoteModel {
       id: json['id'] as String,
       text: json['text'] as String,
       author: json['author'] as String,
-      category: QuoteCategory.values.firstWhere((e) => e.name == json['category']),
+      category: QuoteCategory.values.firstWhere(
+        (e) => e.name == json['category'],
+      ),
       attribution: json['attribution'] as String?,
       isBookmarked: json['is_bookmarked'] as bool? ?? false,
     );

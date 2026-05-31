@@ -8,9 +8,9 @@ import 'package:streaksky/features/auth/domain/repositories/auth_repository.dart
 class FirebaseAuthService implements AuthRepository {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final google_sign_in.GoogleSignIn _googleSignIn = google_sign_in.GoogleSignIn(
-    clientId: 'YOUR-GOOGLE-CLIENT-ID.apps.googleusercontent.com', // Required for Web
+    clientId:
+        'YOUR-GOOGLE-CLIENT-ID.apps.googleusercontent.com', // Required for Web
   );
-
 
   @override
   Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
@@ -19,19 +19,35 @@ class FirebaseAuthService implements AuthRepository {
   User? get currentUser => _firebaseAuth.currentUser;
 
   @override
-  Future<UserCredential> signInWithEmailAndPassword(String email, String password) async {
-    return await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
+  Future<UserCredential> signInWithEmailAndPassword(
+    String email,
+    String password,
+  ) async {
+    return await _firebaseAuth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
   }
 
   @override
-  Future<UserCredential> createUserWithEmailAndPassword(String email, String password) async {
-    return await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
+  Future<UserCredential> createUserWithEmailAndPassword(
+    String email,
+    String password,
+  ) async {
+    return await _firebaseAuth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
   }
 
   @override
   Future<UserCredential> signInWithGoogle() async {
     final googleUser = await _googleSignIn.signIn();
-    if (googleUser == null) throw FirebaseAuthException(code: 'ERROR_ABORTED_BY_USER', message: 'Sign in aborted by user');
+    if (googleUser == null)
+      throw FirebaseAuthException(
+        code: 'ERROR_ABORTED_BY_USER',
+        message: 'Sign in aborted by user',
+      );
 
     final googleAuth = await googleUser.authentication;
     final AuthCredential credential = GoogleAuthProvider.credential(

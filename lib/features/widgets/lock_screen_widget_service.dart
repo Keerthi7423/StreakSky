@@ -19,7 +19,7 @@ class LockScreenWidgetService {
     try {
       // 1. Save data to a shared AppGroup (iOS) / SharedPreferences (Android)
       // This data will be read by the native widget code (Swift/Kotlin).
-      
+
       /*
       await HomeWidget.saveWidgetData<String>('weather_icon', weatherIcon);
       await HomeWidget.saveWidgetData<int>('streak_count', streakCount);
@@ -36,9 +36,11 @@ class LockScreenWidgetService {
         iOSName: _iOSWidgetName,
       );
       */
-      
-      debugPrint("Lock Screen Widget updated successfully with: "
-          "Weather=$weatherIcon, Streak=$streakCount, Quote=$quotePreview");
+
+      debugPrint(
+        "Lock Screen Widget updated successfully with: "
+        "Weather=$weatherIcon, Streak=$streakCount, Quote=$quotePreview",
+      );
     } catch (e) {
       debugPrint("Failed to update Lock Screen Widget: $e");
     }
@@ -56,6 +58,8 @@ class LockScreenWidgetService {
   }
 }
 
-final lockScreenWidgetServiceProvider = Provider<LockScreenWidgetService>((ref) {
+final lockScreenWidgetServiceProvider = Provider<LockScreenWidgetService>((
+  ref,
+) {
   return LockScreenWidgetService();
 });

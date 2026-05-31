@@ -19,7 +19,8 @@ class AiChatScreen extends ConsumerStatefulWidget {
   ConsumerState<AiChatScreen> createState() => _AiChatScreenState();
 }
 
-class _AiChatScreenState extends ConsumerState<AiChatScreen> with SingleTickerProviderStateMixin {
+class _AiChatScreenState extends ConsumerState<AiChatScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final TextEditingController _textController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
@@ -67,13 +68,28 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> with SingleTickerPr
             children: [
               const Icon(Icons.lock_outline, size: 80, color: Colors.white54),
               const SizedBox(height: 24),
-              const Text('Sky AI is a Pro Feature', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+              const Text(
+                'Sky AI is a Pro Feature',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () => context.push('/paywall'),
-                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFB3FF00)),
-                child: const Text('Upgrade to Pro', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
-              )
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFB3FF00),
+                ),
+                child: const Text(
+                  'Upgrade to Pro',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -100,9 +116,15 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> with SingleTickerPr
               decoration: BoxDecoration(
                 color: const Color(0xFFB3FF00).withValues(alpha: 0.1),
                 shape: BoxShape.circle,
-                border: Border.all(color: const Color(0xFFB3FF00).withValues(alpha: 0.3)),
+                border: Border.all(
+                  color: const Color(0xFFB3FF00).withValues(alpha: 0.3),
+                ),
               ),
-              child: const Icon(Icons.auto_awesome, color: Color(0xFFB3FF00), size: 20),
+              child: const Icon(
+                Icons.auto_awesome,
+                color: Color(0xFFB3FF00),
+                size: 20,
+              ),
             ),
             const SizedBox(width: 12),
             const Text(
@@ -120,7 +142,10 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> with SingleTickerPr
           indicatorColor: const Color(0xFFB3FF00),
           labelColor: const Color(0xFFB3FF00),
           unselectedLabelColor: Colors.white38,
-          labelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+          labelStyle: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+          ),
           tabs: const [
             Tab(text: 'CHAT', icon: Icon(Icons.chat_bubble_outline, size: 20)),
             Tab(text: 'HISTORY', icon: Icon(Icons.history, size: 20)),
@@ -130,7 +155,8 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> with SingleTickerPr
         actions: [
           IconButton(
             icon: const Icon(Icons.delete_outline, color: Colors.white54),
-            onPressed: () => ref.read(aiControllerProvider.notifier).clearChat(),
+            onPressed: () =>
+                ref.read(aiControllerProvider.notifier).clearChat(),
           ),
         ],
       ),
@@ -146,7 +172,9 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> with SingleTickerPr
                     : ListView.builder(
                         controller: _scrollController,
                         padding: const EdgeInsets.all(16),
-                        itemCount: aiState.messages.length + (aiState.isLoading ? 1 : 0),
+                        itemCount:
+                            aiState.messages.length +
+                            (aiState.isLoading ? 1 : 0),
                         itemBuilder: (context, index) {
                           if (index == aiState.messages.length) {
                             return _buildLoadingBubble();
@@ -169,7 +197,10 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> with SingleTickerPr
           // Tab 2: History
           _buildQuoteList(ref.watch(quoteHistoryProvider), 'No history yet.'),
           // Tab 3: Saved
-          _buildQuoteList(ref.watch(bookmarkedQuotesProvider), 'No saved quotes.'),
+          _buildQuoteList(
+            ref.watch(bookmarkedQuotesProvider),
+            'No saved quotes.',
+          ),
         ],
       ),
     );
@@ -181,16 +212,29 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> with SingleTickerPr
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
-            Icons.cloud_queue,
-            size: 80,
-            color: const Color(0xFFB3FF00).withValues(alpha: 0.2),
-          ).animate(onPlay: (controller) => controller.repeat())
-            .shimmer(duration: 2.seconds, color: const Color(0xFFB3FF00).withValues(alpha: 0.3))
-            .moveY(begin: -10, end: 10, duration: 2.seconds, curve: Curves.easeInOut),
+                Icons.cloud_queue,
+                size: 80,
+                color: const Color(0xFFB3FF00).withValues(alpha: 0.2),
+              )
+              .animate(onPlay: (controller) => controller.repeat())
+              .shimmer(
+                duration: 2.seconds,
+                color: const Color(0xFFB3FF00).withValues(alpha: 0.3),
+              )
+              .moveY(
+                begin: -10,
+                end: 10,
+                duration: 2.seconds,
+                curve: Curves.easeInOut,
+              ),
           const SizedBox(height: 24),
           const Text(
             'Clear skies ahead!',
-            style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           const SizedBox(height: 8),
           const Text(
@@ -205,13 +249,23 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> with SingleTickerPr
           ElevatedButton.icon(
             onPressed: () {
               // Mock year summary data for the Pace Check
-              ref.read(aiControllerProvider.notifier).fetchMidYearPaceCheck(
-                  "Completed 140 habits, missed mostly on weekends. Kept a 20-day streak in March.");
+              ref
+                  .read(aiControllerProvider.notifier)
+                  .fetchMidYearPaceCheck(
+                    "Completed 140 habits, missed mostly on weekends. Kept a 20-day streak in March.",
+                  );
             },
-            icon: const Icon(Icons.calendar_today, color: Colors.black, size: 16),
+            icon: const Icon(
+              Icons.calendar_today,
+              color: Colors.black,
+              size: 16,
+            ),
             label: const Text(
               "Run Mid-Year Pace Check",
-              style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFB3FF00),
@@ -274,7 +328,9 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> with SingleTickerPr
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
+        constraints: BoxConstraints(
+          maxWidth: MediaQuery.of(context).size.width * 0.75,
+        ),
         decoration: BoxDecoration(
           color: isUser ? const Color(0xFFB3FF00) : const Color(0xFF1A1A1A),
           borderRadius: BorderRadius.only(
@@ -283,9 +339,15 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> with SingleTickerPr
             bottomLeft: Radius.circular(isUser ? 20 : 4),
             bottomRight: Radius.circular(isUser ? 4 : 20),
           ),
-          boxShadow: isUser 
-            ? [BoxShadow(color: const Color(0xFFB3FF00).withValues(alpha: 0.2), blurRadius: 10, spreadRadius: 1)]
-            : [],
+          boxShadow: isUser
+              ? [
+                  BoxShadow(
+                    color: const Color(0xFFB3FF00).withValues(alpha: 0.2),
+                    blurRadius: 10,
+                    spreadRadius: 1,
+                  ),
+                ]
+              : [],
         ),
         child: Text(
           message.text,
@@ -316,11 +378,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> with SingleTickerPr
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
-          children: [
-            _buildDot(0),
-            _buildDot(1),
-            _buildDot(2),
-          ],
+          children: [_buildDot(0), _buildDot(1), _buildDot(2)],
         ),
       ),
     );
@@ -328,25 +386,29 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> with SingleTickerPr
 
   Widget _buildDot(int index) {
     return Container(
-      width: 6,
-      height: 6,
-      margin: const EdgeInsets.symmetric(horizontal: 2),
-      decoration: const BoxDecoration(color: Colors.white54, shape: BoxShape.circle),
-    ).animate(onPlay: (controller) => controller.repeat())
-      .scale(
-        duration: 600.ms,
-        delay: (index * 200).ms,
-        begin: const Offset(1, 1),
-        end: const Offset(1.5, 1.5),
-        curve: Curves.easeInOut,
-      )
-      .then()
-      .scale(
-        duration: 600.ms,
-        begin: const Offset(1.5, 1.5),
-        end: const Offset(1, 1),
-        curve: Curves.easeInOut,
-      );
+          width: 6,
+          height: 6,
+          margin: const EdgeInsets.symmetric(horizontal: 2),
+          decoration: const BoxDecoration(
+            color: Colors.white54,
+            shape: BoxShape.circle,
+          ),
+        )
+        .animate(onPlay: (controller) => controller.repeat())
+        .scale(
+          duration: 600.ms,
+          delay: (index * 200).ms,
+          begin: const Offset(1, 1),
+          end: const Offset(1.5, 1.5),
+          curve: Curves.easeInOut,
+        )
+        .then()
+        .scale(
+          duration: 600.ms,
+          begin: const Offset(1.5, 1.5),
+          end: const Offset(1, 1),
+          curve: Curves.easeInOut,
+        );
   }
 
   Widget _buildInputArea() {
@@ -354,7 +416,9 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> with SingleTickerPr
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: const Color(0xFF0D0D0D),
-        border: Border(top: BorderSide(color: Colors.white.withValues(alpha: 0.05))),
+        border: Border(
+          top: BorderSide(color: Colors.white.withValues(alpha: 0.05)),
+        ),
       ),
       child: Row(
         children: [
@@ -404,11 +468,20 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> with SingleTickerPr
       _textController.clear();
     }
   }
-  Widget _buildQuoteList(AsyncValue<List<QuoteModel>> quotesAsync, String emptyMsg) {
+
+  Widget _buildQuoteList(
+    AsyncValue<List<QuoteModel>> quotesAsync,
+    String emptyMsg,
+  ) {
     return quotesAsync.when(
       data: (quotes) {
         if (quotes.isEmpty) {
-          return Center(child: Text(emptyMsg, style: const TextStyle(color: Colors.white38)));
+          return Center(
+            child: Text(
+              emptyMsg,
+              style: const TextStyle(color: Colors.white38),
+            ),
+          );
         }
         return ListView.builder(
           padding: const EdgeInsets.all(16),
@@ -428,7 +501,12 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> with SingleTickerPr
                 children: [
                   Text(
                     quote.text,
-                    style: const TextStyle(color: Colors.white, fontSize: 14, height: 1.4, fontStyle: FontStyle.italic),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      height: 1.4,
+                      fontStyle: FontStyle.italic,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Row(
@@ -436,16 +514,26 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> with SingleTickerPr
                     children: [
                       Text(
                         '— ${quote.author}',
-                        style: const TextStyle(color: Color(0xFFB3FF00), fontSize: 12, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                          color: Color(0xFFB3FF00),
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       IconButton(
                         icon: Icon(
-                          quote.isBookmarked ? Icons.bookmark : Icons.bookmark_border,
-                          color: quote.isBookmarked ? const Color(0xFFB3FF00) : Colors.white24,
+                          quote.isBookmarked
+                              ? Icons.bookmark
+                              : Icons.bookmark_border,
+                          color: quote.isBookmarked
+                              ? const Color(0xFFB3FF00)
+                              : Colors.white24,
                           size: 18,
                         ),
                         onPressed: () {
-                          ref.read(quoteControllerProvider.notifier).toggleBookmark(quote.id);
+                          ref
+                              .read(quoteControllerProvider.notifier)
+                              .toggleBookmark(quote.id);
                         },
                       ),
                     ],
@@ -456,8 +544,12 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> with SingleTickerPr
           },
         );
       },
-      loading: () => const Center(child: CircularProgressIndicator(color: Color(0xFFB3FF00))),
-      error: (err, stack) => Center(child: Text('Error: $err', style: const TextStyle(color: Colors.red))),
+      loading: () => const Center(
+        child: CircularProgressIndicator(color: Color(0xFFB3FF00)),
+      ),
+      error: (err, stack) => Center(
+        child: Text('Error: $err', style: const TextStyle(color: Colors.red)),
+      ),
     );
   }
 }

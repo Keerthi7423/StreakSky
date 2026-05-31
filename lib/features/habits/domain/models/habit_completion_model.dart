@@ -23,7 +23,9 @@ class HabitCompletionModel {
       habitId: json['habit_id'] as String? ?? '',
       userId: json['user_id'] as String? ?? '',
       completedDate: json['completed_date'] as String? ?? '',
-      completedAt: json['completed_at'] != null ? DateTime.parse(json['completed_at'] as String) : null,
+      completedAt: json['completed_at'] != null
+          ? DateTime.parse(json['completed_at'] as String)
+          : null,
       synced: json['synced'] as bool? ?? false,
       note: json['note'] as String?,
     );

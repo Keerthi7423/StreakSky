@@ -48,18 +48,21 @@ class StatsScreen extends ConsumerWidget {
           children: [
             const StreakLeaderboard(),
             const SizedBox(height: 24),
-            
+
             const ActivityCalendarStrip(),
             const SizedBox(height: 32),
-            
-            const Text('CONSISTENCY HEATMAP', style: TextStyle(
-              color: AppColors.textSecondary,
-              fontSize: 10,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1.2,
-            )),
+
+            const Text(
+              'CONSISTENCY HEATMAP',
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.2,
+              ),
+            ),
             const SizedBox(height: 16),
-            
+
             Card(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -68,20 +71,26 @@ class StatsScreen extends ConsumerWidget {
                     HeatmapYearSelector(
                       selectedYear: heatmapState.selectedYear,
                       years: const [2024, 2025, 2026],
-                      onYearSelected: (year) => heatmapNotifier.changeYear(year),
+                      onYearSelected: (year) =>
+                          heatmapNotifier.changeYear(year),
                     ),
                     const SizedBox(height: 16),
                     if (heatmapState.isLoading)
                       const Padding(
                         padding: EdgeInsets.symmetric(vertical: 20.0),
-                        child: SkeletonLoader(height: 100, width: double.infinity, borderRadius: 8),
+                        child: SkeletonLoader(
+                          height: 100,
+                          width: double.infinity,
+                          borderRadius: 8,
+                        ),
                       )
                     else
                       HeatmapGrid(
                         year: heatmapState.selectedYear,
                         percentages: heatmapState.dailyCompletionPercentages,
                         comebackDates: heatmapState.comebackDates,
-                        onCellTap: (date) => _showDayDetails(context, date, heatmapState),
+                        onCellTap: (date) =>
+                            _showDayDetails(context, date, heatmapState),
                       ),
                     const SizedBox(height: 12),
                     _buildLegend(),
@@ -90,14 +99,17 @@ class StatsScreen extends ConsumerWidget {
               ),
             ),
 
-            const Text('PERFORMANCE', style: TextStyle(
-              color: AppColors.textSecondary,
-              fontSize: 10,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1.2,
-            )),
+            const Text(
+              'PERFORMANCE',
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.2,
+              ),
+            ),
             const SizedBox(height: 16),
-            
+
             // 2x2 Stat Card Grid (Task 71, 72)
             GridView.count(
               crossAxisCount: 2,
@@ -140,23 +152,29 @@ class StatsScreen extends ConsumerWidget {
             WeeklyTrendChart(data: stats.weeklyTrend),
 
             const SizedBox(height: 24),
-            
-            const Text('INSIGHTS', style: TextStyle(
-              color: AppColors.textSecondary,
-              fontSize: 10,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1.2,
-            )),
-            const SizedBox(height: 16),
-            
-            // Recent Habits (Task 77)
-            if (stats.recentHabits.isNotEmpty) ...[
-              const Text('MY LAST HABITS', style: TextStyle(
+
+            const Text(
+              'INSIGHTS',
+              style: TextStyle(
                 color: AppColors.textSecondary,
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 1.2,
-              )),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Recent Habits (Task 77)
+            if (stats.recentHabits.isNotEmpty) ...[
+              const Text(
+                'MY LAST HABITS',
+                style: TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.2,
+                ),
+              ),
               const SizedBox(height: 16),
               SizedBox(
                 height: 130,
@@ -165,12 +183,12 @@ class StatsScreen extends ConsumerWidget {
                   itemCount: stats.recentHabits.length,
                   itemBuilder: (context, index) {
                     final log = stats.recentHabits[index];
-                    
+
                     // Parse hex color safely (ensure 0xFF alpha prefix)
                     String hex = log.colorHex.replaceAll('#', '');
                     if (hex.length == 6) hex = 'FF$hex';
                     final colorInt = int.tryParse(hex, radix: 16) ?? 0xFFB3FF00;
-                    
+
                     return RecentHabitCard(
                       emoji: log.emoji,
                       name: log.habitName,
@@ -182,12 +200,15 @@ class StatsScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 32),
             ] else if (stats.recentHabits.isEmpty) ...[
-              const Text('MY LAST HABITS', style: TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 1.2,
-              )),
+              const Text(
+                'MY LAST HABITS',
+                style: TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.2,
+                ),
+              ),
               const SizedBox(height: 16),
               const Text(
                 'No recent activity logged yet. Start a habit to see it here!',
@@ -202,17 +223,31 @@ class StatsScreen extends ConsumerWidget {
               decoration: BoxDecoration(
                 color: AppColors.surface,
                 borderRadius: BorderRadius.circular(24),
-                border: Border.all(color: AppColors.divider.withValues(alpha: 0.1)),
+                border: Border.all(
+                  color: AppColors.divider.withValues(alpha: 0.1),
+                ),
               ),
               child: Column(
                 children: [
-                  _buildStatRow('Active Days', heatmapState.dailyCompletionCounts.values.where((c) => c > 0).length.toString()),
+                  _buildStatRow(
+                    'Active Days',
+                    heatmapState.dailyCompletionCounts.values
+                        .where((c) => c > 0)
+                        .length
+                        .toString(),
+                  ),
                   const Divider(height: 24),
-                  _buildStatRow('Comebacks', heatmapState.comebackDates.length.toString()),
+                  _buildStatRow(
+                    'Comebacks',
+                    heatmapState.comebackDates.length.toString(),
+                  ),
                   const Divider(height: 24),
                   const Text(
                     'More analytics coming soon...',
-                    style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 12,
+                    ),
                   ),
                 ],
               ),
@@ -228,7 +263,10 @@ class StatsScreen extends ConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(label, style: AppTypography.body),
-        Text(value, style: AppTypography.h3.copyWith(color: AppColors.primaryAccent)),
+        Text(
+          value,
+          style: AppTypography.h3.copyWith(color: AppColors.primaryAccent),
+        ),
       ],
     );
   }
@@ -243,7 +281,10 @@ class StatsScreen extends ConsumerWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Less', style: TextStyle(color: Colors.grey, fontSize: 8)),
+            const Text(
+              'Less',
+              style: TextStyle(color: Colors.grey, fontSize: 8),
+            ),
             const SizedBox(width: 4),
             _legendBox(AppColors.heatmapEmpty),
             _legendBox(AppColors.heatmapLevel1),
@@ -251,14 +292,20 @@ class StatsScreen extends ConsumerWidget {
             _legendBox(AppColors.heatmapLevel3),
             _legendBox(AppColors.heatmapLevel4),
             const SizedBox(width: 4),
-            const Text('More', style: TextStyle(color: Colors.grey, fontSize: 8)),
+            const Text(
+              'More',
+              style: TextStyle(color: Colors.grey, fontSize: 8),
+            ),
           ],
         ),
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             _legendBox(AppColors.rainbow),
-            const Text(' Comeback', style: TextStyle(color: Colors.grey, fontSize: 8)),
+            const Text(
+              ' Comeback',
+              style: TextStyle(color: Colors.grey, fontSize: 8),
+            ),
           ],
         ),
       ],
@@ -277,7 +324,11 @@ class StatsScreen extends ConsumerWidget {
     );
   }
 
-  void _showDayDetails(BuildContext context, DateTime date, HeatmapState state) {
+  void _showDayDetails(
+    BuildContext context,
+    DateTime date,
+    HeatmapState state,
+  ) {
     final dateStr = DateFormat('yyyy-MM-dd').format(date);
     final count = state.dailyCompletionCounts[dateStr] ?? 0;
     final percentage = state.dailyCompletionPercentages[dateStr] ?? 0.0;
@@ -304,7 +355,10 @@ class StatsScreen extends ConsumerWidget {
                 ),
                 if (isComeback)
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.rainbow.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
@@ -312,7 +366,11 @@ class StatsScreen extends ConsumerWidget {
                     ),
                     child: const Text(
                       'COMEBACK!',
-                      style: TextStyle(color: AppColors.rainbow, fontSize: 10, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        color: AppColors.rainbow,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
               ],
@@ -320,16 +378,24 @@ class StatsScreen extends ConsumerWidget {
             const SizedBox(height: 24),
             ListTile(
               contentPadding: EdgeInsets.zero,
-              leading: const Icon(Icons.check_circle_outline, color: AppColors.primaryAccent),
+              leading: const Icon(
+                Icons.check_circle_outline,
+                color: AppColors.primaryAccent,
+              ),
               title: const Text('Habits Completed'),
               trailing: Text(
                 count.toString(),
-                style: AppTypography.h3.copyWith(color: AppColors.primaryAccent),
+                style: AppTypography.h3.copyWith(
+                  color: AppColors.primaryAccent,
+                ),
               ),
             ),
             ListTile(
               contentPadding: EdgeInsets.zero,
-              leading: const Icon(Icons.analytics_outlined, color: AppColors.textSecondary),
+              leading: const Icon(
+                Icons.analytics_outlined,
+                color: AppColors.textSecondary,
+              ),
               title: const Text('Completion Rate'),
               trailing: Text(
                 '${(percentage * 100).toInt()}%',

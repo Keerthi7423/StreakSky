@@ -53,7 +53,8 @@ class QuoteController extends StateNotifier<AsyncValue<void>> {
   final QuoteRepository _repository;
   final Ref _ref;
 
-  QuoteController(this._repository, this._ref) : super(const AsyncValue.data(null));
+  QuoteController(this._repository, this._ref)
+    : super(const AsyncValue.data(null));
 
   Future<void> toggleBookmark(String quoteId) async {
     state = const AsyncValue.loading();
@@ -66,7 +67,8 @@ class QuoteController extends StateNotifier<AsyncValue<void>> {
   }
 }
 
-final quoteControllerProvider = StateNotifierProvider<QuoteController, AsyncValue<void>>((ref) {
-  final repo = ref.watch(quoteRepositoryProvider);
-  return QuoteController(repo, ref);
-});
+final quoteControllerProvider =
+    StateNotifierProvider<QuoteController, AsyncValue<void>>((ref) {
+      final repo = ref.watch(quoteRepositoryProvider);
+      return QuoteController(repo, ref);
+    });

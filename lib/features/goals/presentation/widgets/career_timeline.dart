@@ -7,10 +7,7 @@ import '../../domain/models/goal_model.dart';
 class CareerTimeline extends StatelessWidget {
   final List<GoalModel> goals;
 
-  const CareerTimeline({
-    super.key,
-    required this.goals,
-  });
+  const CareerTimeline({super.key, required this.goals});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +19,9 @@ class CareerTimeline extends StatelessWidget {
         }
         if (a.phase != null) return -1;
         if (b.phase != null) return 1;
-        return (a.createdAt ?? DateTime.now()).compareTo(b.createdAt ?? DateTime.now());
+        return (a.createdAt ?? DateTime.now()).compareTo(
+          b.createdAt ?? DateTime.now(),
+        );
       });
 
     return ListView.builder(
@@ -49,19 +48,25 @@ class CareerTimeline extends StatelessWidget {
                       width: 14,
                       height: 14,
                       decoration: BoxDecoration(
-                        color: goal.isCompleted ? AppColors.primaryAccent : Colors.transparent,
+                        color: goal.isCompleted
+                            ? AppColors.primaryAccent
+                            : Colors.transparent,
                         shape: BoxShape.circle,
                         border: Border.all(
                           color: AppColors.primaryAccent,
                           width: 2,
                         ),
-                        boxShadow: goal.isCompleted ? [
-                          BoxShadow(
-                            color: AppColors.primaryAccent.withValues(alpha: 0.5),
-                            blurRadius: 8,
-                            spreadRadius: 1,
-                          )
-                        ] : [],
+                        boxShadow: goal.isCompleted
+                            ? [
+                                BoxShadow(
+                                  color: AppColors.primaryAccent.withValues(
+                                    alpha: 0.5,
+                                  ),
+                                  blurRadius: 8,
+                                  spreadRadius: 1,
+                                ),
+                              ]
+                            : [],
                       ),
                     ),
                     // Line
@@ -86,22 +91,31 @@ class CareerTimeline extends StatelessWidget {
                       Row(
                         children: [
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 2,
+                            ),
                             decoration: BoxDecoration(
-                              color: goal.isMilestone 
-                                  ? AppColors.primaryAccent.withValues(alpha: 0.1)
+                              color: goal.isMilestone
+                                  ? AppColors.primaryAccent.withValues(
+                                      alpha: 0.1,
+                                    )
                                   : AppColors.elevatedSurface,
                               borderRadius: BorderRadius.circular(4),
                               border: Border.all(
-                                color: goal.isMilestone 
-                                    ? AppColors.primaryAccent.withValues(alpha: 0.3)
+                                color: goal.isMilestone
+                                    ? AppColors.primaryAccent.withValues(
+                                        alpha: 0.3,
+                                      )
                                     : AppColors.divider,
                               ),
                             ),
                             child: Text(
                               goal.isMilestone ? 'MILESTONE' : 'MISSION',
                               style: AppTypography.micro.copyWith(
-                                color: goal.isMilestone ? AppColors.primaryAccent : AppColors.textSecondary,
+                                color: goal.isMilestone
+                                    ? AppColors.primaryAccent
+                                    : AppColors.textSecondary,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 8,
                               ),
@@ -110,16 +124,29 @@ class CareerTimeline extends StatelessWidget {
                           if (goal.rolledOver) ...[
                             const SizedBox(width: 8),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
                               decoration: BoxDecoration(
-                                color: AppColors.partlyCloudy.withValues(alpha: 0.1),
+                                color: AppColors.partlyCloudy.withValues(
+                                  alpha: 0.1,
+                                ),
                                 borderRadius: BorderRadius.circular(4),
-                                border: Border.all(color: AppColors.partlyCloudy.withValues(alpha: 0.3)),
+                                border: Border.all(
+                                  color: AppColors.partlyCloudy.withValues(
+                                    alpha: 0.3,
+                                  ),
+                                ),
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  const Icon(Icons.history, size: 8, color: AppColors.partlyCloudy),
+                                  const Icon(
+                                    Icons.history,
+                                    size: 8,
+                                    color: AppColors.partlyCloudy,
+                                  ),
                                   const SizedBox(width: 2),
                                   Text(
                                     'ROLLED OVER',
@@ -137,7 +164,9 @@ class CareerTimeline extends StatelessWidget {
                           if (goal.phase != null)
                             Text(
                               'PHASE ${goal.phase}',
-                              style: AppTypography.micro.copyWith(color: AppColors.textTertiary),
+                              style: AppTypography.micro.copyWith(
+                                color: AppColors.textTertiary,
+                              ),
                             ),
                         ],
                       ),
@@ -145,14 +174,19 @@ class CareerTimeline extends StatelessWidget {
                       Text(
                         goal.title.toUpperCase(),
                         style: AppTypography.h3.copyWith(
-                          color: goal.isCompleted ? AppColors.primaryAccent : AppColors.textPrimary,
+                          color: goal.isCompleted
+                              ? AppColors.primaryAccent
+                              : AppColors.textPrimary,
                         ),
                       ),
-                      if (goal.description != null && goal.description!.isNotEmpty) ...[
+                      if (goal.description != null &&
+                          goal.description!.isNotEmpty) ...[
                         const SizedBox(height: 4),
                         Text(
                           goal.description!,
-                          style: AppTypography.caption.copyWith(color: AppColors.textSecondary),
+                          style: AppTypography.caption.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
                         ),
                       ],
                       const SizedBox(height: 12),
@@ -174,7 +208,9 @@ class CareerTimeline extends StatelessWidget {
                                   child: Container(
                                     height: 4,
                                     decoration: BoxDecoration(
-                                      color: goal.isCompleted ? AppColors.primaryAccent : AppColors.textSecondary,
+                                      color: goal.isCompleted
+                                          ? AppColors.primaryAccent
+                                          : AppColors.textSecondary,
                                       borderRadius: BorderRadius.circular(2),
                                     ),
                                   ),
@@ -186,7 +222,9 @@ class CareerTimeline extends StatelessWidget {
                           Text(
                             '${(goal.progress * 100).toInt()}%',
                             style: AppTypography.micro.copyWith(
-                              color: goal.isCompleted ? AppColors.primaryAccent : AppColors.textSecondary,
+                              color: goal.isCompleted
+                                  ? AppColors.primaryAccent
+                                  : AppColors.textSecondary,
                               fontWeight: FontWeight.bold,
                             ),
                           ),

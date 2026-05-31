@@ -47,7 +47,10 @@ final demoHabitsProvider = StateProvider<List<HabitModel>>((ref) {
       emoji: '💪',
       colorHex: 'FF0055', // Neon Pink
       category: 'Work',
-      frequency: const HabitFrequency(type: FrequencyType.custom, timesPerWeek: 3),
+      frequency: const HabitFrequency(
+        type: FrequencyType.custom,
+        timesPerWeek: 3,
+      ),
       createdAt: DateTime.now(),
     ),
   ];
@@ -55,7 +58,7 @@ final demoHabitsProvider = StateProvider<List<HabitModel>>((ref) {
 
 final habitsListProvider = FutureProvider<List<HabitModel>>((ref) async {
   final isDemo = ref.watch(demoLoggedInProvider);
-  
+
   if (isDemo) {
     return ref.watch(demoHabitsProvider).where((h) => !h.isArchived).toList();
   }
@@ -69,7 +72,9 @@ final habitsListProvider = FutureProvider<List<HabitModel>>((ref) async {
   try {
     final repo = ref.watch(habitRepositoryProvider);
     final habits = await repo.getHabits(user.uid);
-    debugPrint('HabitListProvider: Fetched ${habits.length} habits for ${user.uid}');
+    debugPrint(
+      'HabitListProvider: Fetched ${habits.length} habits for ${user.uid}',
+    );
     return habits.where((h) => !h.isArchived).toList();
   } catch (e) {
     debugPrint('HabitListProvider Error: $e');
@@ -80,11 +85,11 @@ final habitsListProvider = FutureProvider<List<HabitModel>>((ref) async {
 final todaysHabitsProvider = FutureProvider<List<HabitModel>>((ref) async {
   final habits = await ref.watch(habitsListProvider.future);
   final today = DateTime.now();
-  
+
   // For simple frequencies (daily, weekdays, custom days), we can filter directly
   // For 'times per week', it's always 'due' until the count is met for the week.
   // We'll need to fetch this week's completions to be precise.
-  
+
   return habits.where((h) => h.isDue(today)).toList();
 });
 
@@ -102,11 +107,11 @@ final firestoreRealtimeProvider = StreamProvider<Set<String>>((ref) {
         debugPrint('Firestore Stream Error: $error');
       })
       .map((snapshot) {
-    if (!snapshot.exists) return {};
-    final data = snapshot.data() as Map<String, dynamic>;
-    final completions = data['habit_completions'] as List<dynamic>?;
-    return completions?.map((e) => e.toString()).toSet() ?? {};
-  });
+        if (!snapshot.exists) return {};
+        final data = snapshot.data() as Map<String, dynamic>;
+        final completions = data['habit_completions'] as List<dynamic>?;
+        return completions?.map((e) => e.toString()).toSet() ?? {};
+      });
 });
 
 final habitCompletionsProvider = FutureProvider<Set<String>>((ref) async {
@@ -117,7 +122,8 @@ final habitCompletionsProvider = FutureProvider<Set<String>>((ref) async {
   if (user == null) return {};
 
   // Watch realtime Firestore updates
-  final realtimeCompletions = ref.watch(firestoreRealtimeProvider).asData?.value ?? {};
+  final realtimeCompletions =
+      ref.watch(firestoreRealtimeProvider).asData?.value ?? {};
 
   final supabase = getIt<SupabaseClient>();
   final localService = getIt<HabitLocalService>();
@@ -126,7 +132,7 @@ final habitCompletionsProvider = FutureProvider<Set<String>>((ref) async {
 
   // 1. Get from local storage first (Offline-first)
   final localCompletions = localService.getCompletionsForDate(dateStr);
-  
+
   // Combine with realtime Firestore data for cross-device sync
   final combinedCompletions = localCompletions.union(realtimeCompletions);
 
@@ -138,21 +144,25 @@ final habitCompletionsProvider = FutureProvider<Set<String>>((ref) async {
         .eq('user_id', user.uid)
         .eq('completed_date', dateStr);
 
-    final remoteHabitIds = (response as List).map((row) => row['habit_id'] as String).toSet();
-    
+    final remoteHabitIds = (response as List)
+        .map((row) => row['habit_id'] as String)
+        .toSet();
+
     // Simple reconciliation: remote wins for simplicity, but we could do better
     for (final id in remoteHabitIds) {
       if (!localCompletions.contains(id)) {
-        await localService.saveCompletion(HabitCompletionModel(
-          id: '', // Will be updated on next sync or left as is
-          habitId: id,
-          userId: user.uid,
-          completedDate: dateStr,
-          synced: true,
-        ));
+        await localService.saveCompletion(
+          HabitCompletionModel(
+            id: '', // Will be updated on next sync or left as is
+            habitId: id,
+            userId: user.uid,
+            completedDate: dateStr,
+            synced: true,
+          ),
+        );
       }
     }
-    
+
     return remoteHabitIds.union(combinedCompletions);
   } catch (e) {
     debugPrint('HabitCompletionsProvider: Offline mode or error: $e');
@@ -160,19 +170,24 @@ final habitCompletionsProvider = FutureProvider<Set<String>>((ref) async {
   }
 });
 
-final habitHistoryProvider = FutureProvider.family<List<HabitCompletionModel>, String>((ref, habitId) async {
-  final isDemo = ref.watch(demoLoggedInProvider);
-  if (isDemo) return []; // Demo history not implemented for now
+final habitHistoryProvider =
+    FutureProvider.family<List<HabitCompletionModel>, String>((
+      ref,
+      habitId,
+    ) async {
+      final isDemo = ref.watch(demoLoggedInProvider);
+      if (isDemo) return []; // Demo history not implemented for now
 
-  final repo = ref.watch(habitRepositoryProvider);
-  return await repo.getHabitCompletions(habitId);
-});
+      final repo = ref.watch(habitRepositoryProvider);
+      return await repo.getHabitCompletions(habitId);
+    });
 
 class HabitController extends StateNotifier<AsyncValue<void>> {
   final HabitRepository _repository;
   final Ref _ref;
 
-  HabitController(this._repository, this._ref) : super(const AsyncValue.data(null));
+  HabitController(this._repository, this._ref)
+    : super(const AsyncValue.data(null));
 
   Future<void> addHabit({
     required String name,
@@ -183,7 +198,7 @@ class HabitController extends StateNotifier<AsyncValue<void>> {
   }) async {
     final user = _ref.read(authStateProvider).asData?.value;
     final isDemo = _ref.read(demoLoggedInProvider);
-    
+
     if (user == null && !isDemo) return;
 
     state = const AsyncValue.loading();
@@ -203,9 +218,11 @@ class HabitController extends StateNotifier<AsyncValue<void>> {
         await _repository.createHabit(habit);
       } else {
         // Update local demo state
-        _ref.read(demoHabitsProvider.notifier).update((state) => [...state, habit]);
+        _ref
+            .read(demoHabitsProvider.notifier)
+            .update((state) => [...state, habit]);
       }
-      
+
       _ref.invalidate(habitsListProvider);
     });
   }
@@ -217,9 +234,12 @@ class HabitController extends StateNotifier<AsyncValue<void>> {
       if (!isDemo) {
         await _repository.updateHabit(habit);
       } else {
-        _ref.read(demoHabitsProvider.notifier).update((state) => 
-          state.map((h) => h.id == habit.id ? habit : h).toList()
-        );
+        _ref
+            .read(demoHabitsProvider.notifier)
+            .update(
+              (state) =>
+                  state.map((h) => h.id == habit.id ? habit : h).toList(),
+            );
       }
       _ref.invalidate(habitsListProvider);
     });
@@ -232,7 +252,9 @@ class HabitController extends StateNotifier<AsyncValue<void>> {
       if (!isDemo) {
         await _repository.deleteHabit(habitId);
       } else {
-        _ref.read(demoHabitsProvider.notifier).update((state) => state.where((h) => h.id != habitId).toList());
+        _ref
+            .read(demoHabitsProvider.notifier)
+            .update((state) => state.where((h) => h.id != habitId).toList());
       }
       _ref.invalidate(habitsListProvider);
     });
@@ -245,22 +267,29 @@ class HabitController extends StateNotifier<AsyncValue<void>> {
       if (!isDemo) {
         await _repository.archiveHabit(habitId);
       } else {
-        _ref.read(demoHabitsProvider.notifier).update((state) => 
-          state.map((h) => h.id == habitId ? h.copyWith(isArchived: true) : h).toList()
-        );
+        _ref
+            .read(demoHabitsProvider.notifier)
+            .update(
+              (state) => state
+                  .map(
+                    (h) => h.id == habitId ? h.copyWith(isArchived: true) : h,
+                  )
+                  .toList(),
+            );
       }
       _ref.invalidate(habitsListProvider);
     });
   }
-  
+
   Future<void> toggleCompletion(String habitId, DateTime date) async {
     final isDemo = _ref.read(demoLoggedInProvider);
     final user = _ref.read(authStateProvider).asData?.value;
-    
+
     if (user == null && !isDemo) return;
 
     // Local update optimization would be better, but for now we just toggle and invalidate
-    final currentCompletions = _ref.read(habitCompletionsProvider).asData?.value ?? {};
+    final currentCompletions =
+        _ref.read(habitCompletionsProvider).asData?.value ?? {};
     final isCurrentlyCompleted = currentCompletions.contains(habitId);
 
     state = await AsyncValue.guard(() async {
@@ -270,7 +299,7 @@ class HabitController extends StateNotifier<AsyncValue<void>> {
       if (isCurrentlyCompleted) {
         if (!isDemo) {
           await getIt<HabitLocalService>().removeCompletion(habitId, dateStr);
-          // Delete from remote if online, otherwise sync will handle it? 
+          // Delete from remote if online, otherwise sync will handle it?
           // Actually, my sync service only handles insertions for now.
           // For simplicity, we delete from remote immediately if possible.
           try {
@@ -291,13 +320,19 @@ class HabitController extends StateNotifier<AsyncValue<void>> {
       } else {
         if (!isDemo) {
           // Task 85: Implement Habit Commit Messages
-          final habit = _ref.read(habitsListProvider).asData?.value.firstWhere((h) => h.id == habitId);
+          final habit = _ref
+              .read(habitsListProvider)
+              .asData
+              ?.value
+              .firstWhere((h) => h.id == habitId);
           String commitMessage = 'feat: completed ${habit?.name ?? "habit"}';
-          
+
           try {
             // Context could be current streak or weather
-            final context = "Streak active, sunny day."; 
-            commitMessage = await _ref.read(aiControllerProvider.notifier).generateHabitCommitMessage(habit?.name ?? "habit", context);
+            final context = "Streak active, sunny day.";
+            commitMessage = await _ref
+                .read(aiControllerProvider.notifier)
+                .generateHabitCommitMessage(habit?.name ?? "habit", context);
           } catch (_) {}
 
           final completion = HabitCompletionModel(
@@ -309,29 +344,37 @@ class HabitController extends StateNotifier<AsyncValue<void>> {
             note: commitMessage,
           );
           await getIt<HabitLocalService>().saveCompletion(completion);
-          
+
           // Update streak (Task 37 & 39 integration)
-          await _ref.read(streakControllerProvider.notifier).handleCompletion(habitId, user.uid);
-          
+          await _ref
+              .read(streakControllerProvider.notifier)
+              .handleCompletion(habitId, user.uid);
+
           // Update goals (Goal Cascade - Task 53)
-          await _ref.read(goalControllerProvider.notifier).handleHabitCompletion(habitId, true);
+          await _ref
+              .read(goalControllerProvider.notifier)
+              .handleHabitCompletion(habitId, true);
         } else {
           _ref.read(demoCompletionsProvider.notifier).update((state) {
             final newState = Set<String>.from(state);
             newState.add(habitId);
             return newState;
           });
-          
+
           // For demo mode, we can also simulate streak update if needed
-          await _ref.read(goalControllerProvider.notifier).handleHabitCompletion(habitId, true);
+          await _ref
+              .read(goalControllerProvider.notifier)
+              .handleHabitCompletion(habitId, true);
         }
       }
-      
+
       // If we are un-completing, we should also update goals
       if (isCurrentlyCompleted) {
-        await _ref.read(goalControllerProvider.notifier).handleHabitCompletion(habitId, false);
+        await _ref
+            .read(goalControllerProvider.notifier)
+            .handleHabitCompletion(habitId, false);
       }
-      
+
       _ref.invalidate(habitCompletionsProvider);
     });
   }
@@ -341,7 +384,7 @@ class HabitController extends StateNotifier<AsyncValue<void>> {
     if (habitsAsync is! AsyncData<List<HabitModel>>) return;
 
     final habits = List<HabitModel>.from(habitsAsync.value);
-    
+
     if (oldIndex < newIndex) {
       newIndex -= 1;
     }
@@ -357,7 +400,7 @@ class HabitController extends StateNotifier<AsyncValue<void>> {
     // Optimistic update
     // We can't easily update FutureProvider state directly, so we just trigger the repo call
     // and invalidate. A better way would be using a StateNotifier for the list.
-    
+
     final isDemo = _ref.read(demoLoggedInProvider);
     if (isDemo) {
       _ref.read(demoHabitsProvider.notifier).state = updatedHabits;
@@ -368,7 +411,8 @@ class HabitController extends StateNotifier<AsyncValue<void>> {
   }
 }
 
-final habitControllerProvider = StateNotifierProvider<HabitController, AsyncValue<void>>((ref) {
-  final repo = ref.watch(habitRepositoryProvider);
-  return HabitController(repo, ref);
-});
+final habitControllerProvider =
+    StateNotifierProvider<HabitController, AsyncValue<void>>((ref) {
+      final repo = ref.watch(habitRepositoryProvider);
+      return HabitController(repo, ref);
+    });

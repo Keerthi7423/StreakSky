@@ -1,0 +1,46 @@
+Day 40: CI/CD, Testing & Store Ops Preparation
+=======================================================
+Goal: Write Unit and Widget tests for core components and business logic, and setup GitHub Actions for Continuous Integration (CI).
+
+1. Unit Tests for Business Logic (Task 118)
+-------------------------------------------
+Testing business logic is crucial to ensure that the app handles data correctly under the hood without launching the UI. In Flutter, unit tests don't require the widget tree.
+
+- Goal Progression Tests (`test/goal_progression_test.dart`):
+  We tested the `GoalProjectionService`, which handles how goals are projected over a timeframe. 
+  - Weekly Goals: We wrote tests to ensure that the projection spans exactly 7 days and that the "ideal points" reach the target value by the 7th day.
+  - Monthly Goals: We tested the logic to dynamically scale up to 28-31 days based on the month.
+  - Career Goals: We tested the projection to map across a 12-month timeline.
+  *Interview Tip*: Be prepared to explain how testing plain Dart code (Unit testing) is much faster and more reliable than integration testing because it removes UI rendering bottlenecks. We separated logic into Services (like GoalProjectionService) specifically to make it testable independently of the UI.
+
+- Streak Engine Tests (`test/streak_engine_logic_test.dart`):
+  (Already covered previously, but Day 40 focuses on ensuring we have coverage for the core mechanic of the app: streaks).
+
+2. Widget Tests for Core Components (Task 119)
+----------------------------------------------
+Widget testing in Flutter allows us to instantiate a piece of the UI in a simulated environment. It is faster than an integration test but still tests the actual rendering and interaction of a widget.
+
+- Habit Card (`test/habit_card_test.dart`):
+  We tested the visual states of the `HabitCard`. 
+  - We verified that the widget correctly renders the Habit Emoji, Name, and Category.
+  - We tested the conditional rendering of the completion check mark. We instantiate the widget with `isCompleted: false` (expecting no check mark) and `isCompleted: true` (expecting a check mark).
+  *Interview Tip*: Mention that since `HabitCard` relies on Riverpod (`ConsumerStatefulWidget`), we wrapped it in a `ProviderScope` during the test. Without `ProviderScope`, the test will throw an error because it cannot find the Riverpod provider context.
+
+- Weather Hero Card (`test/weather_hero_card_test.dart`):
+  We tested the `WeatherHeroCard` widget.
+  - We verified that the widget shows a `CircularProgressIndicator` while data is initially loading, since it depends on a FutureProvider (`weatherProvider`).
+  *Interview Tip*: Explain how Riverpod handles asynchronous data gracefully using `.when(data: ..., loading: ..., error: ...)`. Testing the loading state ensures we don't present a blank screen or a crash while fetching data.
+
+3. GitHub Actions CI Pipeline Setup (Task 120)
+----------------------------------------------
+Continuous Integration (CI) automates the process of validating code changes.
+
+- Configuration (`.github/workflows/ci.yml`):
+  We created a YAML file under the `.github/workflows` folder. GitHub automatically detects this and runs the pipeline whenever code is pushed to the `main` branch or a Pull Request is opened.
+  - `checkout@v3`: Pulls the latest code from the repository.
+  - `subosito/flutter-action@v2`: Sets up the Flutter SDK environment on the Ubuntu runner.
+  - `flutter pub get`: Fetches all external packages and dependencies.
+  - `flutter format`: Enforces code formatting style across the team.
+  - `flutter analyze`: Runs the Dart analyzer to check for syntax errors, unused variables, and potential bugs.
+  - `flutter test`: Executes all the unit and widget tests we wrote.
+  *Interview Tip*: In an interview, explain that a CI pipeline acts as a "gatekeeper". By enforcing `flutter analyze` and `flutter test`, we prevent broken code from merging into the `main` branch, significantly improving app stability and reducing technical debt.

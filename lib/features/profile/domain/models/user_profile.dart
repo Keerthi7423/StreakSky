@@ -27,9 +27,13 @@ class UserProfile {
       email: json['email'] as String?,
       displayName: json['display_name'] as String?,
       avatarUrl: json['avatar_url'] as String?,
-      createdAt: json['created_at'] != null ? DateTime.parse(json['created_at'] as String) : null,
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'] as String)
+          : null,
       subscription: json['subscription'] as String? ?? 'free',
-      subExpiresAt: json['sub_expires_at'] != null ? DateTime.parse(json['sub_expires_at'] as String) : null,
+      subExpiresAt: json['sub_expires_at'] != null
+          ? DateTime.parse(json['sub_expires_at'] as String)
+          : null,
       timezone: json['timezone'] as String?,
       language: json['language'] as String? ?? 'en',
     );

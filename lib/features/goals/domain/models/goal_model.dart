@@ -1,8 +1,4 @@
-enum GoalType {
-  weekly,
-  monthly,
-  career,
-}
+enum GoalType { weekly, monthly, career }
 
 class GoalModel {
   final String id;
@@ -50,24 +46,38 @@ class GoalModel {
       description: json['description'] as String?,
       targetValue: json['target_value'] as int?,
       currentValue: json['current_value'] as int? ?? 0,
-      startDate: json['start_date'] != null ? DateTime.parse(json['start_date'] as String) : null,
-      endDate: json['end_date'] != null ? DateTime.parse(json['end_date'] as String) : null,
-      linkedHabits: (json['linked_habits'] as List?)?.map((e) => e as String).toList() ?? [],
+      startDate: json['start_date'] != null
+          ? DateTime.parse(json['start_date'] as String)
+          : null,
+      endDate: json['end_date'] != null
+          ? DateTime.parse(json['end_date'] as String)
+          : null,
+      linkedHabits:
+          (json['linked_habits'] as List?)?.map((e) => e as String).toList() ??
+          [],
       phase: json['phase'] as int?,
       isMilestone: json['is_milestone'] as bool? ?? false,
       isCompleted: json['is_completed'] as bool? ?? false,
       rolledOver: json['rolled_over'] as bool? ?? false,
-      lastResetAt: json['last_reset_at'] != null ? DateTime.parse(json['last_reset_at'] as String) : null,
-      createdAt: json['created_at'] != null ? DateTime.parse(json['created_at'] as String) : null,
+      lastResetAt: json['last_reset_at'] != null
+          ? DateTime.parse(json['last_reset_at'] as String)
+          : null,
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'] as String)
+          : null,
     );
   }
 
   static GoalType _parseGoalType(String? type) {
     switch (type) {
-      case 'weekly': return GoalType.weekly;
-      case 'monthly': return GoalType.monthly;
-      case 'career': return GoalType.career;
-      default: return GoalType.weekly;
+      case 'weekly':
+        return GoalType.weekly;
+      case 'monthly':
+        return GoalType.monthly;
+      case 'career':
+        return GoalType.career;
+      default:
+        return GoalType.weekly;
     }
   }
 

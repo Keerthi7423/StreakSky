@@ -36,7 +36,10 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFF0D0D0D),
       appBar: AppBar(
-        title: const Text('EDIT PROFILE', style: TextStyle(letterSpacing: 2, fontWeight: FontWeight.bold)),
+        title: const Text(
+          'EDIT PROFILE',
+          style: TextStyle(letterSpacing: 2, fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -54,25 +57,44 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        border: Border.all(color: AppTheme.neonAccent, width: 2),
+                        border: Border.all(
+                          color: AppTheme.neonAccent,
+                          width: 2,
+                        ),
                       ),
                       child: ClipOval(
                         child: SizedBox(
                           width: 100,
                           height: 100,
-                          child: widget.profile.avatarUrl != null && widget.profile.avatarUrl!.isNotEmpty
+                          child:
+                              widget.profile.avatarUrl != null &&
+                                  widget.profile.avatarUrl!.isNotEmpty
                               ? CachedNetworkImage(
                                   imageUrl: widget.profile.avatarUrl!,
                                   fit: BoxFit.cover,
-                                  placeholder: (context, url) => const SkeletonLoader(width: 100, height: 100, borderRadius: 50),
-                                  errorWidget: (context, url, error) => Container(
-                                    color: Colors.grey[900],
-                                    child: const Icon(Icons.person, size: 50, color: Colors.white),
-                                  ),
+                                  placeholder: (context, url) =>
+                                      const SkeletonLoader(
+                                        width: 100,
+                                        height: 100,
+                                        borderRadius: 50,
+                                      ),
+                                  errorWidget: (context, url, error) =>
+                                      Container(
+                                        color: Colors.grey[900],
+                                        child: const Icon(
+                                          Icons.person,
+                                          size: 50,
+                                          color: Colors.white,
+                                        ),
+                                      ),
                                 )
                               : Container(
                                   color: Colors.grey[900],
-                                  child: const Icon(Icons.person, size: 50, color: Colors.white),
+                                  child: const Icon(
+                                    Icons.person,
+                                    size: 50,
+                                    color: Colors.white,
+                                  ),
                                 ),
                         ),
                       ),
@@ -86,7 +108,11 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                           color: AppTheme.neonAccent,
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(Icons.camera_alt, size: 16, color: Colors.black),
+                        child: const Icon(
+                          Icons.camera_alt,
+                          size: 16,
+                          color: Colors.black,
+                        ),
                       ),
                     ),
                   ],
@@ -95,7 +121,12 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
               const SizedBox(height: 40),
               const Text(
                 'DISPLAY NAME',
-                style: TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 1),
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1,
+                ),
               ),
               const SizedBox(height: 8),
               TextFormField(
@@ -112,7 +143,10 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: AppTheme.neonAccent, width: 1),
+                    borderSide: BorderSide(
+                      color: AppTheme.neonAccent,
+                      width: 1,
+                    ),
                   ),
                 ),
                 validator: (value) {
@@ -125,7 +159,12 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
               const SizedBox(height: 24),
               const Text(
                 'EMAIL (READ-ONLY)',
-                style: TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 1),
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1,
+                ),
               ),
               const SizedBox(height: 8),
               Container(
@@ -150,20 +189,27 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                       final updatedProfile = widget.profile.copyWith(
                         displayName: _nameController.text,
                       );
-                      await ref.read(profileControllerProvider.notifier).updateProfile(updatedProfile);
+                      await ref
+                          .read(profileControllerProvider.notifier)
+                          .updateProfile(updatedProfile);
                       if (context.mounted) Navigator.pop(context);
                     }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppTheme.neonAccent,
                     foregroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     elevation: 8,
                     shadowColor: AppTheme.neonAccent.withValues(alpha: 0.5),
                   ),
                   child: const Text(
                     'SAVE CHANGES',
-                    style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1,
+                    ),
                   ),
                 ),
               ),

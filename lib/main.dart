@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -50,14 +51,14 @@ Future<void> main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    
+
     // Initialize Crashlytics
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
     PlatformDispatcher.instance.onError = (error, stack) {
       FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
       return true;
     };
-    
+
     final remoteConfigService = RemoteConfigService();
     await remoteConfigService.initialize();
   } catch (e) {
@@ -71,10 +72,10 @@ Future<void> main() async {
   // 4.2 Start Sync Service
   getIt<SyncService>().init();
 
-
   // 5. Initialize Shared Preferences & Onboarding Status
   final prefs = await SharedPreferences.getInstance();
-  final bool onboardingCompleted = prefs.getBool('onboarding_completed') ?? false;
+  final bool onboardingCompleted =
+      prefs.getBool('onboarding_completed') ?? false;
 
   runApp(
     ProviderScope(
@@ -103,4 +104,3 @@ class StreakSkyApp extends ConsumerWidget {
     );
   }
 }
-

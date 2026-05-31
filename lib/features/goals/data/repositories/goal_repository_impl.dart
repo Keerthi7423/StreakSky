@@ -12,13 +12,13 @@ class GoalRepositoryImpl implements GoalRepository {
   @override
   Future<List<GoalModel>> getGoals(String userId, {GoalType? type}) async {
     var query = _supabase.from('goals').select().eq('user_id', userId);
-    
+
     if (type != null) {
       query = query.eq('type', type.name);
     }
-    
+
     final response = await query.order('created_at', ascending: false);
-    
+
     return (response as List).map((json) => GoalModel.fromJson(json)).toList();
   }
 
@@ -34,7 +34,7 @@ class GoalRepositoryImpl implements GoalRepository {
         .insert(data)
         .select()
         .single();
-    
+
     return GoalModel.fromJson(response);
   }
 
@@ -46,7 +46,7 @@ class GoalRepositoryImpl implements GoalRepository {
         .eq('id', goal.id)
         .select()
         .single();
-    
+
     return GoalModel.fromJson(response);
   }
 
@@ -64,13 +64,16 @@ class GoalRepositoryImpl implements GoalRepository {
   }
 
   @override
-  Future<List<GoalModel>> getGoalsByHabitId(String userId, String habitId) async {
+  Future<List<GoalModel>> getGoalsByHabitId(
+    String userId,
+    String habitId,
+  ) async {
     final response = await _supabase
         .from('goals')
         .select()
         .eq('user_id', userId)
         .contains('linked_habits', [habitId]);
-    
+
     return (response as List).map((json) => GoalModel.fromJson(json)).toList();
   }
 }

@@ -17,7 +17,7 @@ class HabitRepositoryImpl implements HabitRepository {
         .select()
         .eq('user_id', userId)
         .order('created_at', ascending: true);
-    
+
     return (response as List).map((json) => HabitModel.fromJson(json)).toList();
   }
 
@@ -34,7 +34,7 @@ class HabitRepositoryImpl implements HabitRepository {
         .insert(data)
         .select()
         .single();
-    
+
     return HabitModel.fromJson(response);
   }
 
@@ -46,7 +46,7 @@ class HabitRepositoryImpl implements HabitRepository {
         .eq('id', habit.id)
         .select()
         .single();
-    
+
     return HabitModel.fromJson(response);
   }
 
@@ -76,12 +76,18 @@ class HabitRepositoryImpl implements HabitRepository {
         .select()
         .eq('habit_id', habitId)
         .order('completed_date', ascending: false);
-    
-    return (response as List).map((json) => HabitCompletionModel.fromJson(json)).toList();
+
+    return (response as List)
+        .map((json) => HabitCompletionModel.fromJson(json))
+        .toList();
   }
 
   @override
-  Future<List<HabitCompletionModel>> getCompletionsForDateRange(String userId, String startDate, String endDate) async {
+  Future<List<HabitCompletionModel>> getCompletionsForDateRange(
+    String userId,
+    String startDate,
+    String endDate,
+  ) async {
     final response = await _supabase
         .from('habit_completions')
         .select()
@@ -89,7 +95,9 @@ class HabitRepositoryImpl implements HabitRepository {
         .gte('completed_date', startDate)
         .lte('completed_date', endDate)
         .order('completed_date', ascending: false);
-    
-    return (response as List).map((json) => HabitCompletionModel.fromJson(json)).toList();
+
+    return (response as List)
+        .map((json) => HabitCompletionModel.fromJson(json))
+        .toList();
   }
 }

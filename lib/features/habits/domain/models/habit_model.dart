@@ -34,14 +34,18 @@ class HabitModel {
       name: json['name'] as String? ?? '',
       emoji: json['emoji'] as String?,
       colorHex: json['color_hex'] as String?,
-      frequency: json['frequency'] != null 
+      frequency: json['frequency'] != null
           ? HabitFrequency.fromJson(json['frequency'] as Map<String, dynamic>)
           : const HabitFrequency(type: FrequencyType.daily),
       category: json['category'] as String?,
-      startDate: json['start_date'] != null ? DateTime.parse(json['start_date'] as String) : null,
+      startDate: json['start_date'] != null
+          ? DateTime.parse(json['start_date'] as String)
+          : null,
       isArchived: json['is_archived'] as bool? ?? false,
       sortOrder: json['sort_order'] as int? ?? 0,
-      createdAt: json['created_at'] != null ? DateTime.parse(json['created_at'] as String) : null,
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'] as String)
+          : null,
     );
   }
 

@@ -75,13 +75,18 @@ final demoGoalsProvider = StateProvider<List<GoalModel>>((ref) {
   ];
 });
 
-final goalsListProvider = FutureProvider.family<List<GoalModel>, GoalType?>((ref, type) async {
+final goalsListProvider = FutureProvider.family<List<GoalModel>, GoalType?>((
+  ref,
+  type,
+) async {
   final isDemo = ref.watch(demoLoggedInProvider);
   debugPrint('🔄 Fetching goals for type: $type (isDemo: $isDemo)');
 
   if (isDemo) {
     final allDemoGoals = ref.watch(demoGoalsProvider);
-    final filtered = type == null ? allDemoGoals : allDemoGoals.where((g) => g.type == type).toList();
+    final filtered = type == null
+        ? allDemoGoals
+        : allDemoGoals.where((g) => g.type == type).toList();
     debugPrint('✅ Found ${filtered.length} demo goals');
     return filtered;
   }
@@ -102,7 +107,8 @@ class GoalController extends StateNotifier<AsyncValue<void>> {
   final GoalRepository _repository;
   final Ref _ref;
 
-  GoalController(this._repository, this._ref) : super(const AsyncValue.data(null));
+  GoalController(this._repository, this._ref)
+    : super(const AsyncValue.data(null));
 
   Future<void> addGoal({
     required String title,
@@ -144,12 +150,14 @@ class GoalController extends StateNotifier<AsyncValue<void>> {
         await _repository.createGoal(goal);
       } else {
         debugPrint('💾 Adding goal to Demo state...');
-        _ref.read(demoGoalsProvider.notifier).update((state) => [...state, goal]);
+        _ref
+            .read(demoGoalsProvider.notifier)
+            .update((state) => [...state, goal]);
       }
-      
+
       // Log Analytics
       _ref.read(analyticsServiceProvider).logGoalCreated(goal);
-      
+
       _ref.invalidate(goalsListProvider);
       debugPrint('✅ Goal added and provider invalidated');
     });
@@ -161,9 +169,16 @@ class GoalController extends StateNotifier<AsyncValue<void>> {
       if (!isDemo) {
         await _repository.updateGoalProgress(goalId, newValue);
       } else {
-        _ref.read(demoGoalsProvider.notifier).update((state) => 
-          state.map<GoalModel>((g) => g.id == goalId ? g.copyWith(currentValue: newValue) : g).toList()
-        );
+        _ref
+            .read(demoGoalsProvider.notifier)
+            .update(
+              (state) => state
+                  .map<GoalModel>(
+                    (g) =>
+                        g.id == goalId ? g.copyWith(currentValue: newValue) : g,
+                  )
+                  .toList(),
+            );
       }
       _ref.invalidate(goalsListProvider);
     });
@@ -175,12 +190,14 @@ class GoalController extends StateNotifier<AsyncValue<void>> {
       if (!isDemo) {
         await _repository.deleteGoal(goalId);
       } else {
-        _ref.read(demoGoalsProvider.notifier).update((state) => state.where((g) => g.id != goalId).toList());
+        _ref
+            .read(demoGoalsProvider.notifier)
+            .update((state) => state.where((g) => g.id != goalId).toList());
       }
       _ref.invalidate(goalsListProvider);
     });
   }
-  
+
   Future<void> handleHabitCompletion(String habitId, bool completed) async {
     final user = _ref.read(authStateProvider).asData?.value;
     final isDemo = _ref.read(demoLoggedInProvider);
@@ -189,45 +206,59 @@ class GoalController extends StateNotifier<AsyncValue<void>> {
     try {
       // First check for any pending resets
       await checkAndResetGoals();
-      
+
       List<GoalModel> linkedGoals;
       if (!isDemo) {
         linkedGoals = await _repository.getGoalsByHabitId(user!.uid, habitId);
       } else {
-        linkedGoals = _ref.read(demoGoalsProvider).where((g) => g.linkedHabits.contains(habitId)).toList();
+        linkedGoals = _ref
+            .read(demoGoalsProvider)
+            .where((g) => g.linkedHabits.contains(habitId))
+            .toList();
       }
-      
+
       for (final goal in linkedGoals) {
         final delta = completed ? 1 : -1;
-        final newValue = (goal.currentValue + delta).clamp(0, goal.targetValue ?? 999999);
+        final newValue = (goal.currentValue + delta).clamp(
+          0,
+          goal.targetValue ?? 999999,
+        );
         final wasCompleted = goal.isCompleted;
         final isNowCompleted = newValue >= (goal.targetValue ?? 999999);
-        
-        if (newValue == goal.currentValue && wasCompleted == isNowCompleted) continue;
-        
+
+        if (newValue == goal.currentValue && wasCompleted == isNowCompleted)
+          continue;
+
         final updatedGoal = goal.copyWith(
           currentValue: newValue,
           isCompleted: isNowCompleted,
         );
-        
+
         if (!isDemo) {
           await _repository.updateGoal(updatedGoal);
         } else {
-          _ref.read(demoGoalsProvider.notifier).update((state) => 
-            state.map<GoalModel>((g) => g.id == goal.id ? updatedGoal : g).toList()
-          );
+          _ref
+              .read(demoGoalsProvider.notifier)
+              .update(
+                (state) => state
+                    .map<GoalModel>((g) => g.id == goal.id ? updatedGoal : g)
+                    .toList(),
+              );
         }
       }
-      
+
       if (linkedGoals.isNotEmpty) {
         _ref.invalidate(goalsListProvider);
-        
+
         // Log Analytics for the first linked goal found (simplified)
         if (linkedGoals.isNotEmpty) {
           final goal = linkedGoals.first;
-          final newValue = (goal.currentValue + (completed ? 1 : -1)).clamp(0, goal.targetValue ?? 999999);
+          final newValue = (goal.currentValue + (completed ? 1 : -1)).clamp(
+            0,
+            goal.targetValue ?? 999999,
+          );
           _ref.read(analyticsServiceProvider).logGoalProgress(goal, newValue);
-          
+
           if (newValue >= (goal.targetValue ?? 999999)) {
             _ref.read(analyticsServiceProvider).logGoalCompletion(goal);
           }
@@ -260,19 +291,25 @@ class GoalController extends StateNotifier<AsyncValue<void>> {
 
       if (goal.type == GoalType.weekly) {
         // Reset every Monday at 00:00 (Timezone safe comparison)
-        final lastReset = (goal.lastResetAt ?? goal.createdAt ?? goal.startDate ?? now).toLocal();
+        final lastReset =
+            (goal.lastResetAt ?? goal.createdAt ?? goal.startDate ?? now)
+                .toLocal();
         final startOfToday = DateTime(now.year, now.month, now.day);
-        final lastMonday = startOfToday.subtract(Duration(days: startOfToday.weekday - 1));
-        
+        final lastMonday = startOfToday.subtract(
+          Duration(days: startOfToday.weekday - 1),
+        );
+
         if (lastReset.isBefore(lastMonday)) {
           resetNeeded = true;
           newResetDate = lastMonday;
         }
       } else if (goal.type == GoalType.monthly) {
         // Reset on the 1st of every month (Timezone safe comparison)
-        final lastReset = (goal.lastResetAt ?? goal.createdAt ?? goal.startDate ?? now).toLocal();
+        final lastReset =
+            (goal.lastResetAt ?? goal.createdAt ?? goal.startDate ?? now)
+                .toLocal();
         final startOfThisMonth = DateTime(now.year, now.month, 1);
-        
+
         if (lastReset.isBefore(startOfThisMonth)) {
           resetNeeded = true;
           newResetDate = startOfThisMonth;
@@ -288,11 +325,11 @@ class GoalController extends StateNotifier<AsyncValue<void>> {
         );
         newGoals.add(resetGoal);
         updated = true;
-        
+
         if (!isDemo) {
           await _repository.updateGoal(resetGoal);
         }
-        
+
         // Log Analytics for reset
         _ref.read(analyticsServiceProvider).logGoalReset(goal);
       } else {
@@ -309,7 +346,8 @@ class GoalController extends StateNotifier<AsyncValue<void>> {
   }
 }
 
-final goalControllerProvider = StateNotifierProvider<GoalController, AsyncValue<void>>((ref) {
-  final repo = ref.watch(goalRepositoryProvider);
-  return GoalController(repo, ref);
-});
+final goalControllerProvider =
+    StateNotifierProvider<GoalController, AsyncValue<void>>((ref) {
+      final repo = ref.watch(goalRepositoryProvider);
+      return GoalController(repo, ref);
+    });

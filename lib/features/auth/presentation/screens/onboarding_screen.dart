@@ -19,19 +19,22 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final List<OnboardingData> _pages = [
     OnboardingData(
       title: 'Track Your Streaks',
-      description: 'Keep the fire burning. Track your daily habits and build unstoppable streaks.',
+      description:
+          'Keep the fire burning. Track your daily habits and build unstoppable streaks.',
       icon: Icons.local_fire_department_rounded,
       color: const Color(0xFFB3FF00),
     ),
     OnboardingData(
       title: 'AI-Powered Insights',
-      description: 'Get personalized nudges and patterns analysis from Sky, your AI habit coach.',
+      description:
+          'Get personalized nudges and patterns analysis from Sky, your AI habit coach.',
       icon: Icons.psychology_rounded,
       color: const Color(0xFF00E5FF),
     ),
     OnboardingData(
       title: 'Weather Your Journey',
-      description: 'Your habits affect your personal weather. Stay consistent to keep it sunny.',
+      description:
+          'Your habits affect your personal weather. Stay consistent to keep it sunny.',
       icon: Icons.wb_sunny_rounded,
       color: const Color(0xFFFFD600),
     ),
@@ -40,7 +43,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   Future<void> _completeOnboarding() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('onboarding_completed', true);
-    
+
     // Update the provider state so the router re-evaluates the redirect logic
     ref.read(onboardingCompletedProvider.notifier).state = true;
   }
@@ -63,7 +66,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               return OnboardingPage(data: _pages[index]);
             },
           ),
-          
+
           // Navigation UI
           Positioned(
             bottom: 60,
@@ -84,7 +87,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     ),
                   ),
                 ),
-                
+
                 // Indicators
                 Row(
                   children: List.generate(
@@ -95,15 +98,15 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       height: 8,
                       width: _currentPage == index ? 24 : 8,
                       decoration: BoxDecoration(
-                        color: _currentPage == index 
-                            ? const Color(0xFFB3FF00) 
+                        color: _currentPage == index
+                            ? const Color(0xFFB3FF00)
                             : Colors.white.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),
                   ),
                 ),
-                
+
                 // Next/Get Started Button
                 IconButton(
                   onPressed: () {
@@ -123,8 +126,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
-                      _currentPage == _pages.length - 1 
-                          ? Icons.check 
+                      _currentPage == _pages.length - 1
+                          ? Icons.check
                           : Icons.arrow_forward_ios,
                       color: Colors.black,
                       size: 20,
@@ -175,18 +178,20 @@ class OnboardingPage extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             child: Center(
-              child: Icon(
-                data.icon,
-                size: 120,
-                color: data.color,
-              ).animate(onPlay: (controller) => controller.repeat())
-               .shimmer(duration: 2.seconds, color: Colors.white24)
-               .scale(duration: 2.seconds, begin: const Offset(1, 1), end: const Offset(1.1, 1.1), curve: Curves.easeInOut),
+              child: Icon(data.icon, size: 120, color: data.color)
+                  .animate(onPlay: (controller) => controller.repeat())
+                  .shimmer(duration: 2.seconds, color: Colors.white24)
+                  .scale(
+                    duration: 2.seconds,
+                    begin: const Offset(1, 1),
+                    end: const Offset(1.1, 1.1),
+                    curve: Curves.easeInOut,
+                  ),
             ),
           ).animate().fadeIn(duration: 800.ms).scale(delay: 200.ms),
-          
+
           const SizedBox(height: 60),
-          
+
           Text(
             data.title,
             textAlign: TextAlign.center,
@@ -197,9 +202,9 @@ class OnboardingPage extends StatelessWidget {
               letterSpacing: -0.5,
             ),
           ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.2),
-          
+
           const SizedBox(height: 20),
-          
+
           Text(
             data.description,
             textAlign: TextAlign.center,

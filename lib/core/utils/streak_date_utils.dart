@@ -1,4 +1,3 @@
-
 class StreakDateUtils {
   /// Returns the "effective" date for streak calculation.
   /// Task 47: 1-hour midnight grace period logic.

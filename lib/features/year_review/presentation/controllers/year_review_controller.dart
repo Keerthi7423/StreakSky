@@ -12,7 +12,8 @@ class YearReviewController extends StateNotifier<AsyncValue<YearReviewModel?>> {
   final YearReviewRepository _repository;
   final Ref _ref;
 
-  YearReviewController(this._repository, this._ref) : super(const AsyncValue.data(null));
+  YearReviewController(this._repository, this._ref)
+    : super(const AsyncValue.data(null));
 
   Future<void> generateReview(int year) async {
     final isDemo = _ref.read(demoLoggedInProvider);
@@ -31,7 +32,10 @@ class YearReviewController extends StateNotifier<AsyncValue<YearReviewModel?>> {
   }
 }
 
-final yearReviewControllerProvider = StateNotifierProvider<YearReviewController, AsyncValue<YearReviewModel?>>((ref) {
-  final repo = ref.watch(yearReviewRepositoryProvider);
-  return YearReviewController(repo, ref);
-});
+final yearReviewControllerProvider =
+    StateNotifierProvider<YearReviewController, AsyncValue<YearReviewModel?>>((
+      ref,
+    ) {
+      final repo = ref.watch(yearReviewRepositoryProvider);
+      return YearReviewController(repo, ref);
+    });

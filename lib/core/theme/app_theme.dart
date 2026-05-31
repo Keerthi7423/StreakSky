@@ -7,7 +7,6 @@ class AppTheme {
   static Color get neonAccent => AppColors.primaryAccent;
 
   static ThemeData get darkTheme {
-
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
@@ -54,10 +53,7 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
           ),
-          textStyle: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
       ),
     );

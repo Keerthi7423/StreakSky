@@ -20,7 +20,10 @@ class ProfileScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: const Color(0xFF0D0D0D),
       appBar: AppBar(
-        title: const Text('PROFILE', style: TextStyle(letterSpacing: 2, fontWeight: FontWeight.bold)),
+        title: const Text(
+          'PROFILE',
+          style: TextStyle(letterSpacing: 2, fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
@@ -32,14 +35,24 @@ class ProfileScreen extends ConsumerWidget {
       ),
       body: profileAsync.when(
         data: (profile) => _buildContent(context, ref, profile, firebaseUser),
-        loading: () => Center(child: CircularProgressIndicator(color: AppTheme.neonAccent)),
-        error: (e, _) => Center(child: Text('Error: $e', style: const TextStyle(color: Colors.red))),
+        loading: () => Center(
+          child: CircularProgressIndicator(color: AppTheme.neonAccent),
+        ),
+        error: (e, _) => Center(
+          child: Text('Error: $e', style: const TextStyle(color: Colors.red)),
+        ),
       ),
     );
   }
 
-  Widget _buildContent(BuildContext context, WidgetRef ref, UserProfile? profile, dynamic firebaseUser) {
-    final displayName = profile?.displayName ?? firebaseUser?.displayName ?? 'Champion User';
+  Widget _buildContent(
+    BuildContext context,
+    WidgetRef ref,
+    UserProfile? profile,
+    dynamic firebaseUser,
+  ) {
+    final displayName =
+        profile?.displayName ?? firebaseUser?.displayName ?? 'Champion User';
     final email = profile?.email ?? firebaseUser?.email ?? '';
     final avatarUrl = profile?.avatarUrl ?? firebaseUser?.photoURL;
 
@@ -72,15 +85,28 @@ class ProfileScreen extends ConsumerWidget {
                           ? CachedNetworkImage(
                               imageUrl: avatarUrl,
                               fit: BoxFit.cover,
-                              placeholder: (context, url) => const SkeletonLoader(width: 120, height: 120, borderRadius: 60),
+                              placeholder: (context, url) =>
+                                  const SkeletonLoader(
+                                    width: 120,
+                                    height: 120,
+                                    borderRadius: 60,
+                                  ),
                               errorWidget: (context, url, error) => Container(
                                 color: Colors.grey[900],
-                                child: const Icon(Icons.person, size: 60, color: Colors.white),
+                                child: const Icon(
+                                  Icons.person,
+                                  size: 60,
+                                  color: Colors.white,
+                                ),
                               ),
                             )
                           : Container(
                               color: Colors.grey[900],
-                              child: const Icon(Icons.person, size: 60, color: Colors.white),
+                              child: const Icon(
+                                Icons.person,
+                                size: 60,
+                                color: Colors.white,
+                              ),
                             ),
                     ),
                   ),
@@ -93,7 +119,10 @@ class ProfileScreen extends ConsumerWidget {
                       if (profile != null) {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => ProfileEditScreen(profile: profile)),
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                ProfileEditScreen(profile: profile),
+                          ),
                         );
                       }
                     },
@@ -103,7 +132,11 @@ class ProfileScreen extends ConsumerWidget {
                         color: AppTheme.neonAccent,
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.edit, size: 20, color: Colors.black),
+                      child: const Icon(
+                        Icons.edit,
+                        size: 20,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
                 ),
@@ -113,7 +146,11 @@ class ProfileScreen extends ConsumerWidget {
           const SizedBox(height: 24),
           Text(
             displayName,
-            style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           const SizedBox(height: 8),
           Text(
@@ -123,33 +160,69 @@ class ProfileScreen extends ConsumerWidget {
           const SizedBox(height: 8),
           Text(
             'STREAK LEGEND',
-            style: TextStyle(color: AppTheme.neonAccent, letterSpacing: 1.5, fontSize: 12),
+            style: TextStyle(
+              color: AppTheme.neonAccent,
+              letterSpacing: 1.5,
+              fontSize: 12,
+            ),
           ),
           const SizedBox(height: 40),
-          _buildProfileMenuItem(context, Icons.history, 'History', 'View your past streaks'),
-          _buildProfileMenuItem(context, Icons.badge_outlined, 'Badges', '12 earned'),
+          _buildProfileMenuItem(
+            context,
+            Icons.history,
+            'History',
+            'View your past streaks',
+          ),
+          _buildProfileMenuItem(
+            context,
+            Icons.badge_outlined,
+            'Badges',
+            '12 earned',
+          ),
           _buildProfileMenuItem(
             context,
             Icons.auto_awesome,
             'Year in Review',
             'Your annual habit report card',
-            onTap: () => GoRouter.of(context).push('/year-review?year=${DateTime.now().year}'),
+            onTap: () => GoRouter.of(
+              context,
+            ).push('/year-review?year=${DateTime.now().year}'),
           ),
-          _buildProfileMenuItem(context, Icons.notifications_outlined, 'Notifications', 'On'),
-          _buildProfileMenuItem(context, Icons.security, 'Privacy', 'Manage your data'),
+          _buildProfileMenuItem(
+            context,
+            Icons.notifications_outlined,
+            'Notifications',
+            'On',
+          ),
+          _buildProfileMenuItem(
+            context,
+            Icons.security,
+            'Privacy',
+            'Manage your data',
+          ),
           const SizedBox(height: 40),
           SizedBox(
             width: double.infinity,
             height: 56,
             child: OutlinedButton(
-              onPressed: () => ref.read(authControllerProvider.notifier).signOut(),
+              onPressed: () =>
+                  ref.read(authControllerProvider.notifier).signOut(),
               style: OutlinedButton.styleFrom(
-                side: BorderSide(color: Colors.white.withValues(alpha: 0.2), width: 1),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                side: BorderSide(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  width: 1,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
               child: const Text(
                 'LOG OUT',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, letterSpacing: 1),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1,
+                ),
               ),
             ),
           ),
@@ -161,7 +234,11 @@ class ProfileScreen extends ConsumerWidget {
               onPressed: () => _showDeleteConfirmation(context, ref),
               child: const Text(
                 'DELETE ACCOUNT',
-                style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.w600, letterSpacing: 1),
+                style: TextStyle(
+                  color: Colors.redAccent,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 1,
+                ),
               ),
             ),
           ),
@@ -175,7 +252,10 @@ class ProfileScreen extends ConsumerWidget {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: const Color(0xFF1A1A1A),
-        title: const Text('Delete Account?', style: TextStyle(color: Colors.white)),
+        title: const Text(
+          'Delete Account?',
+          style: TextStyle(color: Colors.white),
+        ),
         content: const Text(
           'This action is permanent and will delete all your streaks and data. Are you sure?',
           style: TextStyle(color: Colors.white70),
@@ -183,21 +263,33 @@ class ProfileScreen extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('CANCEL', style: TextStyle(color: Colors.white60)),
+            child: const Text(
+              'CANCEL',
+              style: TextStyle(color: Colors.white60),
+            ),
           ),
           TextButton(
             onPressed: () {
               ref.read(authControllerProvider.notifier).deleteAccount();
               Navigator.pop(context);
             },
-            child: const Text('DELETE', style: TextStyle(color: Colors.redAccent)),
+            child: const Text(
+              'DELETE',
+              style: TextStyle(color: Colors.redAccent),
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildProfileMenuItem(BuildContext context, IconData icon, String title, String subtitle, {VoidCallback? onTap}) {
+  Widget _buildProfileMenuItem(
+    BuildContext context,
+    IconData icon,
+    String title,
+    String subtitle, {
+    VoidCallback? onTap,
+  }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
@@ -206,13 +298,20 @@ class ProfileScreen extends ConsumerWidget {
       ),
       child: ListTile(
         leading: Icon(icon, color: AppTheme.neonAccent),
-        title: Text(title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        subtitle: Text(subtitle, style: const TextStyle(color: Colors.white60, fontSize: 12)),
+        title: Text(
+          title,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        subtitle: Text(
+          subtitle,
+          style: const TextStyle(color: Colors.white60, fontSize: 12),
+        ),
         trailing: const Icon(Icons.chevron_right, color: Colors.white24),
         onTap: onTap ?? () {},
       ),
     );
   }
 }
-
-

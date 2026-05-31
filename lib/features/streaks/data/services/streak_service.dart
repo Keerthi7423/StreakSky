@@ -69,13 +69,16 @@ class StreakService implements StreakRepository {
       );
     } catch (e) {
       // Local recalculation fallback
-      debugPrint('Edge function recalculate failed. Doing local calculation fallback.');
+      debugPrint(
+        'Edge function recalculate failed. Doing local calculation fallback.',
+      );
       final currentStreak = await getStreak(habitId);
       if (currentStreak != null) {
         // Apply basic local calculation here
         final newStreak = currentStreak.copyWith(
           currentStreak: currentStreak.currentStreak + 1,
-          longestStreak: currentStreak.currentStreak + 1 > currentStreak.longestStreak
+          longestStreak:
+              currentStreak.currentStreak + 1 > currentStreak.longestStreak
               ? currentStreak.currentStreak + 1
               : currentStreak.longestStreak,
           updatedAt: DateTime.now(),

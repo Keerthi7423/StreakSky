@@ -19,7 +19,9 @@ class SubscriptionStatus {
       userId: json['user_id'] as String,
       status: json['status'] as String,
       planType: json['plan_type'] as String,
-      validUntil: json['valid_until'] != null ? DateTime.parse(json['valid_until'] as String) : null,
+      validUntil: json['valid_until'] != null
+          ? DateTime.parse(json['valid_until'] as String)
+          : null,
     );
   }
 
@@ -33,6 +35,8 @@ class SubscriptionStatus {
     };
   }
 
-  bool get isPro => status == 'active' && (planType == 'monthly' || planType == 'yearly') &&
+  bool get isPro =>
+      status == 'active' &&
+      (planType == 'monthly' || planType == 'yearly') &&
       (validUntil == null || validUntil!.isAfter(DateTime.now()));
 }

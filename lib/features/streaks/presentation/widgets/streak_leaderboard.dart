@@ -24,10 +24,7 @@ class StreakLeaderboard extends ConsumerWidget {
         children: [
           Row(
             children: [
-              const Text(
-                '🏆',
-                style: TextStyle(fontSize: 24),
-              ),
+              const Text('🏆', style: TextStyle(fontSize: 24)),
               const SizedBox(width: 12),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,15 +32,15 @@ class StreakLeaderboard extends ConsumerWidget {
                   Text(
                     'Personal Bests',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: AppColors.textPrimary,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   Text(
                     'Your all-time top streaks',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppColors.textSecondary,
-                        ),
+                      color: AppColors.textSecondary,
+                    ),
                   ),
                 ],
               ),
@@ -68,14 +65,14 @@ class StreakLeaderboard extends ConsumerWidget {
                 children: streaks.asMap().entries.map((entry) {
                   final index = entry.key;
                   final streak = entry.value;
-                  
+
                   return habitsAsync.when(
                     data: (habits) {
                       final habit = habits.firstWhere(
                         (h) => h.id == streak.habitId,
                         orElse: () => habits.first,
                       );
-                      
+
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 16),
                         child: Row(
@@ -84,7 +81,9 @@ class StreakLeaderboard extends ConsumerWidget {
                               width: 32,
                               height: 32,
                               decoration: BoxDecoration(
-                                color: _getRankColor(index).withValues(alpha: 0.1),
+                                color: _getRankColor(
+                                  index,
+                                ).withValues(alpha: 0.1),
                                 shape: BoxShape.circle,
                                 border: Border.all(
                                   color: _getRankColor(index),

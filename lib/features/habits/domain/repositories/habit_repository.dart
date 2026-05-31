@@ -9,5 +9,9 @@ abstract class HabitRepository {
   Future<void> archiveHabit(String habitId);
   Future<void> reorderHabits(List<HabitModel> habits);
   Future<List<HabitCompletionModel>> getHabitCompletions(String habitId);
-  Future<List<HabitCompletionModel>> getCompletionsForDateRange(String userId, String startDate, String endDate);
+  Future<List<HabitCompletionModel>> getCompletionsForDateRange(
+    String userId,
+    String startDate,
+    String endDate,
+  );
 }

@@ -57,11 +57,16 @@ enum WeatherType {
     required this.description,
   });
 
-  static WeatherType fromCompletionRate(double rate, {bool isStorm = false, bool isRainbow = false, bool isTornado = false}) {
+  static WeatherType fromCompletionRate(
+    double rate, {
+    bool isStorm = false,
+    bool isRainbow = false,
+    bool isTornado = false,
+  }) {
     if (isTornado) return WeatherType.tornado;
     if (isRainbow) return WeatherType.rainbow;
     if (isStorm) return WeatherType.storm;
-    
+
     if (rate >= 1.0) return WeatherType.sunny;
     if (rate >= 0.6) return WeatherType.partlyCloudy;
     if (rate >= 0.4) return WeatherType.cloudy;

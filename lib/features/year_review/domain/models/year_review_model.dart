@@ -23,16 +23,20 @@ class YearReviewModel {
     return YearReviewModel(
       year: json['year'] as int? ?? DateTime.now().year,
       userId: json['user_id'] as String? ?? '',
-      habitReports: (json['habit_reports'] as List?)
+      habitReports:
+          (json['habit_reports'] as List?)
               ?.map((e) => HabitReportCard.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
       weatherSummary: WeatherYearSummary.fromJson(
-          json['weather_summary'] as Map<String, dynamic>? ?? {}),
+        json['weather_summary'] as Map<String, dynamic>? ?? {},
+      ),
       goalSummary: GoalCompletionSummary.fromJson(
-          json['goal_summary'] as Map<String, dynamic>? ?? {}),
+        json['goal_summary'] as Map<String, dynamic>? ?? {},
+      ),
       streakHallOfFame: StreakHallOfFame.fromJson(
-          json['streak_hall_of_fame'] as Map<String, dynamic>? ?? {}),
+        json['streak_hall_of_fame'] as Map<String, dynamic>? ?? {},
+      ),
       aiNarrative: json['ai_narrative'] as String? ?? '',
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'] as String)
@@ -134,7 +138,8 @@ class WeatherYearSummary {
       mostCommonWeather: json['most_common_weather'] as String? ?? 'Cloudy',
       bestWeatherMonth: json['best_weather_month'] as String? ?? 'None',
       summaryText: json['summary_text'] as String? ?? '',
-      monthlyWeatherStrip: (json['monthly_weather_strip'] as List?)
+      monthlyWeatherStrip:
+          (json['monthly_weather_strip'] as List?)
               ?.map((e) => e as String)
               .toList() ??
           const [],
@@ -180,7 +185,8 @@ class GoalCompletionSummary {
       monthlyGoalsTotal: json['monthly_goals_total'] as int? ?? 0,
       careerMilestonesHit: json['career_milestones_hit'] as int? ?? 0,
       careerMilestonesTotal: json['career_milestones_total'] as int? ?? 0,
-      overallGoalCompletionScore: json['overall_goal_completion_score'] as int? ?? 0,
+      overallGoalCompletionScore:
+          json['overall_goal_completion_score'] as int? ?? 0,
     );
   }
 
@@ -212,7 +218,8 @@ class StreakHallOfFame {
 
   factory StreakHallOfFame.fromJson(Map<String, dynamic> json) {
     return StreakHallOfFame(
-      topLongestStreaks: (json['top_longest_streaks'] as List?)
+      topLongestStreaks:
+          (json['top_longest_streaks'] as List?)
               ?.map((e) => TopStreakItem.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
@@ -252,10 +259,6 @@ class TopStreakItem {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'habit_name': habitName,
-      'emoji': emoji,
-      'streak_days': streakDays,
-    };
+    return {'habit_name': habitName, 'emoji': emoji, 'streak_days': streakDays};
   }
 }

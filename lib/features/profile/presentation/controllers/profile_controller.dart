@@ -8,7 +8,8 @@ class ProfileController extends StateNotifier<AsyncValue<UserProfile?>> {
   final ProfileRepository _repository;
   final Ref _ref;
 
-  ProfileController(this._repository, this._ref) : super(const AsyncValue.loading()) {
+  ProfileController(this._repository, this._ref)
+    : super(const AsyncValue.loading()) {
     _init();
   }
 
@@ -56,7 +57,8 @@ final profileRepositoryProvider = Provider<ProfileRepository>((ref) {
   return getIt<ProfileRepository>();
 });
 
-final profileControllerProvider = StateNotifierProvider<ProfileController, AsyncValue<UserProfile?>>((ref) {
-  final repo = ref.watch(profileRepositoryProvider);
-  return ProfileController(repo, ref);
-});
+final profileControllerProvider =
+    StateNotifierProvider<ProfileController, AsyncValue<UserProfile?>>((ref) {
+      final repo = ref.watch(profileRepositoryProvider);
+      return ProfileController(repo, ref);
+    });
