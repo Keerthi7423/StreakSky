@@ -12,6 +12,7 @@ void main() {
     setUp(() {
       testHabit = HabitModel(
         id: 'habit_1',
+        userId: 'user_1',
         name: 'Drink Water',
         emoji: '💧',
         category: 'Health',

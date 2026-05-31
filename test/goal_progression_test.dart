@@ -11,7 +11,6 @@ void main() {
         type: GoalType.weekly,
         targetValue: 100.0,
         currentValue: 50.0,
-        unit: 'pages',
         createdAt: DateTime.now(),
       );
 
@@ -32,7 +31,6 @@ void main() {
         type: GoalType.monthly,
         targetValue: 300.0,
         currentValue: 150.0,
-        unit: 'km',
         createdAt: DateTime.now(),
       );
 
@@ -50,7 +48,6 @@ void main() {
         type: GoalType.career,
         targetValue: 10.0,
         currentValue: 5.0,
-        unit: 'milestones',
         createdAt: DateTime.now(),
       );
 
