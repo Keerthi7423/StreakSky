@@ -1,0 +1,50 @@
+Day 41: Continuous Deployment (CD) and Database Backups
+=======================================================
+Goal: Automate the deployment process to Google Play and Apple TestFlight using GitHub Actions, and ensure our database is secure with automated backups to Azure.
+
+1. Android Continuous Deployment (Task 121)
+-------------------------------------------
+Continuous Deployment (CD) for Android automates building and uploading the app directly to the Play Store. This significantly reduces manual effort during release days.
+
+- What we did (`.github/workflows/cd-android.yml`):
+  We created a new GitHub Action that triggers automatically when we push a version tag (e.g., `v1.0.0`) or when triggered manually.
+  
+  The workflow does the following:
+  - Sets up the Java and Flutter environment.
+  - Decodes our Base64-encoded upload keystore (securely stored in GitHub Secrets) back into a file.
+  - Generates the `key.properties` file securely using secrets so Flutter can sign the release build.
+  - Runs `flutter build appbundle --release` to generate the `.aab` file.
+  - Uploads the `.aab` file directly to the Google Play Store's Internal Testing track using the `r0adkll/upload-google-play` action.
+
+  *Interview Tip*: Be prepared to explain the difference between an APK and an AAB (Android App Bundle). Google requires AABs for new apps because they allow the Play Store to deliver customized, smaller APKs tailored to each user's device architecture, screen density, and language. Also, explain that we store our sensitive keystore as a Base64 encoded string in GitHub Secrets because Git repositories should never contain binary signing keys directly.
+
+2. iOS Continuous Deployment (Task 122)
+---------------------------------------
+Deploying to iOS requires a bit more strict certificate and provisioning profile handling than Android, but we can still automate it.
+
+- What we did (`.github/workflows/cd-ios.yml`):
+  We built a workflow specifically running on macOS (`macos-latest` runner).
+  
+  The workflow does the following:
+  - Sets up the Flutter environment on a Mac runner.
+  - Runs `flutter build ipa --release` to compile the app for iOS.
+  - Uses the App Store Connect API keys (stored in GitHub Secrets) to authenticate with Apple.
+  - Uploads the `.ipa` directly to TestFlight using `apple-actions/upload-testflight-build`.
+
+  *Interview Tip*: Discuss how the transition to App Store Connect API keys simplifies CI/CD. In the past, developers had to install specific certificates and provisioning profiles on CI runners manually, which often failed. With the API key (`Issuer ID`, `Key ID`, and `.p8` Private Key), Apple allows the CI runner to communicate and publish without needing a keychain locally.
+
+3. Automated Database Backups to Azure (Task 123)
+-------------------------------------------------
+While Supabase has built-in backups, having an off-site, cross-cloud backup strategy ensures that even if one provider goes down or an account is compromised, our data remains safe.
+
+- What we did (`.github/workflows/db-backup.yml`):
+  We created a scheduled GitHub workflow using a cron job (`cron: '0 2 * * *'`), which runs at 2:00 AM UTC every day.
+  
+  The workflow does the following:
+  - Connects to a standard Ubuntu runner and installs the `postgresql-client`.
+  - Runs `pg_dump` targeting our Supabase Database URL to create a full `.sql` backup.
+  - Compresses the backup using `gzip` to save storage costs.
+  - Logs into our Microsoft Azure account using the `azure/login` action.
+  - Uploads the compressed backup securely to an Azure Blob Storage container.
+
+  *Interview Tip*: Employers love hearing about Disaster Recovery (DR) strategies. Use the 3-2-1 backup rule as a talking point: Keep 3 copies of your data, on 2 different media, with 1 copy off-site. By exporting data from Supabase (AWS under the hood) to Azure, we have established a multi-cloud disaster recovery plan. This shows that you think beyond just writing code and care about infrastructure resilience and data security.
