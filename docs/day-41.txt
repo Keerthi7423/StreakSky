@@ -1,6 +1,6 @@
 Day 41: Continuous Deployment (CD) and Database Backups
 =======================================================
-Goal: Automate the deployment process to Google Play and Apple TestFlight using GitHub Actions, and ensure our database is secure with automated backups to Azure.
+Goal: Automate the build process for Android and iOS using GitHub Actions.
 
 1. Android Continuous Deployment (Task 121)
 -------------------------------------------
@@ -33,18 +33,4 @@ Deploying to iOS requires a bit more strict certificate and provisioning profile
 
   *Interview Tip*: Discuss how the transition to App Store Connect API keys simplifies CI/CD. In the past, developers had to install specific certificates and provisioning profiles on CI runners manually, which often failed. With the API key (`Issuer ID`, `Key ID`, and `.p8` Private Key), Apple allows the CI runner to communicate and publish without needing a keychain locally.
 
-3. Automated Database Backups to Azure (Task 123)
--------------------------------------------------
-While Supabase has built-in backups, having an off-site, cross-cloud backup strategy ensures that even if one provider goes down or an account is compromised, our data remains safe.
 
-- What we did (`.github/workflows/db-backup.yml`):
-  We created a scheduled GitHub workflow using a cron job (`cron: '0 2 * * *'`), which runs at 2:00 AM UTC every day.
-  
-  The workflow does the following:
-  - Connects to a standard Ubuntu runner and installs the `postgresql-client`.
-  - Runs `pg_dump` targeting our Supabase Database URL to create a full `.sql` backup.
-  - Compresses the backup using `gzip` to save storage costs.
-  - Logs into our Microsoft Azure account using the `azure/login` action.
-  - Uploads the compressed backup securely to an Azure Blob Storage container.
-
-  *Interview Tip*: Employers love hearing about Disaster Recovery (DR) strategies. Use the 3-2-1 backup rule as a talking point: Keep 3 copies of your data, on 2 different media, with 1 copy off-site. By exporting data from Supabase (AWS under the hood) to Azure, we have established a multi-cloud disaster recovery plan. This shows that you think beyond just writing code and care about infrastructure resilience and data security.
