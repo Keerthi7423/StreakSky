@@ -1,0 +1,47 @@
+Day 42: Beta Testing, Bug Fixing, and App Store Optimization (ASO)
+===================================================================
+Goal: Conduct the first round of beta testing, resolve critical feedback, and finalize store metadata for App Store and Play Store launch.
+
+This day is heavily focused on quality assurance, user feedback, and marketing preparation. Below is a detailed explanation of each task for interview preparation.
+
+1. Beta Testing Round (Task 124)
+--------------------------------
+Before launching publicly, we need to validate the app with real users to catch edge cases that automated tests or developers might miss.
+
+- What we did:
+  - Internal Testing: Distributed the app to 5 internal team members/stakeholders using Firebase App Distribution (Android) and TestFlight Internal Track (iOS).
+  - External Testing (Closed Beta): Expanded the test group to 10-50 external testers. For Android, we used the Google Play Console's "Closed Testing" track. For iOS, we used the TestFlight External Testing track (which required a brief Apple review).
+  - Feedback Collection: We set up structured feedback mechanisms, typically through an in-app "Send Feedback" button that logs device info, or via a simple Google Form/Survey sent to testers.
+
+  *Interview Tip*: If an interviewer asks how you distribute pre-release builds, mention Fastlane, Firebase App Distribution, and TestFlight. Explain that beta testing helps identify UX friction points (e.g., "users didn't understand how to create a habit") that unit tests cannot catch.
+
+2. Fix High-Priority Bugs from Beta Feedback (Task 125)
+-------------------------------------------------------
+Beta testing inevitably reveals issues. The goal here is not to add new features, but to stabilize the app.
+
+- What we did:
+  - Triaged the feedback into categories: High Priority (Crashes, blocked flows), Medium (UI glitches, slow performance), and Low (Feature requests).
+  - Focused strictly on High Priority (P0/P1) bugs. For example, if a specific device model crashed on the Splash Screen, or if the offline Hive storage didn't sync correctly to Supabase after network recovery.
+  - Used Firebase Crashlytics to investigate any crashes reported by testers, looking at stack traces to pinpoint the exact line of failing Dart code.
+  - Pushed hotfixes through our GitHub Actions CI/CD pipeline, generating new `.aab` and `.ipa` builds for the testers to verify.
+
+  *Interview Tip*: Emphasize "Triage." A common mistake is trying to fix every minor UI bug before launch. Explain that you prioritize bugs based on impact (does it prevent core functionality?) and frequency (how many users experience it?). Feature requests from beta testers should be logged in the backlog for v2.0, not built on Day 42.
+
+3. Finalize Store Metadata & ASO Strategy (Task 126)
+----------------------------------------------------
+App Store Optimization (ASO) is crucial for organic growth. It's the SEO of mobile apps.
+
+- What we did:
+  - Title & Subtitle: 
+    - App Name: `StreakSky — Habit Tracker`
+    - iOS Subtitle: `Streaks, Weather & AI Coach`
+    - Short Description (Android): `Build habits. Track streaks. See your sky.`
+  - Keyword Strategy: 
+    - Tier 1 (High Volume): habit tracker, daily habits, streak tracker.
+    - Tier 2 (Mid Volume): habit weather, AI habit coach, yearly habit review.
+    - Tier 3 (Niche): streaksky, habit commit.
+    - We embedded these naturally in the long description and the hidden 100-character iOS keyword field.
+  - Visual Assets: Finalized 8 screenshots per device size (Phone, Tablet). Showcased the dark theme, heatmap, streaks, weather, and AI chat. We also prepared a 1024x500 Feature Graphic for Android.
+  - Privacy & Compliance: Completed the Apple Privacy Nutrition Label and Google Play Data Safety form, explicitly stating that our Ollama AI runs on-device and no habit data leaves the phone without consent.
+
+  *Interview Tip*: When discussing ASO, mention the difference between Apple and Google. Apple uses a specific hidden "Keywords" field (max 100 characters), while Google Play algorithmically scrapes the Long Description to rank keywords. Therefore, for Android, you must naturally repeat keywords 3-5 times in the description. Also, highlight that "Screenshots are for conversion, Keywords are for discovery."
