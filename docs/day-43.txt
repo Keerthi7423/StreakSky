@@ -1,0 +1,51 @@
+Day 43: Store Assets, Privacy Compliance & App Submission
+===================================================================
+Goal: Finalize visual store assets, complete privacy/compliance declarations, and formally submit the StreakSky app to the Apple App Store and Google Play Store for review.
+
+This day is critical for the final launch preparation. The focus shifts from coding to marketing, compliance, and navigating the complex app submission processes. Below is a detailed explanation of each task for interview preparation.
+
+1. Prepare Store Screens (Task 127)
+-----------------------------------
+Your App Store screenshots are the most important conversion tool you have. Users decide whether to download your app within 3-5 seconds of looking at these images.
+
+- What we did:
+  - Created 8 high-resolution screenshots for both iOS (6.5" and 5.5" display sizes) and Android (Phone and 7-inch Tablet).
+  - Adopted the "Neon Aesthetic" theme (#0D0D0D backgrounds with #B3FF00 accents). We placed the app screens inside sleek, minimalistic device frames.
+  - Added short, punchy typography above each screen to highlight core value propositions:
+    1. "Build Unbreakable Habits" (Home Screen with Habit Cards)
+    2. "See Your Consistency" (GitHub-style Heatmap)
+    3. "Sky AI: Your Personal Coach" (Chat UI)
+    4. "Track Your Career Goals" (Phase Timeline)
+  - Designed the mandatory 1024x500 Feature Graphic for the Google Play Store, serving as a banner at the top of our listing.
+
+  *Interview Tip*: Be prepared to explain how you generated these assets. Mention tools like Figma for design, or automated tools like Fastlane Frameit. Highlight that screenshots should tell a "story" of the user journey rather than just showing random screens.
+
+2. Setup Privacy Labels and Data Usage Disclosure (Task 128)
+------------------------------------------------------------
+Both Apple and Google strictly enforce user privacy. You must accurately declare what data you collect, why you collect it, and who you share it with.
+
+- What we did:
+  - Apple Privacy Nutrition Label: We mapped out all data points collected. 
+    - Usage Data & Diagnostics (Firebase Analytics/Crashlytics) for "App Functionality" and "Analytics".
+    - Contact Info (Email) for "App Functionality" (Authentication).
+  - Google Play Data Safety Form: Completed the extensive questionnaire confirming that data is encrypted in transit and users can request data deletion.
+  - The "On-Device AI" Advantage: Because our Ollama integration runs locally, we explicitly highlighted in our privacy policy and store descriptions that user habit data *never* leaves the device for AI processing. This is a massive selling point and simplifies our privacy compliance.
+
+  *Interview Tip*: If asked about data privacy, emphasize the "principle of least privilege." You only collect what is strictly necessary. Highlighting the on-device AI architecture shows architectural maturity, as you intentionally designed the app to minimize PII (Personally Identifiable Information) exposure.
+
+3. Submit for Review (Task 129)
+-------------------------------
+The final step is pushing the build to the stores and triggering the review process.
+
+- What we did:
+  - iOS App Store (App Store Connect): 
+    - Selected the verified TestFlight build.
+    - Answered the Export Compliance questionnaire (confirming we use standard industry encryption via HTTPS).
+    - Set the release type to "Manual Release" so we can coordinate the exact launch time for both platforms.
+    - Submitted to Apple for Review. (Initial reviews typically take 24-48 hours).
+  - Android Play Store (Google Play Console):
+    - Promoted the `.aab` (Android App Bundle) from the Closed Testing track to the Production track.
+    - Completed the Content Rating questionnaire (rated E for Everyone/3+).
+    - Submitted for Google's review.
+
+  *Interview Tip*: Mention "Manual Release" vs "Automatic Release." Releasing manually gives you control over your launch day (Day 45). If you choose Automatic, Apple might approve it at 3 AM on a Sunday, ruining a coordinated Product Hunt or social media launch.
