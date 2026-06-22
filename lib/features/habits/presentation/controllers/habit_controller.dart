@@ -12,7 +12,6 @@ import '../../data/services/habit_local_service.dart';
 import '../../../streaks/presentation/controllers/streak_controller.dart';
 import '../../../goals/presentation/controllers/goal_controller.dart';
 import '../../../../core/utils/streak_date_utils.dart';
-import '../../../ai_agent/presentation/controllers/ai_controller.dart';
 
 final habitRepositoryProvider = Provider<HabitRepository>((ref) {
   return getIt<HabitRepository>();
@@ -326,14 +325,6 @@ class HabitController extends StateNotifier<AsyncValue<void>> {
               ?.value
               .firstWhere((h) => h.id == habitId);
           String commitMessage = 'feat: completed ${habit?.name ?? "habit"}';
-
-          try {
-            // Context could be current streak or weather
-            final context = "Streak active, sunny day.";
-            commitMessage = await _ref
-                .read(aiControllerProvider.notifier)
-                .generateHabitCommitMessage(habit?.name ?? "habit", context);
-          } catch (_) {}
 
           final completion = HabitCompletionModel(
             id: '',

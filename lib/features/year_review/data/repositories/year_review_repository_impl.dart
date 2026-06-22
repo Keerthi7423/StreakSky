@@ -9,7 +9,6 @@ import '../../../habits/domain/models/habit_model.dart';
 import '../../../goals/domain/repositories/goal_repository.dart';
 import '../../../goals/domain/models/goal_model.dart';
 import '../../../streaks/domain/repositories/streak_repository.dart';
-import '../../../ai_agent/domain/repositories/ai_repository.dart';
 
 @LazySingleton(as: YearReviewRepository)
 class YearReviewRepositoryImpl implements YearReviewRepository {
@@ -17,14 +16,12 @@ class YearReviewRepositoryImpl implements YearReviewRepository {
   final HabitRepository _habitRepository;
   final GoalRepository _goalRepository;
   final StreakRepository _streakRepository;
-  final AiRepository _aiRepository;
 
   YearReviewRepositoryImpl(
     this._supabase,
     this._habitRepository,
     this._goalRepository,
     this._streakRepository,
-    this._aiRepository,
   );
 
   @override
@@ -361,28 +358,15 @@ class YearReviewRepositoryImpl implements YearReviewRepository {
         }
       }
 
-      // --- AI Narrative generation ---
-      String summaryString =
-          "Year: $year. Habits completed: ${completions.length}. Sunny days: $totalSunnyDays (out of $totalDays). Stormy days: $totalStormyDays. Most common weather: $mostCommonWeather. Top streak: ${top3Streaks.isNotEmpty ? top3Streaks.first.streakDays : 0} days. Goal score: $overallGoalScore%. Shields used: $totalShields. Comebacks: $totalComebacks.";
-
-      String aiNarrativeText = '';
-      try {
-        aiNarrativeText = await _aiRepository.generateYearReviewNarrative(
-          summaryString,
-        );
-      } catch (e) {
-        debugPrint(
-          'Ollama Year Narrative generation failed, using beautiful local fallback template: $e',
-        );
-        final topHabitName = top3Streaks.isNotEmpty
-            ? top3Streaks.first.habitName
-            : 'habits';
-        final maxStreakVal = top3Streaks.isNotEmpty
-            ? top3Streaks.first.streakDays
-            : 0;
-        aiNarrativeText =
-            "$year was a year of incredible consistency and resilience in your sky. You built a powerful $maxStreakVal-day streak in $topHabitName, weathered $totalStormyDays stormy patches, and made $totalComebacks stunning comebacks (rainbows) after setbacks. Your sky stayed bright and sunny for $totalSunnyDays perfect days, proving your dedication to growth. Carry this powerful momentum into the new year!";
-      }
+      // --- Narrative generation ---
+      final topHabitName = top3Streaks.isNotEmpty
+          ? top3Streaks.first.habitName
+          : 'habits';
+      final maxStreakVal = top3Streaks.isNotEmpty
+          ? top3Streaks.first.streakDays
+          : 0;
+      final aiNarrativeText =
+          "$year was a year of incredible consistency and resilience in your sky. You built a powerful $maxStreakVal-day streak in $topHabitName, weathered $totalStormyDays stormy patches, and made $totalComebacks stunning comebacks (rainbows) after setbacks. Your sky stayed bright and sunny for $totalSunnyDays perfect days, proving your dedication to growth. Carry this powerful momentum into the new year!";
 
       final review = YearReviewModel(
         year: year,
