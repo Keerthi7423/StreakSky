@@ -1,0 +1,38 @@
+Day 45: Official Launch, Operations & Future Planning
+===================================================================
+Goal: Execute the public launch, monitor initial user behavior, handle first-day operations, and transition into continuous product development (v3.0).
+
+This is the culmination of the 45-day cycle. In an interview, discussing launch day shows you understand the complete Software Development Life Cycle (SDLC), which doesn't end when the code is merged.
+
+1. Official Launch Day — Monitor Traffic & Errors (Task 133)
+------------------------------------------------------------
+Once the app is live on the App Store and Play Store, you enter "hypercare" mode.
+
+- What we did:
+  - Actively monitored the dashboards set up on Day 44.
+  - Watched for "Day 1" spikes in user registration to ensure the Firebase Auth and Supabase user creation triggers handled the concurrent load smoothly.
+  - Monitored Firebase Crashlytics for any immediate crashes on edge-case devices (e.g., older Android phones).
+
+  *Interview Tip*: Talk about "Hypercare." This is a period (usually 1-2 weeks post-launch) where the development team is on high alert, ready to deploy hotfixes immediately. Mentioning that you monitor metrics rather than just waiting for user complaints shows a proactive engineering mindset.
+
+2. Post-Launch "Welcome" Notification (Task 134)
+------------------------------------------------
+Engaging users immediately after they install the app is crucial for Day 1 retention.
+
+- What we did:
+  - Updated `fcm_service.dart` to handle a specific `welcome` notification payload.
+  - When the server broadcasts this payload (or sends it specifically to new sign-ups), the app gracefully handles it, showing: "Welcome to StreakSky! Let's build some habits."
+  - This utilizes Firebase Cloud Messaging (FCM) background and foreground handlers.
+
+  *Interview Tip*: Explain the difference between Push Notifications (handled by the OS when the app is killed/backgrounded) and In-App Messaging/Foreground Notifications (handled by your Flutter code). Demonstrating you know how to handle state in both scenarios is a strong mobile developer trait.
+
+3. Initialize v3.0 Feature Backlog (Task 135)
+---------------------------------------------
+Software is never truly "finished." Launching v2.0 immediately means planning v3.0.
+
+- What we did:
+  - Created a `ROADMAP.md` file in the root directory to outline the future vision of StreakSky.
+  - Added Q3 and Q4 goals, such as Social Accountability Groups, Apple Health/Google Fit integrations, and a Web Dashboard.
+  - This transitions the project from a "build" phase to an "iterate" phase.
+
+  *Interview Tip*: Discuss the concept of a "Backlog" and "Agile Development." Explain that you don't build everything at once. You prioritize an MVP (or a targeted v2.0), launch it to get real user feedback, and then use that feedback to re-prioritize the roadmap. This shows product sense, not just coding ability.

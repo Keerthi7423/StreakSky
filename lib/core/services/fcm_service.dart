@@ -10,6 +10,8 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   if (message.data['type'] == 'streak_danger') {
     // We could potentially trigger local notifications or Hive updates here
     debugPrint("Streak Danger Alert received in background!");
+  } else if (message.data['type'] == 'welcome') {
+    debugPrint("Welcome notification received in background!");
   }
 }
 
@@ -49,6 +51,8 @@ class FcmService {
       if (message.data['type'] == 'streak_danger') {
         // Trigger an in-app alert or banner via Riverpod/state management
         debugPrint("DANGER: You are about to lose your streak!");
+      } else if (message.data['type'] == 'welcome') {
+        debugPrint("Welcome to StreakSky! Let's build some habits.");
       }
     });
 

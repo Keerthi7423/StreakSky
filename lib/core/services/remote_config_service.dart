@@ -21,6 +21,9 @@ class RemoteConfigService {
         'subscription_monthly_price': 299,
         'subscription_yearly_price': 1999,
         'is_ai_feature_free': false,
+        'kill_switch_active': false,
+        'maintenance_mode': false,
+        'disable_ai_features': false,
       });
 
       await _remoteConfig.fetchAndActivate();
@@ -32,4 +35,9 @@ class RemoteConfigService {
   int get monthlyPrice => _remoteConfig.getInt('subscription_monthly_price');
   int get yearlyPrice => _remoteConfig.getInt('subscription_yearly_price');
   bool get isAiFeatureFree => _remoteConfig.getBool('is_ai_feature_free');
+  
+  // Emergency Toggles
+  bool get killSwitchActive => _remoteConfig.getBool('kill_switch_active');
+  bool get maintenanceMode => _remoteConfig.getBool('maintenance_mode');
+  bool get disableAiFeatures => _remoteConfig.getBool('disable_ai_features');
 }
