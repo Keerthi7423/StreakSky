@@ -1,0 +1,40 @@
+Day 44: Launch Preparedness, Monitoring & Emergency Toggles
+===================================================================
+Goal: Ensure all telemetry, monitoring, and emergency controls are in place before the official launch on Day 45.
+
+This day focuses on DevOps, SRE (Site Reliability Engineering) practices, and risk mitigation. During an interview, demonstrating that you think about "what happens when things go wrong" sets you apart as a senior or mature developer.
+
+1. Setup Azure Monitor + Application Insights Dashboards (Task 130)
+-------------------------------------------------------------------
+Once an app is live, you are flying blind without proper telemetry. You need to know if your backend can handle the load and where errors are happening.
+
+- What we did:
+  - Conceptually set up dashboards in Azure to monitor API gateways (APIM) and backend edge functions.
+  - Tracked key metrics: Request rates, response times (latency), and HTTP 500 error rates.
+  - Configured alerts to trigger if the error rate spikes above 2% or if API latency exceeds 500ms consistently.
+
+  *Interview Tip*: Mention "Observability." It's a buzzword that interviewers love. Explain that Crashlytics handles client-side (app) crashes, but Azure Monitor/App Insights handles server-side observability. You need both for a complete picture.
+
+2. Configure Remote Config for Day 1 Emergency Toggles (Task 131)
+-----------------------------------------------------------------
+Launch days are unpredictable. If a feature causes the app to crash or the server to overload, you need a way to disable it instantly without waiting for an App Store update.
+
+- What we did:
+  - Updated `remote_config_service.dart` to include three critical emergency toggles:
+    1. `kill_switch_active`: If true, the app shows a "Down for Maintenance" screen and prevents usage. Used only in catastrophic scenarios.
+    2. `maintenance_mode`: Similar to the kill switch but used for planned downtime.
+    3. `disable_ai_features`: If our local Ollama models fail or the fallback Azure containers get too expensive/overloaded, we can gracefully disable AI without breaking the core habit-tracking loop.
+
+  *Interview Tip*: "Feature Flags" or "Toggles" are a best practice. Explain that you use Firebase Remote Config to fetch these flags on startup. It allows for "Graceful Degradation"—if a non-critical system (like AI) fails, you disable it, but the user can still use the core app.
+
+3. Final Launch Readiness Checklist (Task 132)
+----------------------------------------------
+A checklist prevents simple but fatal mistakes (like leaving development API keys in the production app).
+
+- What we did:
+  - Verified Environment Variables: Ensured `.env.prod` is being used and not `.env.dev`.
+  - Checked Billing: Verified that credit cards are attached to Firebase, Supabase, and Azure to prevent the app from shutting down due to a $5 unpaid bill.
+  - Scaled Databases: Ensured Supabase connection pooling (PgBouncer) is configured correctly to handle a spike in connections.
+  - Reviewed Secrets: Confirmed no hardcoded API keys are in the Git repository.
+
+  *Interview Tip*: Emphasize process. Talk about how you don't rely on memory for launches; you rely on documented checklists. Mentioning billing verification specifically shows you have real-world production experience.
