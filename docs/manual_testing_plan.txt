@@ -1,0 +1,112 @@
+StreakSky v2.0 - Manual End-to-End Testing Plan
+=================================================
+Pre-Production Checklist
+
+This document outlines a multi-day manual testing strategy to ensure all features work perfectly before submitting the app for production release. Run this on a physical device (not a simulator) to test haptics, offline behavior, and real-world performance.
+
+DAY 1: Authentication & User Profile
+------------------------------------
+Goal: Ensure users can reliably create accounts, log in, and manage their profiles.
+
+[ ] Test 1.1: Fresh Install & Onboarding
+    - Uninstall any previous versions of the app.
+    - Install the release build.
+    - Verify the splash screen neon animation loads smoothly without jank.
+    - Swipe through all 3 onboarding screens.
+    - Verify "Skip" and "Get Started" buttons route correctly to the Login screen.
+
+[ ] Test 1.2: Registration Flow
+    - Attempt to register with a weak password. Verify validation error appears.
+    - Attempt to register with an invalid email. Verify validation error appears.
+    - Register with a valid email/password.
+    - Verify successful routing to the Home Screen.
+    - Verify the "Welcome" push notification is received (requires FCM permissions).
+
+[ ] Test 1.3: Login & Logout
+    - Log out of the newly created account.
+    - Log back in with the exact same credentials.
+    - Verify the user state persists correctly (no double onboarding).
+    - Test "Guest Mode" / Anonymous login. Verify data is saved locally.
+
+[ ] Test 1.4: Profile Management
+    - Navigate to the Profile tab.
+    - Update user avatar. Verify the neon ring styling applies.
+    - Change display name and save. Force close the app and reopen to verify persistence.
+
+DAY 2: Core Habit Engine & Offline Sync
+---------------------------------------
+Goal: Ensure the core loop of adding, completing, and syncing habits works flawlessly, especially in bad network conditions.
+
+[ ] Test 2.1: Habit Creation
+    - Tap the "+" FAB. Verify the bottom sheet animation is smooth.
+    - Create a Daily habit (e.g., "Drink Water") with a specific color and emoji.
+    - Create a Custom Frequency habit (e.g., "Gym 3x/week").
+    - Verify both appear correctly ordered on the Home Screen.
+
+[ ] Test 2.2: Habit Completion (Online)
+    - Tap the checkbox for the "Drink Water" habit.
+    - Verify the bounce animation and medium impact haptic feedback.
+    - Navigate to the Stats page and verify the completion registered on the Heatmap.
+
+[ ] Test 2.3: Offline Mode & Background Sync
+    - Turn ON Airplane Mode (disable WiFi and Cellular).
+    - Complete the "Gym" habit.
+    - Verify the habit shows as completed locally.
+    - Close the app completely.
+    - Turn OFF Airplane Mode (re-enable internet).
+    - Open the app.
+    - Check the Supabase database directly to ensure the "Gym" completion synced to the backend automatically.
+
+[ ] Test 2.4: Editing & Archiving
+    - Long press or tap into a habit's detail view.
+    - Edit the habit's name and save.
+    - Archive a habit. Verify it disappears from the Home Screen but remains in the Stats/History view.
+
+DAY 3: Streaks, Weather System & Goals
+--------------------------------------
+Goal: Test gamification mechanics, edge cases for date rolling, and goal progression.
+
+[ ] Test 3.1: Streak Logic
+    - (Requires mock data or time travel via device settings).
+    - Complete a habit for 3 consecutive days. Verify the streak counter says "3".
+    - Skip a day. Verify the streak resets to 0 and the "Tornado" logic triggers (if applicable).
+    - Complete a habit for 7 consecutive days. Verify a "Streak Shield" is earned.
+
+[ ] Test 3.2: Weather UI
+    - Complete 100% of today's habits. Verify the Weather Hero Card shows "Sunny".
+    - Complete 50% of today's habits. Verify it shifts to "Partly Cloudy".
+    - Complete 0% of today's habits. Verify it shifts to "Stormy".
+
+[ ] Test 3.3: Goal Cascade
+    - Create a Weekly Goal (e.g., "Workout 3 times").
+    - Complete the linked "Gym" habit.
+    - Navigate to the Goals tab. Verify the progress bar advanced automatically.
+    - Complete the habit 2 more times to hit the target. Verify the Goal Completion Badge triggers.
+
+DAY 4: Data Visualization & Edge Cases
+--------------------------------------
+Goal: Ensure charts render correctly and edge cases don't crash the app.
+
+[ ] Test 4.1: Heatmap Rendering
+    - Navigate to Stats -> Graphs.
+    - Verify the 365-day GitHub-style heatmap renders without frame drops.
+    - Tap a cell. Verify the bottom sheet details the exact habits completed on that day.
+    - Toggle the year selector (e.g., to last year) and verify data updates.
+
+[ ] Test 4.2: FL_Chart Statistics
+    - Review the Weekly Bar Charts. Ensure the neon lines render correctly.
+    - Review the Career Timeline. Ensure the nodes connect properly.
+
+[ ] Test 4.3: Remote Config Toggles (Emergency Switches)
+    - From the Firebase Console, set `kill_switch_active` to true.
+    - Open the app. Verify the Maintenance Screen blocks access.
+    - Set it back to false. Verify access is restored.
+
+[ ] Test 4.4: UI Polish & Accessibility
+    - Test the app in Dark Mode (default).
+    - Test with device font size set to maximum. Verify no text overflows or breaks UI.
+    - Ensure all tap targets are comfortably large enough.
+
+FINAL SIGN-OFF
+--------------
+Once all 4 days of tests are passed without critical issues, proceed with compiling the final `.aab` (Android) and `.ipa` (iOS) files for store submission.

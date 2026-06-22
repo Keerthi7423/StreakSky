@@ -5,7 +5,6 @@ import '../controllers/habit_controller.dart';
 import '../widgets/add_habit_bottom_sheet.dart';
 import '../widgets/habit_card.dart';
 import '../../../weather/presentation/widgets/weather_hero_card.dart';
-import '../../../ai_agent/presentation/widgets/ai_nudge_card.dart';
 import '../../../quotes/presentation/widgets/morning_quote_card.dart';
 import '../../../year_review/presentation/widgets/home_year_review_banner.dart';
 import '../../../../core/widgets/skeleton_loader.dart';
@@ -53,7 +52,6 @@ class HomeScreen extends ConsumerWidget {
           _buildAppBar(context),
           const SliverToBoxAdapter(child: WeatherHeroCard()),
           const SliverToBoxAdapter(child: MorningQuoteCard()),
-          const SliverToBoxAdapter(child: AiNudgeCard()),
           const SliverToBoxAdapter(child: HomeYearReviewBanner()),
           habitsAsync.when(
             data: (habits) => habits.isEmpty

@@ -15,14 +15,6 @@ import 'package:injectable/injectable.dart' as _i526;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 import 'package:streaksky/core/di/register_module.dart' as _i356;
 import 'package:streaksky/core/services/analytics_service.dart' as _i812;
-import 'package:streaksky/features/ai_agent/data/datasources/azure_ai_datasource.dart'
-    as _i646;
-import 'package:streaksky/features/ai_agent/data/datasources/ollama_datasource.dart'
-    as _i443;
-import 'package:streaksky/features/ai_agent/data/repositories/ai_repository_impl.dart'
-    as _i810;
-import 'package:streaksky/features/ai_agent/domain/repositories/ai_repository.dart'
-    as _i504;
 import 'package:streaksky/features/auth/data/repositories/firebase_auth_service.dart'
     as _i900;
 import 'package:streaksky/features/auth/domain/repositories/auth_repository.dart'
@@ -83,8 +75,13 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i593.HabitRepository>(
       () => _i524.HabitRepositoryImpl(gh<_i454.SupabaseClient>()),
     );
-    gh.lazySingleton<_i646.AzureAiDatasource>(
-      () => _i646.AzureAiDatasource(gh<_i361.Dio>()),
+    gh.lazySingleton<_i587.YearReviewRepository>(
+      () => _i768.YearReviewRepositoryImpl(
+        gh<_i454.SupabaseClient>(),
+        gh<_i593.HabitRepository>(),
+        gh<_i125.GoalRepository>(),
+        gh<_i170.StreakRepository>(),
+      ),
     );
     gh.lazySingleton<_i891.QuoteRepository>(
       () => _i100.QuoteRepositoryImpl(gh<_i460.SharedPreferences>()),
@@ -92,28 +89,10 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i293.ProfileRepository>(
       () => _i425.SupabaseProfileRepository(gh<_i454.SupabaseClient>()),
     );
-    gh.lazySingleton<_i443.OllamaDataSource>(
-      () => _i443.OllamaDataSource(
-        gh<_i361.Dio>(),
-        gh<_i646.AzureAiDatasource>(),
-      ),
-    );
     gh.lazySingleton<_i1050.SyncService>(
       () => _i1050.SyncService(
         gh<_i461.HabitLocalService>(),
         gh<_i454.SupabaseClient>(),
-      ),
-    );
-    gh.lazySingleton<_i504.AiRepository>(
-      () => _i810.AiRepositoryImpl(gh<_i443.OllamaDataSource>()),
-    );
-    gh.lazySingleton<_i587.YearReviewRepository>(
-      () => _i768.YearReviewRepositoryImpl(
-        gh<_i454.SupabaseClient>(),
-        gh<_i593.HabitRepository>(),
-        gh<_i125.GoalRepository>(),
-        gh<_i170.StreakRepository>(),
-        gh<_i504.AiRepository>(),
       ),
     );
     return this;
